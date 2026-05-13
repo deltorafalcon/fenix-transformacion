@@ -1,0 +1,2369 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#070510">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" type="image/svg+xml" href="./icon.svg">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<title>La Transformación del León al Fénix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg:#070510;--bg2:#0f0c1e;--bg3:#16122a;--panel:#1a1630;--panel2:#201c38;
+  --border:#2e2550;--border2:#3d3468;
+  --gold:#c9943a;--gold2:#e8b84b;--gold3:#f5d080;
+  --ember:#e05c1a;--cream:#f5ead8;--text:#ddd4c0;--muted:#7a6f90;--muted2:#5a5070;
+  --danger:#d04040;--success:#3a9e68;
+  --wound1:#c94a30;--wound2:#9030b0;--wound3:#2080c0;--in-bg:#0a081a;
+  --r:12px;--r2:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:18px;line-height:1.75;min-height:100vh;overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+
+/* ─── PHOENIX CANVAS BG ─── */
+#phoenix-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.18;}
+
+/* ─── SCREENS ─── */
+.screen{display:none;min-height:100vh;position:relative;z-index:1;}
+.screen.active{display:block;}
+#screen-pin{display:none;background:radial-gradient(ellipse 80% 60% at 50% 20%,#1a0e30 0%,var(--bg) 70%);
+  min-height:100vh;align-items:center;justify-content:center;flex-direction:column;padding:40px 20px;}
+#screen-pin.active{display:flex;}
+
+/* PIN */
+.pin-logo{font-size:56px;margin-bottom:8px;filter:drop-shadow(0 0 24px #c9943a88);}
+.pin-title{font-family:'Cinzel Decorative',serif;font-size:clamp(13px,3vw,18px);color:var(--gold2);letter-spacing:3px;text-align:center;margin-bottom:4px;}
+.pin-sub{font-size:14px;color:var(--muted);letter-spacing:2px;text-align:center;font-family:'Cinzel',serif;margin-bottom:40px;}
+.pin-dots{display:flex;gap:16px;margin-bottom:36px;}
+.pin-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border2);background:var(--bg2);transition:.2s;}
+.pin-dot.filled{background:var(--gold2);border-color:var(--gold2);box-shadow:0 0 12px var(--gold);}
+.pin-dot.error{background:var(--danger);border-color:var(--danger);animation:shake .3s ease;}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.numpad{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:260px;}
+.num-btn{height:68px;border-radius:var(--r);border:1px solid var(--border2);background:var(--panel);
+  color:var(--text);cursor:pointer;font-family:'Cinzel',serif;font-size:20px;font-weight:500;transition:.15s;user-select:none;}
+.num-btn:hover{background:var(--panel2);border-color:var(--gold);color:var(--gold2);}
+.num-btn:active{transform:scale(.95);}
+.num-btn.del{font-size:16px;color:var(--muted);}
+.num-btn.del:hover{color:var(--danger);}
+.pin-forgot{margin-top:24px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--muted2);cursor:pointer;transition:.2s;}
+.pin-forgot:hover{color:var(--gold);}
+
+/* WELCOME */
+#screen-welcome{background:radial-gradient(ellipse 100% 70% at 50% 0%,#1a0e2e 0%,var(--bg) 60%);padding:0;}
+#screen-welcome.active{display:flex;flex-direction:column;align-items:center;}
+.hero{text-align:center;padding:72px 24px 48px;max-width:700px;width:100%;}
+.hero-bird{font-size:72px;display:block;animation:glow 3s ease-in-out infinite;margin-bottom:12px;}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 8px #c9943a44);}50%{filter:drop-shadow(0 0 28px #e8b84baa);}}
+.hero h1{font-family:'Cinzel Decorative',serif;font-size:clamp(22px,6vw,46px);font-weight:900;
+  background:linear-gradient(135deg,var(--gold3) 0%,var(--gold2) 50%,var(--ember) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;letter-spacing:1px;}
+.hero h1 em{font-style:normal;color:var(--text);-webkit-text-fill-color:var(--text);}
+.hero-sub{font-size:15px;color:var(--muted);letter-spacing:2px;font-family:'Cinzel',serif;margin:18px 0 0;}
+.reg-wrap{width:100%;max-width:560px;padding:0 20px 80px;}
+.reg-card{background:rgba(26,22,48,.7);border:1px solid var(--border2);border-radius:var(--r2);padding:40px 36px;backdrop-filter:blur(12px);}
+.reg-card h2{font-family:'Cinzel',serif;font-size:14px;letter-spacing:3px;color:var(--gold);text-align:center;margin-bottom:30px;text-transform:uppercase;}
+.field{margin-bottom:18px;}
+.field label{display:block;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;}
+.field input,.field textarea,.field select{width:100%;background:var(--in-bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'Cormorant Garamond',serif;font-size:17px;padding:12px 16px;outline:none;transition:.2s;}
+.field input:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,148,58,.1);}
+.field textarea{resize:vertical;min-height:80px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.pin-input{flex:1;text-align:center;font-size:24px;letter-spacing:8px;font-family:'Cinzel',serif;}
+.pin-input::placeholder{letter-spacing:3px;font-size:16px;}
+.hint{font-size:13px;color:var(--muted);margin-top:6px;font-style:italic;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;border:none;padding:14px 28px;border-radius:10px;transition:.2s;}
+.btn-primary{background:linear-gradient(135deg,var(--gold),var(--ember));color:#06040e;font-weight:700;box-shadow:0 4px 24px rgba(201,148,58,.35);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,148,58,.5);}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--muted);}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
+.btn-full{width:100%;margin-top:8px;}
+.btn-sm{padding:8px 16px;font-size:11px;}
+.sec-note{text-align:center;margin-top:14px;font-size:12px;color:var(--muted2);font-family:'Cinzel',serif;letter-spacing:1px;}
+
+/* TOPBAR */
+#topbar{position:fixed;top:0;left:0;right:0;height:56px;background:rgba(7,5,16,.92);border-bottom:1px solid var(--border);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100;}
+.tb-brand{font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;}
+.tb-user{font-size:13px;color:var(--muted);font-family:'Cinzel',serif;}
+.tb-lock{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:.2s;}
+.tb-lock:hover{border-color:var(--gold);}
+
+/* DASHBOARD */
+#screen-dashboard.active{display:block;}
+#screen-dashboard .container{max-width:900px;margin:0 auto;padding:80px 20px 100px;}
+.dash-hero{background:linear-gradient(135deg,var(--panel2),var(--bg3));border:1px solid var(--border2);border-radius:var(--r2);padding:36px;margin-bottom:32px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;}
+@media(max-width:560px){.dash-hero{grid-template-columns:1fr;}}
+.dh-greet{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--muted);margin-bottom:6px;}
+.dh-name{font-family:'Cinzel Decorative',serif;font-size:clamp(20px,4vw,30px);background:linear-gradient(90deg,var(--gold3),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.dh-date{font-size:14px;color:var(--muted);}
+.ring-wrap{text-align:center;}
+.prog-ring{width:88px;height:88px;}
+.r-bg{fill:none;stroke:var(--border);stroke-width:5;}
+.r-fill{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round;transform:rotate(-90deg);transform-origin:50% 50%;transition:.8s ease;}
+.r-txt{font-family:'Cinzel',serif;font-size:11px;fill:var(--gold);text-anchor:middle;}
+.r-sub{font-size:8px;fill:var(--muted);}
+
+/* DASH AVATAR */
+.dash-hero{grid-template-columns:auto 1fr auto!important;}
+@media(max-width:560px){.dash-hero{grid-template-columns:1fr!important;}}
+.dash-avatar-wrap{display:flex;align-items:center;justify-content:center;}
+.dash-avatar{
+  width:72px;height:72px;border-radius:50%;
+  border:2px solid var(--border2);background:var(--bg2);
+  cursor:pointer;overflow:hidden;position:relative;flex-shrink:0;
+  transition:.2s;display:flex;align-items:center;justify-content:center;flex-direction:column;
+}
+.dash-avatar:hover{border-color:var(--gold);box-shadow:0 0 16px rgba(201,148,58,.3);}
+.dash-avatar-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;opacity:0;transition:.2s;border-radius:50%;
+}
+.dash-avatar:hover .dash-avatar-overlay{opacity:1;}
+#dash-avatar-placeholder{display:flex;flex-direction:column;align-items:center;pointer-events:none;}
+.section-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.section-head-line{flex:1;height:1px;background:var(--border);}
+.section-head-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;white-space:nowrap;}
+.guides-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px;}
+.guide-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:22px;cursor:pointer;transition:.25s;position:relative;overflow:hidden;}
+.guide-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--gold),var(--ember));opacity:0;transition:.25s;}
+.guide-card:hover:not(.locked){transform:translateY(-3px);border-color:var(--gold);}
+.guide-card:hover:not(.locked)::before{opacity:1;}
+.guide-card.locked{opacity:.5;cursor:default;}
+.guide-card.active-guide{border-color:rgba(201,148,58,.5);}
+.guide-card.active-guide::before{opacity:.7;}
+.gn{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);margin-bottom:6px;}
+.gt{font-family:'Cinzel',serif;font-size:13px;color:var(--text);margin-bottom:8px;font-weight:600;}
+.gd{font-size:14px;color:var(--muted);line-height:1.5;}
+.g-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-family:'Cinzel',serif;letter-spacing:1px;margin-top:10px;}
+.g-active{background:rgba(201,148,58,.15);color:var(--gold2);border:1px solid rgba(201,148,58,.3);}
+.g-done{background:rgba(58,158,104,.15);color:var(--success);border:1px solid rgba(58,158,104,.3);}
+.g-locked{background:rgba(58,50,80,.3);color:var(--muted2);border:1px solid var(--border);}
+.g-progress{margin-top:10px;height:3px;background:var(--border);border-radius:2px;}
+.g-progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--ember));transition:.5s;}
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:32px;}
+.quick-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:18px;cursor:pointer;transition:.2s;}
+.quick-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.qc-icon{font-size:24px;margin-bottom:8px;}
+.qc-t{font-family:'Cinzel',serif;font-size:12px;color:var(--gold);margin-bottom:3px;}
+.qc-d{font-size:13px;color:var(--muted);}
+
+/* DAY SCREEN */
+#screen-day .container{max-width:820px;margin:0 auto;padding:72px 20px 100px;}
+.back-btn{display:inline-flex;align-items:center;gap:8px;border:none;background:none;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--muted);cursor:pointer;margin-bottom:24px;text-transform:uppercase;transition:.2s;padding:0;}
+.back-btn:hover{color:var(--gold);}
+.step-nav{display:flex;align-items:center;gap:0;background:var(--panel);border:1px solid var(--border);border-radius:50px;padding:6px;margin-bottom:32px;}
+.step-btn{flex:1;padding:10px 8px;border-radius:44px;border:none;background:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;color:var(--muted);cursor:pointer;transition:.2s;text-transform:uppercase;white-space:nowrap;}
+.step-btn.active{background:linear-gradient(135deg,var(--gold),var(--ember));color:#06040e;font-weight:700;}
+.step-btn.done{color:var(--success);}
+.step-btn:hover:not(.active){color:var(--gold);}
+.day-step{display:none;}.day-step.active{display:block;}
+.day-hdr{background:linear-gradient(135deg,var(--bg3),var(--panel2));border:1px solid var(--border2);border-radius:var(--r2);padding:32px;margin-bottom:28px;}
+.dh-num{font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;}
+.dh-title{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,4vw,26px);background:linear-gradient(90deg,var(--cream),var(--gold3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px;}
+.dh-desc{font-size:15px;color:var(--muted);}
+.concept{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:28px;margin-bottom:24px;}
+.concept p{font-size:17px;color:var(--text);margin-bottom:12px;line-height:1.8;}
+.concept p:last-child{margin-bottom:0;}
+.concept strong{color:var(--gold2);}
+.concept em{color:var(--cream);font-style:italic;}
+.concept .key-quote{border-left:3px solid var(--gold);padding-left:20px;margin:20px 0;color:var(--cream);font-size:18px;font-style:italic;line-height:1.6;}
+.verse{background:linear-gradient(135deg,rgba(30,26,56,.9),rgba(32,28,60,.9));border:1px solid rgba(201,148,58,.25);border-radius:var(--r);padding:28px 32px;text-align:center;margin:24px 0;position:relative;overflow:hidden;}
+.verse::before{content:'"';position:absolute;top:-20px;left:20px;font-family:'Cinzel Decorative',serif;font-size:120px;color:rgba(201,148,58,.04);line-height:1;}
+.verse-t{font-size:17px;font-style:italic;color:var(--cream);line-height:1.7;margin-bottom:10px;}
+.verse-r{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);}
+.q-block{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px;}
+.q-label{background:rgba(201,148,58,.06);border-bottom:1px solid var(--border);padding:14px 20px;font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);line-height:1.5;}
+.q-block textarea{width:100%;background:transparent;border:none;color:var(--text);font-family:'Cormorant Garamond',serif;font-size:17px;padding:18px 20px;resize:vertical;min-height:110px;outline:none;line-height:1.75;}
+.q-block textarea::placeholder{color:var(--border2);}
+.q-block textarea:focus{background:rgba(201,148,58,.02);}
+.emotion-check{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:24px;margin-bottom:24px;}
+.ec-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);margin-bottom:16px;text-transform:uppercase;}
+.emotion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;}
+.emotion-btn{padding:10px 6px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);text-align:center;cursor:pointer;transition:.2s;}
+.emotion-btn:hover,.emotion-btn.sel{border-color:var(--gold);background:rgba(201,148,58,.1);}
+.emotion-icon{font-size:22px;display:block;margin-bottom:4px;}
+.emotion-lbl{font-size:12px;color:var(--muted);font-family:'Cinzel',serif;letter-spacing:.5px;}
+.recs-box{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r);padding:24px;margin-bottom:24px;}
+.recs-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--ember);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.rec-time{margin-bottom:16px;}
+.rec-time-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border);}
+.rec-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;font-size:15px;color:var(--text);line-height:1.5;}
+.rec-item::before{content:'▸';color:var(--gold);flex-shrink:0;margin-top:2px;}
+.step-actions{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:24px;border-top:1px solid var(--border);}
+.complete-day-btn{background:linear-gradient(135deg,var(--success),#2a7a50);color:#fff;font-weight:700;box-shadow:0 4px 20px rgba(58,158,104,.3);}
+
+/* ── WOUNDS ── */
+.wounds-hero{text-align:center;padding:40px 24px;background:linear-gradient(180deg,rgba(26,12,40,.8) 0%,transparent 100%);border-radius:var(--r2);margin-bottom:32px;}
+.wounds-hero h2{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,4vw,28px);color:var(--cream);margin-bottom:12px;}
+.wounds-hero p{font-size:16px;color:var(--muted);max-width:580px;margin:0 auto;}
+.wound-tabs{display:flex;gap:0;background:var(--panel);border:1px solid var(--border);border-radius:50px;padding:5px;margin-bottom:28px;}
+.wound-tab{flex:1;padding:10px 6px;border-radius:44px;border:none;background:none;font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;color:var(--muted);cursor:pointer;transition:.2s;text-transform:uppercase;text-align:center;}
+.wound-tab.active[data-w="abandono"]{background:var(--wound1);color:#fff;}
+.wound-tab.active[data-w="rechazo"]{background:var(--wound2);color:#fff;}
+.wound-tab.active[data-w="traicion"]{background:var(--wound3);color:#fff;}
+.wound-tab:hover:not(.active){color:var(--gold);}
+.wound-intro{border-radius:var(--r);padding:28px;margin-bottom:24px;}
+.w-abandono{background:rgba(201,74,48,.1);border:1px solid rgba(201,74,48,.3);}
+.w-rechazo{background:rgba(144,48,176,.1);border:1px solid rgba(144,48,176,.3);}
+.w-traicion{background:rgba(32,128,192,.1);border:1px solid rgba(32,128,192,.3);}
+.wound-icon{font-size:40px;margin-bottom:12px;}
+.wound-name{font-family:'Cinzel Decorative',serif;font-size:22px;margin-bottom:8px;}
+.w-abandono .wound-name{color:#e06a50;}
+.w-rechazo .wound-name{color:#b06ad0;}
+.w-traicion .wound-name{color:#50a0e0;}
+.wound-belief{font-size:18px;font-style:italic;color:var(--cream);padding:16px 24px;border-radius:8px;background:rgba(0,0,0,.2);margin-bottom:16px;line-height:1.6;}
+.wound-section{margin-bottom:24px;}
+.ws-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;padding-left:12px;border-left:3px solid var(--gold);}
+.ws-content{font-size:16px;color:var(--text);line-height:1.7;}
+.ws-content p{margin-bottom:10px;}
+.ws-content ul{padding-left:20px;}
+.ws-content li{margin-bottom:6px;color:var(--muted);}
+.ws-content li strong{color:var(--text);}
+.manifest-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.manifest-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:14px;color:var(--muted);line-height:1.4;}
+.manifest-item strong{display:block;color:var(--text);font-size:13px;margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:.5px;}
+.healing-path{background:rgba(58,158,104,.08);border:1px solid rgba(58,158,104,.2);border-radius:var(--r);padding:20px;margin-bottom:20px;}
+.hp-title{font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;color:var(--success);text-transform:uppercase;margin-bottom:10px;}
+
+/* ROOTS */
+.root-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden;}
+.root-hdr{display:flex;align-items:center;gap:16px;padding:20px 24px;cursor:pointer;transition:.15s;}
+.root-hdr:hover{background:rgba(201,148,58,.04);}
+.root-ico{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid var(--border2);}
+.root-t{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:2px;}
+.root-s{font-size:13px;color:var(--muted);}
+.root-chevron{margin-left:auto;color:var(--muted);transition:.3s;font-size:11px;}
+.root-card.open .root-chevron{transform:rotate(90deg);color:var(--gold);}
+.root-body{display:none;padding:0 24px 24px;border-top:1px solid var(--border);}
+.root-card.open .root-body{display:block;}
+.root-body h4{font-family:'Cinzel',serif;font-size:11px;letter-spacing:1.5px;color:var(--gold);margin:18px 0 8px;text-transform:uppercase;}
+.root-body p{font-size:15px;color:var(--text);margin-bottom:10px;line-height:1.7;}
+.root-body ul{padding-left:22px;margin-bottom:10px;}
+.root-body li{font-size:15px;color:var(--muted);margin-bottom:6px;}
+.root-body li strong{color:var(--text);}
+.pill{display:inline-block;padding:3px 12px;border-radius:20px;font-size:11px;font-family:'Cinzel',serif;letter-spacing:.5px;margin:3px 3px 3px 0;border:1px solid var(--border);color:var(--muted);background:var(--bg2);}
+.pill.hi{border-color:var(--gold);color:var(--gold);background:rgba(201,148,58,.08);}
+
+/* PROGRESS */
+.prog-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;}
+.prog-hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;}
+.prog-t{font-family:'Cinzel',serif;font-size:13px;color:var(--gold);}
+.prog-body{display:none;padding:16px 20px;border-top:1px solid var(--border);}
+.prog-card.open .prog-body{display:block;}
+.pa-label{font-size:12px;color:var(--muted);margin-bottom:4px;font-family:'Cinzel',serif;letter-spacing:.5px;}
+.pa-ans{background:var(--bg2);border-radius:6px;padding:12px 16px;font-size:15px;color:var(--text);font-style:italic;white-space:pre-wrap;margin-bottom:12px;}
+.pa-empty{color:var(--border2);font-size:14px;font-style:italic;margin-bottom:8px;}
+
+/* RESOURCES */
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:24px;}
+.res-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.rc-type{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--ember);margin-bottom:6px;text-transform:uppercase;}
+.rc-title{font-family:'Cinzel',serif;font-size:13px;color:var(--text);margin-bottom:4px;}
+.rc-auth{font-size:13px;color:var(--muted);}
+
+/* SAVE BAR + TOAST */
+.save-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(7,5,16,.97);border-top:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;z-index:99;backdrop-filter:blur(12px);transform:translateY(100%);transition:.3s;}
+.save-bar.vis{transform:translateY(0);}
+.ss{font-size:13px;color:var(--muted);}
+.ss.unsaved{color:var(--ember);}
+.ss.saved{color:var(--success);}
+.save-actions{display:flex;gap:10px;}
+#toast{position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--panel2);color:var(--gold2);border:1px solid var(--gold);padding:10px 24px;border-radius:30px;font-family:'Cinzel',serif;font-size:12px;letter-spacing:1px;opacity:0;transition:.3s;pointer-events:none;z-index:200;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.container{max-width:820px;margin:0 auto;padding:80px 20px 100px;}
+.page-t{font-family:'Cinzel Decorative',serif;font-size:clamp(16px,3vw,22px);color:var(--gold2);margin-bottom:6px;}
+.page-s{font-size:14px;color:var(--muted);margin-bottom:28px;letter-spacing:.5px;}
+.sep{margin:28px 0;border:none;border-top:1px solid var(--border);}
+.flame-sep{text-align:center;padding:8px 0;font-size:18px;filter:drop-shadow(0 0 8px var(--ember));opacity:.6;}
+.lock-overlay{text-align:center;padding:60px 20px;color:var(--muted);}
+.lock-overlay .lo-icon{font-size:40px;margin-bottom:12px;}
+.lock-overlay .lo-t{font-family:'Cinzel',serif;font-size:14px;color:var(--gold);margin-bottom:8px;}
+.lock-overlay .lo-s{font-size:14px;line-height:1.6;}
+
+/* ══════════════════════════════
+   CAMERA / PHOTO PANEL
+══════════════════════════════ */
+.identity-panel{
+  background:rgba(26,22,48,.85);border:1px solid var(--border2);border-radius:var(--r2);
+  padding:28px;margin-bottom:24px;backdrop-filter:blur(8px);
+}
+.identity-panel h3{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:20px;text-align:center;}
+.cam-row{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+.cam-preview-wrap{flex:0 0 130px;position:relative;}
+.cam-preview{width:130px;height:130px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--gold);box-shadow:0 0 24px rgba(201,148,58,.3);
+  background:var(--bg2);display:block;}
+.cam-preview.empty{display:flex;align-items:center;justify-content:center;
+  font-size:48px;color:var(--border2);}
+.cam-live{width:130px;height:130px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--ember);box-shadow:0 0 20px rgba(224,92,26,.4);
+  display:none;}
+.cam-live.on{display:block;}
+.cam-actions{flex:1;min-width:200px;}
+.cam-btn-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;}
+.cam-btn{padding:9px 16px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--panel);color:var(--muted);cursor:pointer;font-family:'Cinzel',serif;
+  font-size:11px;letter-spacing:1px;transition:.2s;}
+.cam-btn:hover{border-color:var(--gold);color:var(--gold);}
+.cam-btn.active-cam{border-color:var(--ember);color:var(--ember);}
+.cam-hint{font-size:13px;color:var(--muted2);font-style:italic;}
+
+/* ══════════════════════════════
+   AFFIRMATIONS & VOICE
+══════════════════════════════ */
+.affirmations-panel{
+  background:linear-gradient(135deg,rgba(26,22,48,.9),rgba(32,16,48,.9));
+  border:1px solid rgba(201,148,58,.3);border-radius:var(--r2);
+  padding:28px;margin-bottom:24px;
+}
+.affirmations-panel h3{font-family:'Cinzel',serif;font-size:12px;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:6px;text-align:center;}
+.affirmations-panel .aff-sub{font-size:13px;color:var(--muted2);text-align:center;
+  margin-bottom:20px;font-style:italic;}
+.aff-phrase{
+  background:rgba(0,0,0,.3);border:1px solid var(--border2);border-radius:12px;
+  padding:20px 24px;margin-bottom:14px;position:relative;
+}
+.aff-phrase-text{font-size:18px;color:var(--cream);font-style:italic;line-height:1.7;margin-bottom:12px;}
+.aff-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.aff-rec-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;
+  border:1px solid var(--border2);background:var(--panel);cursor:pointer;
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;color:var(--muted);
+  transition:.2s;}
+.aff-rec-btn:hover{border-color:var(--ember);color:var(--ember);}
+.aff-rec-btn.recording{border-color:var(--danger);color:var(--danger);
+  animation:pulse-rec 1s ease-in-out infinite;}
+@keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(208,64,64,.4);}50%{box-shadow:0 0 0 8px rgba(208,64,64,0);}}
+.aff-play-btn{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;
+  border:1px solid var(--border2);background:var(--panel);cursor:pointer;
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:1px;color:var(--muted);
+  transition:.2s;}
+.aff-play-btn:hover{border-color:var(--success);color:var(--success);}
+.aff-play-btn:disabled{opacity:.4;cursor:default;}
+.aff-has-rec{display:inline-flex;align-items:center;gap:4px;font-family:'Cinzel',serif;
+  font-size:10px;color:var(--success);letter-spacing:1px;}
+.aff-timer{font-family:'Cinzel',serif;font-size:11px;color:var(--danger);min-width:36px;}
+
+/* EXPORT BTN SPECIAL */
+.btn-export-pdf{
+  background:linear-gradient(135deg,#1a3a6a,#2060a0);
+  border:1px solid #3080c0;color:#90c8f0;
+  font-weight:700;letter-spacing:2px;
+  box-shadow:0 4px 20px rgba(32,128,192,.3);
+  position:relative;overflow:hidden;
+}
+.btn-export-pdf::before{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:conic-gradient(transparent 0deg,rgba(144,200,240,.1) 60deg,transparent 120deg);
+  animation:spin-shine 3s linear infinite;
+}
+@keyframes spin-shine{to{transform:rotate(360deg);}}
+.btn-export-pdf:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(32,128,192,.5);}
+
+/* MODAL for PDF preview */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(4,2,14,.92);z-index:500;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:.3s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
+  max-width:640px;width:100%;max-height:90vh;overflow-y:auto;padding:40px;
+  transform:translateY(20px);transition:.3s;
+}
+.modal-overlay.open .modal-box{transform:translateY(0);}
+.modal-title{font-family:'Cinzel Decorative',serif;font-size:20px;
+  background:linear-gradient(135deg,var(--gold3),var(--ember));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:8px;text-align:center;}
+.modal-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:28px;
+  font-family:'Cinzel',serif;letter-spacing:1px;}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;
+  color:var(--muted);cursor:pointer;font-size:18px;transition:.2s;}
+.modal-close:hover{color:var(--gold);}
+.pdf-progress{background:var(--bg3);border-radius:8px;height:6px;margin:16px 0;overflow:hidden;}
+.pdf-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--ember));
+  border-radius:8px;transition:.4s;}
+.pdf-status{font-family:'Cinzel',serif;font-size:12px;color:var(--muted);text-align:center;
+  letter-spacing:1px;margin-bottom:16px;}
+
+/* RESPONSIVE */
+@media(max-width:600px){
+  .field-row{grid-template-columns:1fr;}
+  .reg-card{padding:28px 20px;}
+  .manifest-grid{grid-template-columns:1fr;}
+  .step-btn{font-size:9px;padding:8px 4px;}
+  .tb-brand{display:none;}
+  .guides-grid{grid-template-columns:1fr;}
+  .wound-tabs{gap:4px;}
+  .wound-tab{font-size:9px;letter-spacing:.5px;}
+  .cam-row{flex-direction:column;align-items:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- PHOENIX ANIMATED BACKGROUND -->
+<canvas id="phoenix-bg"></canvas>
+
+<div id="toast">✓ Guardado</div>
+
+<div class="save-bar" id="save-bar">
+  <span class="ss unsaved" id="ss">⬤ Cambios sin guardar</span>
+  <div class="save-actions">
+    <button class="btn btn-ghost btn-sm" onclick="discardChanges()">Descartar</button>
+    <button class="btn btn-primary btn-sm" onclick="saveDay()">Guardar</button>
+  </div>
+</div>
+
+<div id="topbar" style="display:none;">
+  <div class="tb-brand">🦅 León al Fénix</div>
+  <div id="tb-user" class="tb-user"></div>
+  <div class="tb-lock" title="Bloquear" onclick="lockApp()">🔒</div>
+</div>
+
+<!-- PIN SCREEN -->
+<div class="screen" id="screen-pin">
+  <div class="pin-logo">🦅</div>
+  <div class="pin-title">León al Fénix</div>
+  <div class="pin-sub" id="pin-sub">Ingresa tu código de acceso</div>
+  <div class="pin-dots" id="pin-dots">
+    <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="numpad">
+    <button class="num-btn" onclick="pinKey('1')">1</button>
+    <button class="num-btn" onclick="pinKey('2')">2</button>
+    <button class="num-btn" onclick="pinKey('3')">3</button>
+    <button class="num-btn" onclick="pinKey('4')">4</button>
+    <button class="num-btn" onclick="pinKey('5')">5</button>
+    <button class="num-btn" onclick="pinKey('6')">6</button>
+    <button class="num-btn" onclick="pinKey('7')">7</button>
+    <button class="num-btn" onclick="pinKey('8')">8</button>
+    <button class="num-btn" onclick="pinKey('9')">9</button>
+    <button class="num-btn" style="visibility:hidden;"></button>
+    <button class="num-btn" onclick="pinKey('0')">0</button>
+    <button class="num-btn del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-forgot" onclick="pinForgot()">¿Olvidaste tu código?</div>
+</div>
+
+<!-- WELCOME SCREEN -->
+<div class="screen" id="screen-welcome">
+  <div class="hero">
+    <span class="hero-bird">🦅</span>
+    <h1>La Transformación del<br><em>León al</em> Fénix</h1>
+    <p class="hero-sub">Cuaderno Terapéutico Personal · 18 Guías de Sanación</p>
+  </div>
+  <div class="reg-wrap">
+    <div class="reg-card">
+      <h2>✦ Iniciar Mi Proceso ✦</h2>
+      <div class="field-row">
+        <div class="field"><label>Nombre completo</label><input type="text" id="rn" placeholder="Tu nombre" autocomplete="name"></div>
+        <div class="field"><label>Edad</label><input type="number" id="ra" placeholder="Años" min="16" max="99"></div>
+      </div>
+      <div class="field"><label>Correo electrónico</label><input type="email" id="re" placeholder="tu@correo.com"></div>
+      <div class="field"><label>Fecha de inicio</label><input type="date" id="rd"></div>
+      <div class="field"><label>¿Por qué inicias este proceso hoy?</label><textarea id="rw" placeholder="Lo que te trajo hasta aquí..."></textarea></div>
+      <div class="field"><label>Código PIN (4 dígitos)</label><input type="password" id="rp" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Ej. 1234" class="pin-input"><div class="hint">🔒 Este código protege tu información.</div></div>
+      <div class="field"><label>Confirmar PIN</label><input type="password" id="rp2" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Repite el código" class="pin-input"></div>
+      <button class="btn btn-primary btn-full" onclick="register()">Iniciar mi transformación →</button>
+      <p class="sec-note">🔒 Toda la información se guarda solo en este dispositivo.</p>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="screen" id="screen-dashboard">
+  <div class="container">
+    <div class="dash-hero" style="grid-template-columns:auto 1fr auto;gap:18px;">
+      <!-- PROFILE PHOTO -->
+      <div class="dash-avatar-wrap" title="Cambiar foto de perfil">
+        <input type="file" id="dash-photo-input" accept="image/*" style="display:none;" onchange="loadDashPhoto(this)">
+        <div class="dash-avatar" id="dash-avatar" onclick="document.getElementById('dash-photo-input').click()">
+          <img id="dash-avatar-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;">
+          <div id="dash-avatar-placeholder">
+            <span style="font-size:28px;">👤</span>
+            <span style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:1px;color:var(--muted);margin-top:4px;display:block;">Tu foto</span>
+          </div>
+          <div class="dash-avatar-overlay">📷</div>
+        </div>
+      </div>
+      <!-- NAME & DATE -->
+      <div>
+        <div class="dh-greet">Bienvenido de vuelta</div>
+        <div class="dh-name" id="dh-name">—</div>
+        <div class="dh-date" id="dh-date">—</div>
+      </div>
+      <!-- PROGRESS RING -->
+      <div class="ring-wrap">
+        <svg class="prog-ring" viewBox="0 0 88 88">
+          <circle class="r-bg" cx="44" cy="44" r="38"/>
+          <circle class="r-fill" cx="44" cy="44" r="38" id="r-fill" stroke-dasharray="238.76" stroke-dashoffset="238.76"/>
+          <text x="44" y="41" class="r-txt" id="r-pct">0%</text>
+          <text x="44" y="54" class="r-txt r-sub">progreso</text>
+        </svg>
+      </div>
+    </div>
+    <div class="section-head"><div class="section-head-label">Mis Guías de Transformación</div><div class="section-head-line"></div></div>
+    <div class="guides-grid" id="guides-grid"></div>
+    <div class="section-head"><div class="section-head-label">Herramientas</div><div class="section-head-line"></div></div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="goScreen('screen-wounds')"><div class="qc-icon">🩸</div><div class="qc-t">Las 3 Heridas Raíz</div><div class="qc-d">Abandono · Rechazo · Traición</div></div>
+      <div class="quick-card" onclick="goScreen('screen-roots')"><div class="qc-icon">🌱</div><div class="qc-t">Tratamiento de Raíz</div><div class="qc-d">EMDR, apego, trauma somático</div></div>
+      <div class="quick-card" onclick="goScreen('screen-resources')"><div class="qc-icon">📚</div><div class="qc-t">Recursos</div><div class="qc-d">Libros y prácticas recomendadas</div></div>
+      <div class="quick-card" onclick="goScreen('screen-progress')"><div class="qc-icon">📝</div><div class="qc-t">Mis Respuestas</div><div class="qc-d">Revisa tu proceso completo</div></div>
+      <div class="quick-card" onclick="goScreen('screen-affirmations')"><div class="qc-icon">🎙️</div><div class="qc-t">Afirmaciones de Voz</div><div class="qc-d">Graba y repite con tu propia voz</div></div>
+      <div class="quick-card" onclick="openExportModal()" style="background:linear-gradient(135deg,rgba(26,50,106,.5),rgba(32,22,48,.5));border-color:#3080c040;">
+        <div class="qc-icon">📄</div><div class="qc-t" style="color:#90c8f0;">Exportar Informe PDF</div><div class="qc-d">Informe completo de tu proceso</div>
+      </div>
+      <div class="quick-card" onclick="goScreen('screen-avances')" style="background:linear-gradient(135deg,rgba(40,20,60,.6),rgba(20,10,40,.6));border-color:rgba(201,148,58,.4);"><div class="qc-icon">🔥</div><div class="qc-t" style="color:var(--gold2);">Panel de Avances</div><div class="qc-d">Tu transformación en detalle</div></div>
+      <div class="quick-card" onclick="confirmReset()" style="opacity:.6;"><div class="qc-icon">⚠️</div><div class="qc-t">Reiniciar</div><div class="qc-d">Borrar todo y empezar de nuevo</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- AVANCES SCREEN -->
+<div class="screen" id="screen-avances">
+  <canvas id="avances-bg" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;"></canvas>
+  <div class="container" style="position:relative;z-index:1;">
+    <button class="back-btn" onclick="goScreen('screen-dashboard')">← Volver al inicio</button>
+    <div id="avances-content"></div>
+  </div>
+</div>
+
+<!-- DAY SCREEN -->
+<div class="screen" id="screen-day">
+  <div class="container">
+    <button class="back-btn" onclick="goScreen('screen-dashboard')">← Volver al inicio</button>
+    <div id="day-content"></div>
+  </div>
+</div>
+
+<!-- WOUNDS SCREEN -->
+<div class="screen" id="screen-wounds">
+  <div class="container">
+    <button class="back-btn" onclick="goScreen('screen-dashboard')">← Volver al inicio</button>
+    <div class="wounds-hero">
+      <h2>🩸 Las Tres Heridas Raíz</h2>
+      <p>Toda disfunción emocional profunda tiene raíz en una o varias de estas tres heridas fundamentales. Comprenderlas es el comienzo de sanarlas.</p>
+    </div>
+    <div class="wound-tabs">
+      <button class="wound-tab active" data-w="abandono" onclick="switchWound('abandono')">🔴 Abandono</button>
+      <button class="wound-tab" data-w="rechazo" onclick="switchWound('rechazo')">🟣 Rechazo</button>
+      <button class="wound-tab" data-w="traicion" onclick="switchWound('traicion')">🔵 Traición</button>
+    </div>
+    <div id="wounds-content"></div>
+  </div>
+</div>
+
+<!-- ROOTS SCREEN -->
+<div class="screen" id="screen-roots">
+  <div class="container">
+    <button class="back-btn" onclick="goScreen('screen-dashboard')">← Volver al inicio</button>
+    <div class="page-t">🌱 Tratamiento de Raíz</div>
+    <div class="page-s">Enfoques terapéuticos profundos para sanar el trauma</div>
+    <div id="roots-content"></div>
+  </div>
+</div>
+
+<!-- RESOURCES SCREEN -->
+<div class="screen" id="screen-resources">
+  <div class="container">
+    <button class="back-btn" onclick="goScreen('screen-dashboard')">← Volver al inicio</button>
+    <div class="page-t">📚 Recursos Complementarios</div>
+    <div class="page-s">Libros, prácticas y herramientas para profundizar</div>
+    <div id="resources-content"></div>
+  </div>
+</div>
+
+<!-- PROGRESS SCREEN -->
+<div class="screen" id="screen-progress">
+  <div class="container">
+    <button class="back-btn" onclick="goScreen('screen-dashboard')">← Volver al inicio</button>
+    <div class="page-t">📝 Mis Respuestas</div>
+    <div class="page-s">Todo lo que has escrito en tu proceso de transformación</div>
+    <div id="progress-content"></div>
+  </div>
+</div>
+
+<!-- AFFIRMATIONS SCREEN -->
+<div class="screen" id="screen-affirmations">
+  <div class="container">
+    <button class="back-btn" onclick="goScreen('screen-dashboard')">← Volver al inicio</button>
+    <div class="page-t">🎙️ Afirmaciones con Tu Voz</div>
+    <div class="page-s">Graba estas frases con tu propia voz para reforzar tu identidad</div>
+
+    <!-- IDENTITY / CAMERA PANEL -->
+    <div class="identity-panel">
+      <h3>✦ Tu Presencia · Tu Identidad ✦</h3>
+      <div class="cam-row">
+        <div class="cam-preview-wrap">
+          <video id="cam-live" class="cam-live" autoplay playsinline muted></video>
+          <img id="cam-photo" class="cam-preview" src="" alt="Tu foto" style="display:none;">
+          <div id="cam-placeholder" class="cam-preview empty">👤</div>
+        </div>
+        <div class="cam-actions">
+          <p style="font-size:14px;color:var(--muted);margin-bottom:14px;line-height:1.6;">
+            Verte mientras repites las afirmaciones refuerza la identidad. Activa la cámara en vivo o sube una foto tuya.
+          </p>
+          <div class="cam-btn-row">
+            <button class="cam-btn" id="btn-cam-on" onclick="toggleCamera()">📷 Activar cámara</button>
+            <button class="cam-btn" onclick="capturePhoto()" id="btn-snap" style="display:none;">📸 Capturar foto</button>
+            <label class="cam-btn" style="cursor:pointer;">📁 Subir foto<input type="file" accept="image/*" style="display:none;" onchange="uploadPhoto(this)"></label>
+          </div>
+          <div class="cam-hint" id="cam-hint">La cámara solo se usa localmente — nada se envía a ningún servidor.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AFFIRMATIONS LIST -->
+    <div class="affirmations-panel">
+      <h3>🔥 Frases de Transformación</h3>
+      <p class="aff-sub">Presiona ⏺ para grabar con tu voz · Presiona ▶ para reproducir tu grabación</p>
+      <div id="affirmations-list"></div>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;">
+      <button class="btn btn-ghost btn-sm" onclick="clearAllRecordings()">🗑️ Borrar todas las grabaciones</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPORT PDF MODAL -->
+<div class="modal-overlay" id="modal-export" onclick="closeExportModal(event)">
+  <div class="modal-box" style="position:relative;">
+    <button class="modal-close" onclick="closeExportModal()">✕</button>
+    <div class="modal-title">Informe de Transformación</div>
+    <div class="modal-sub">Tu proceso completo como documento PDF</div>
+
+    <div style="background:rgba(32,128,192,.06);border:1px solid rgba(32,128,192,.2);border-radius:12px;padding:20px;margin-bottom:24px;">
+      <p style="font-size:15px;color:var(--text);line-height:1.7;margin-bottom:12px;">
+        El informe incluirá:
+      </p>
+      <ul style="list-style:none;padding:0;">
+        <li style="font-size:14px;color:var(--muted);padding:4px 0;">✦ &nbsp;Portada animada con tu nombre y fecha</li>
+        <li style="font-size:14px;color:var(--muted);padding:4px 0;">✦ &nbsp;Tu foto de identidad (si la subiste)</li>
+        <li style="font-size:14px;color:var(--muted);padding:4px 0;">✦ &nbsp;Todas tus respuestas organizadas por día</li>
+        <li style="font-size:14px;color:var(--muted);padding:4px 0;">✦ &nbsp;Respuestas de las 3 heridas raíz</li>
+        <li style="font-size:14px;color:var(--muted);padding:4px 0;">✦ &nbsp;Tu progreso general</li>
+        <li style="font-size:14px;color:var(--muted);padding:4px 0;">✦ &nbsp;Versículos y frases de cierre</li>
+      </ul>
+    </div>
+
+    <div class="pdf-progress" id="pdf-progress-wrap" style="display:none;">
+      <div class="pdf-progress-fill" id="pdf-progress-fill" style="width:0%;"></div>
+    </div>
+    <div class="pdf-status" id="pdf-status" style="display:none;"></div>
+
+    <button class="btn btn-export-pdf btn-full" id="btn-generate-pdf" onclick="generatePDF()">
+      📄 Generar Informe PDF
+    </button>
+    <p class="sec-note" style="margin-top:12px;">El PDF se genera completamente en tu dispositivo.<br>Nada sale al exterior.</p>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════
+   PHOENIX CANVAS ANIMATION — León → Fénix
+══════════════════════════════════════════════════ */
+(function(){
+  const canvas = document.getElementById('phoenix-bg');
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+  const particles = [];
+  const FLAME_COLORS = ['#e05c1a','#c9943a','#f5d080','#e8b84b','#ff7a30','#ff4400'];
+
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Particle class for fire/embers
+  class Particle {
+    constructor(x, y, type){
+      this.x = x; this.y = y; this.type = type;
+      this.reset();
+    }
+    reset(){
+      this.life = Math.random();
+      this.maxLife = 0.4 + Math.random() * 0.8;
+      this.vx = (Math.random() - 0.5) * 2;
+      this.vy = -(1 + Math.random() * 3);
+      this.size = 2 + Math.random() * 8;
+      this.color = FLAME_COLORS[Math.floor(Math.random() * FLAME_COLORS.length)];
+      this.alpha = 0;
+    }
+    update(){
+      this.life += 0.016;
+      const prog = this.life / this.maxLife;
+      this.alpha = prog < 0.3 ? prog / 0.3 : 1 - (prog - 0.3) / 0.7;
+      this.x += this.vx + Math.sin(this.life * 4) * 0.5;
+      this.y += this.vy;
+      this.vx *= 0.99;
+      this.vy *= 0.99;
+      if(this.life >= this.maxLife) this.reset();
+    }
+    draw(){
+      ctx.save();
+      ctx.globalAlpha = this.alpha * 0.7;
+      ctx.shadowBlur = this.size * 2;
+      ctx.shadowColor = this.color;
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * (1 - this.life / this.maxLife * 0.5), 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  // Draw stylized wing shape
+  function drawWing(cx, cy, flip, alpha, phase){
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(cx, cy);
+    if(flip) ctx.scale(-1, 1);
+    const g = ctx.createLinearGradient(0, -80, 150, 0);
+    g.addColorStop(0, '#e8b84b');
+    g.addColorStop(0.4, '#e05c1a');
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    const wave = Math.sin(phase) * 12;
+    ctx.bezierCurveTo(40, -60 + wave, 120, -80 + wave * 0.5, 160, -20 + wave * 0.3);
+    ctx.bezierCurveTo(120, 10, 60, 20, 0, 0);
+    // feather details
+    for(let i = 0; i < 5; i++){
+      const fx = 30 + i * 24;
+      const fy = -40 + i * 8 + Math.sin(phase + i) * 6;
+      ctx.moveTo(fx * 0.5, fy * 0.4);
+      ctx.lineTo(fx, fy);
+    }
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Draw lion silhouette fading into phoenix
+  function drawTransformation(progress){
+    const cx = W / 2;
+    const cy = H * 0.5;
+    const fadeOut = Math.max(0, 1 - progress * 2); // lion fades
+    const fadeIn = Math.max(0, progress * 2 - 1);  // phoenix appears
+
+    // LION BODY (simplified geometric shapes)
+    if(fadeOut > 0.01){
+      ctx.save();
+      ctx.globalAlpha = fadeOut * 0.25;
+      // Mane glow
+      const mg = ctx.createRadialGradient(cx, cy - 20, 20, cx, cy - 20, 90);
+      mg.addColorStop(0, '#c9943a');
+      mg.addColorStop(1, 'transparent');
+      ctx.fillStyle = mg;
+      ctx.beginPath();
+      ctx.arc(cx, cy - 20, 90, 0, Math.PI * 2);
+      ctx.fill();
+      // Head
+      ctx.fillStyle = '#c98830';
+      ctx.beginPath();
+      ctx.arc(cx, cy - 30, 45, 0, Math.PI * 2);
+      ctx.fill();
+      // Body
+      ctx.fillStyle = '#b07020';
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 60, 40, 70, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // Chains (breaking)
+      ctx.strokeStyle = '#404060';
+      ctx.lineWidth = 3;
+      for(let i = 0; i < 3; i++){
+        const ox = cx + (i - 1) * 40;
+        ctx.beginPath();
+        ctx.moveTo(ox, cy + 100);
+        const breakProg = Math.min(1, progress * 3);
+        const breakY = cy + 130 + breakProg * 40;
+        for(let s = 0; s < 5; s++){
+          ctx.lineTo(ox + Math.sin(s * 1.5) * 8, cy + 100 + s * 12 + breakProg * s * 8);
+        }
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // PHOENIX (emerging from flames)
+    if(fadeIn > 0.01 || progress > 0.4){
+      const pAlpha = Math.min(1, (progress - 0.3) / 0.5) * 0.3;
+      if(pAlpha > 0){
+        const phase = t * 0.8;
+        // Wings
+        drawWing(cx, cy - 20, false, pAlpha, phase);
+        drawWing(cx, cy - 20, true, pAlpha, phase);
+        // Body glow
+        ctx.save();
+        ctx.globalAlpha = pAlpha;
+        const pg = ctx.createRadialGradient(cx, cy, 5, cx, cy, 70);
+        pg.addColorStop(0, '#f5d080');
+        pg.addColorStop(0.5, '#e05c1a');
+        pg.addColorStop(1, 'transparent');
+        ctx.fillStyle = pg;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 70, 0, Math.PI * 2);
+        ctx.fill();
+        // Tail feathers
+        ctx.strokeStyle = '#e8b84b';
+        ctx.lineWidth = 2;
+        for(let i = -2; i <= 2; i++){
+          ctx.beginPath();
+          ctx.moveTo(cx + i * 10, cy + 30);
+          ctx.quadraticCurveTo(
+            cx + i * 20 + Math.sin(t + i) * 5,
+            cy + 80 + Math.sin(t * 0.7 + i) * 20,
+            cx + i * 30,
+            cy + 120
+          );
+          ctx.globalAlpha = pAlpha * 0.6;
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+  }
+
+  // Setup particles
+  const CENTER_X = () => W / 2;
+  const CENTER_Y = () => H * 0.6;
+  for(let i = 0; i < 80; i++){
+    const angle = Math.random() * Math.PI * 2;
+    const r = 20 + Math.random() * 60;
+    particles.push(new Particle(
+      CENTER_X() + Math.cos(angle) * r,
+      CENTER_Y() + Math.sin(angle) * r * 0.4,
+      'ember'
+    ));
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    ctx.clearRect(0, 0, W, H);
+
+    t += 0.016;
+    // Cycle: 0→1 every 8 seconds, then loop
+    const cycleDur = 10;
+    const progress = (t % cycleDur) / cycleDur;
+
+    // Background gradient pulse
+    const bgGrad = ctx.createRadialGradient(W/2, H*0.4, 0, W/2, H*0.4, H*0.7);
+    bgGrad.addColorStop(0, `rgba(40,20,60,${0.08 + Math.sin(t*0.5)*0.04})`);
+    bgGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
+
+    // Draw transformation
+    drawTransformation(progress);
+
+    // Update particles around center
+    particles.forEach(p => {
+      if(p.life >= p.maxLife){
+        const angle = Math.random() * Math.PI * 2;
+        const r = 10 + Math.random() * 80;
+        p.x = CENTER_X() + Math.cos(angle) * r;
+        p.y = CENTER_Y() + Math.sin(angle) * r * 0.5;
+      }
+      p.update();
+      p.draw();
+    });
+
+    // Ember trails
+    if(Math.random() < 0.3){
+      const ep = new Particle(
+        CENTER_X() + (Math.random() - 0.5) * 120,
+        CENTER_Y() + (Math.random() - 0.5) * 50
+      );
+      ep.size = 1 + Math.random() * 3;
+      ep.vy = -(0.5 + Math.random());
+      particles.push(ep);
+      if(particles.length > 150) particles.shift();
+    }
+  }
+  animate();
+})();
+
+/* ══════════════════════════════════════════════════
+   DATA — 18 GUIDES
+══════════════════════════════════════════════════ */
+const GUIDES = [
+  {id:1,emoji:"🦅",title:"La Transformación del León al Fénix",desc:"Sanar la raíz del abandono emocional y reconstruir la fortaleza interior.",unlocked:true,days:7},
+  {id:2,emoji:"🌑",title:"Las Raíces del Rechazo",desc:"Sanar la herida de no haberte sentido aceptado tal como eres.",unlocked:false,days:7},
+  {id:3,emoji:"⚔️",title:"Sanar la Traición",desc:"Reconstruir la confianza cuando quienes debían protegerte te fallaron.",unlocked:false,days:7},
+  {id:4,emoji:"👦",title:"El Niño Interior Herido",desc:"Reparentalizar al niño que nunca fue visto, amado ni protegido.",unlocked:false,days:7},
+  {id:5,emoji:"💎",title:"Reconstruir la Autoestima",desc:"De la vergüenza tóxica a la dignidad interna inquebrantable.",unlocked:false,days:7},
+  {id:6,emoji:"💞",title:"Sanar las Relaciones",desc:"Patrones de vínculo, límites, intimidad y amor sano.",unlocked:false,days:7},
+  {id:7,emoji:"🦁",title:"La Masculinidad Consciente",desc:"El León que integra vulnerabilidad y fortaleza como uno.",unlocked:false,days:7},
+  {id:8,emoji:"🌟",title:"Propósito y Destino",desc:"Descubrir el para qué profundo de tu historia y tu vida.",unlocked:false,days:7},
+  {id:9,emoji:"🌹",title:"Sanando la Sexualidad",desc:"Reconectar con la intimidad desde la sanidad y no desde la herida.",unlocked:false,days:7},
+  {id:10,emoji:"🕊️",title:"El Arte del Perdón",desc:"Liberar el peso que no es tuyo sin minimizar lo que viviste.",unlocked:false,days:7},
+  {id:11,emoji:"🛡️",title:"Límites Sanos",desc:"Aprender a decir no desde el amor propio, no desde el miedo.",unlocked:false,days:7},
+  {id:12,emoji:"🌊",title:"Regulación Emocional Avanzada",desc:"Gestionar las emociones intensas sin suprimirlas ni desbordarte.",unlocked:false,days:7},
+  {id:13,emoji:"👨‍👦",title:"Paternidad Consciente",desc:"Romper los ciclos generacionales y amar a tus hijos sanamente.",unlocked:false,days:7},
+  {id:14,emoji:"⚡",title:"El Sistema Nervioso Restaurado",desc:"Salir del modo supervivencia y entrar al modo vida plena.",unlocked:false,days:7},
+  {id:15,emoji:"🙏",title:"Identidad, Fe y Propósito",desc:"Anclar la identidad en lo espiritual y no en las heridas del pasado.",unlocked:false,days:7},
+  {id:16,emoji:"💰",title:"Libertad Financiera Interior",desc:"Las creencias de escasez heredadas del trauma y cómo sanarlas.",unlocked:false,days:7},
+  {id:17,emoji:"🏛️",title:"Construir el Legado",desc:"El hombre transformado que deja huella en su familia y comunidad.",unlocked:false,days:7},
+  {id:18,emoji:"🔥",title:"El Fénix en Vuelo — Integración",desc:"Cierre de las 18 guías: integrar, celebrar y continuar.",unlocked:false,days:7},
+];
+
+const AFFIRMATION_PHRASES = [
+  "Soy digno de ser amado exactamente como soy.",
+  "Ya no estoy definido por el abandono que viví.",
+  "Tengo la fortaleza de reconstruirme desde las cenizas.",
+  "Mi pasado me formó, pero no me encadena.",
+  "Soy el hombre que mis hijos necesitan ver.",
+  "Merezco relaciones sanas, seguras y genuinas.",
+  "Mi valor no depende de lo que produzco ni de quien se quede.",
+  "Elijo sanar, no por obligación, sino porque me amo.",
+  "La vulnerabilidad es valentía, no debilidad.",
+  "Soy el Fénix: nací del fuego y vuelo más alto que las llamas.",
+];
+
+const DAYS = [
+  {num:1,emoji:"🔍",guide:1,title:"Identificar la Raíz del Abandono",desc:"Conocer el origen es el primer paso para dejar de cargar lo que no comprendes.",
+   verse:{t:'"Aunque mi padre y mi madre me dejaran, con todo, Jehová me recogerá."',r:"Salmos 27:10"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>El abandono emocional no siempre ocurre cuando alguien se va físicamente. Muchas veces sucede cuando <strong>no fuiste escuchado, validado, protegido ni acompañado emocionalmente</strong> — o cuando debiste volverte fuerte mucho antes de estar listo.</p><p>El cerebro de un niño que experimenta esto aprende un mensaje de supervivencia: <em>"Estoy solo. Debo resolver todo. No puedo confiar. Si fallo, pierdo el amor."</em></p><div class="key-quote">"El dolor que no se comprende se convierte en patrón. El dolor que se comprende se convierte en maestro."</div><p>Hoy no buscamos culpables. Buscamos <strong>comprensión del origen</strong> para dejar de pelear contra el dolor y empezar a integrarlo.</p>`,questions:[{id:"d1a1",label:"¿Cómo describirías el dolor emocional que has cargado hasta hoy? ¿En qué momentos de tu vida lo sientes con más fuerza?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>La siguiente práctica te pide ir a los recuerdos más tempranos de soledad emocional. No hay respuestas incorrectas. Escribe lo que emerge sin censura — tu mente adulta procesará lo que el niño no pudo.</p>`,questions:[{id:"d1e1",label:"¿Cuándo empecé a sentirme solo? Descríbelo con detalle: qué pasaba, dónde estabas, qué edad tenías, qué sentiste en el cuerpo.",rows:6},{id:"d1e2",label:"¿Qué personas, circunstancias o ausencias me hicieron sentir emocionalmente abandonado? ¿Cómo se manifestó ese abandono en tu vida diaria?",rows:6},{id:"d1e3",label:"¿Qué conclusiones tomé sobre mí mismo en medio de ese dolor? ¿Qué decidí creer sobre mi valor, mi capacidad de ser amado y mi seguridad en el mundo?",rows:5}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d1p1",label:"¿Qué miedo específico, nacido de esas experiencias tempranas, todavía gobierna decisiones en tu vida hoy?",rows:5},{id:"d1p2",label:"Respiración terapéutica (3 veces al día: inhala 4s → sostén 4s → exhala 6s). Repite: 'No estoy en peligro. Estoy aprendiendo a vivir diferente.' — ¿Qué notaste en tu cuerpo al hacerlo?",rows:4}],recs:{mañana:["Antes de levantarte: 5 respiraciones profundas y la frase 'Hoy me permito sentir sin juzgar'","Leer el concepto del día con calma, sin apresurarte"],tarde:["Caminar 20 minutos en silencio. Observar sin pensar. Solo respirar y ver","Si aparece un recuerdo doloroso, no lo empujes: obsérvalo como si fuera una nube pasando"],noche:["Completar todos los ejercicios de reflexión antes de dormir","5 minutos de silencio: pregúntate '¿qué necesitaba ese niño que no recibió?'","Escribir una sola frase de cierre que resuma lo que aprendiste hoy"]}},
+    {id:"cierre",label:"Cierre",concept:`<p>El ejercicio espiritual de hoy consiste en cerrar los ojos, respirar profundo tres veces, y repetir lentamente:</p><div class="key-quote">"Dios no me abandonó aunque así lo sentí. Había una presencia mayor que yo no podía ver."</div><p>No tienes que creerlo completamente. Solo abre la posibilidad. La fe que sana no es la que no tiene dudas — es la que avanza con ellas.</p>`,questions:[{id:"d1c1",label:"¿Qué sentiste al repetir el ejercicio espiritual? ¿Qué resistencia o emoción emergió?",rows:5},{id:"d1c2",label:"Compromiso del día 1 — Completa: 'Hoy me comprometo a dejar de pelear contra el dolor y empezar a...'",rows:3}]}
+  ]},
+  {num:2,emoji:"⭐",guide:1,title:"Reconstruir el Valor Personal",desc:"Tu valor no depende de lo que produces ni de quién se quedó. Existe antes de todo eso.",
+   verse:{t:'"Porque somos hechura suya, creados en Cristo Jesús para buenas obras."',r:"Efesios 2:10"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La baja autoestima no nace de incapacidad. Nace de <strong>años sintiéndose insuficiente</strong> ante personas cuya presencia o aprobación necesitabas para sobrevivir.</p><div class="key-quote">"El valor humano no es algo que se gana. Es algo que se reconoce."</div>`,questions:[{id:"d2a1",label:"¿Cómo crees que la experiencia del abandono afectó la forma en que te ves a ti mismo?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>El cerebro necesita <strong>evidencia nueva y concreta</strong> para romper la narrativa de inutilidad.</p>`,questions:[{id:"d2e1",label:"Inventario de fortalezas — Escribe MÍNIMO 20 capacidades propias: habilidades, valores, talentos, logros, dificultades superadas:",rows:10},{id:"d2e2",label:"Reestructuración cognitiva — Para cada pensamiento negativo frecuente, escribe la verdad racional que lo reemplaza:",rows:6},{id:"d2e3",label:"Caminata de 25 minutos hoy. ¿Cómo te sentiste antes y después?",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d2p1",label:"¿En qué momentos de tu vida actual sientes que 'debes demostrar' tu valor para recibir amor o aprobación?",rows:5}],recs:{mañana:["Mirar al espejo 2 minutos y decir: 'Soy suficiente tal como estoy'"],tarde:["Hacer algo que genuinamente disfrutes sin justificarlo como 'productivo'"],noche:["Escribir: '¿Qué hice hoy que merece reconocimiento?'"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"No eres lo que otros necesitaban que fueras. Eres lo que Dios diseñó que fueras."</div>`,questions:[{id:"d2c1",label:"Ritual de cierre — Escribe la frase que más te costó creer hoy y por qué:",rows:4},{id:"d2c2",label:"Compromiso del día 2:",rows:3}]}
+  ]},
+  {num:3,emoji:"🧩",guide:1,title:"El Niño Que Aprendió a No Necesitar",desc:"La autosuficiencia extrema es una herida disfrazada de fortaleza.",
+   verse:{t:'"Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar."',r:"Mateo 11:28"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Cuando un niño aprende que <strong>pedir ayuda conduce al rechazo o al abandono</strong>, el sistema nervioso desarrolla una estrategia: volverse completamente autosuficiente. Esta adaptación fue inteligente. Pero en el adulto, se convierte en aislamiento.</p><div class="key-quote">"La independencia compulsiva no es libertad. Es soledad con disfraz de fortaleza."</div>`,questions:[{id:"d3a1",label:"¿En qué áreas de tu vida te cuesta pedir ayuda? ¿Qué sientes cuando necesitas a alguien?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d3e1",label:"¿Cuándo fue la primera vez que decidiste que 'podías solo'? ¿Qué estaba pasando?",rows:5},{id:"d3e2",label:"Pide ayuda hoy — una cosa pequeña, a quien sea. Describe la experiencia: ¿qué pediste, a quién, qué sentiste?",rows:5}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d3p1",label:"¿Qué temes que pasaría si muestras que necesitas a alguien? ¿De dónde viene ese miedo?",rows:5}],recs:{mañana:["Identifica una persona de confianza en tu vida actual"],tarde:["Practica vulnerabilidad mínima: di 'hoy no estoy bien' a alguien"],noche:["Escribe: '¿Qué necesito que nunca me permito pedir?'"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"La vulnerabilidad no es debilidad — es la cuna de la conexión."</div>`,questions:[{id:"d3c1",label:"¿Qué cambiaría en tus relaciones si te permitieras ser visible en tu necesidad?",rows:5},{id:"d3c2",label:"Compromiso del día 3:",rows:3}]}
+  ]},
+  {num:4,emoji:"🪞",guide:1,title:"Los Patrones Que Heredaste",desc:"Lo que no se sana, se hereda. Lo que se comprende, se puede romper.",
+   verse:{t:'"No seréis responsables por la iniquidad de vuestros padres."',r:"Ezequiel 18:19-20"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Los patrones emocionales se transmiten de generación en generación, no por genética sino por <strong>modelamiento, atmósfera emocional y heridas no procesadas</strong>. Sin quererlo, repetimos lo que vimos — o hacemos lo opuesto extremo, que también es reacción al trauma.</p><div class="key-quote">"Romper un ciclo generacional es el acto de amor más profundo que un padre puede hacer."</div>`,questions:[{id:"d4a1",label:"¿Qué patrones emocionales o relacionales reconoces en tus padres que también ves en ti?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d4e1",label:"Árbol emocional familiar: ¿Cómo manejaban las emociones en tu hogar? ¿Se podía llorar? ¿Expresar enojo? ¿Pedir perdón?",rows:6},{id:"d4e2",label:"¿Qué patrón específico quieres que se detenga en ti — que no pase a tus hijos?",rows:5}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d4p1",label:"¿Qué virtudes también heredaste — fortalezas que vinieron de tu linaje a pesar del dolor?",rows:5}],recs:{mañana:["Escribe una carta de gratitud a la versión de tus padres que estaba herida"],tarde:["Observa hoy cómo reaccionas emocionalmente — ¿reconoces patrones aprendidos?"],noche:["¿Qué tipo de padre/madre quieres ser o ya eres?"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Lo que mis padres no pudieron darme, yo puedo dármelo a mí mismo — y dárselo a mis hijos."</div>`,questions:[{id:"d4c1",label:"¿Qué ciclo concreto romperás en tu familia desde hoy?",rows:5},{id:"d4c2",label:"Compromiso del día 4:",rows:3}]}
+  ]},
+  {num:5,emoji:"🔥",guide:1,title:"Propósito en el Dolor",desc:"Ninguna historia de sufrimiento real es un error. Tiene dirección.",
+   verse:{t:'"Y sabemos que a los que aman a Dios, todas las cosas les ayudan a bien."',r:"Romanos 8:28"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Hay una diferencia entre <strong>el sufrimiento que destruye</strong> y el sufrimiento que, una vez integrado, se convierte en la fuente más profunda de propósito. Esto no minimiza el dolor — lo transforma.</p><div class="key-quote">"La herida que no te mató, tiene la semilla de lo que te hará más profundo."</div>`,questions:[{id:"d5a1",label:"¿Hay algo que hayas vivido que, aunque doloroso, te ha dado algo que nadie que no lo vivió tiene?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d5e1",label:"¿Qué experiencias de dolor en tu vida tienen una dimensión de propósito — aunque no la entiendas completamente?",rows:6},{id:"d5e2",label:"¿Para qué crees que pasaste por lo que pasaste? ¿A quién podrías ayudar con lo que viviste?",rows:5}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d5p1",label:"¿Qué te roba más energía vital actualmente? ¿Qué cambio pequeño recuperaría algo de esa energía?",rows:5}],recs:{mañana:["Escribe 1 cosa que todavía te genera esperanza"],tarde:["Hoy haz UNA actividad que genuinamente disfrutes"],noche:["Escribe: '¿Para qué vale la pena seguir?'"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"La esperanza no es optimismo. Es la decisión de no cerrar el futuro antes de que llegue."</div>`,questions:[{id:"d5c1",label:"¿Qué te roba más energía vital actualmente? ¿Qué cambio concreto harías esta semana?",rows:5},{id:"d5c2",label:"Compromiso del día 5:",rows:3}]}
+  ]},
+  {num:6,emoji:"⚡",guide:1,title:"Construir Seguridad y Determinación",desc:"La seguridad no es ausencia de miedo. Es avanzar con él.",
+   verse:{t:'"Esfuérzate y sé valiente; no temas ni desmayes."',r:"Josué 1:9"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Las heridas de abandono generan indecisión profunda porque la persona teme equivocarse y perder el amor. La postergación, entonces, no es pereza — es <strong>una estrategia de protección inconsciente</strong>.</p><div class="key-quote">"La persona que espera sentirse segura antes de actuar espera para siempre. La seguridad viene después de la acción, no antes."</div>`,questions:[{id:"d6a1",label:"¿En qué áreas de tu vida sientes más parálisis o indecisión? ¿Qué exactamente temes?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d6e1",label:"Decisión 1 que tomé hoy: ¿cuál fue, qué implicó, qué sentí al tomarla?",rows:3},{id:"d6e2",label:"Decisión 2 que tomé hoy:",rows:3},{id:"d6e3",label:"Decisión 3 que tomé hoy:",rows:3},{id:"d6e4",label:"¿Cómo me sentí al no postergarlas? ¿Qué cambió en mi energía?",rows:4},{id:"d6e5",label:"Postura de firmeza (5 min: espalda recta, respiración profunda, mirada al frente). ¿Qué notaste?",rows:3}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d6p1",label:"Diario de autoridad interior — Escribe con convicción: 'Tengo derecho a construir estabilidad. Tengo derecho a avanzar.' Añade tus propias afirmaciones:",rows:6},{id:"d6p2",label:"¿Hay alguna decisión importante que llevas postergando? ¿Qué es lo peor que podría pasar si la tomas? ¿Y si no la tomas?",rows:5}],recs:{mañana:["Antes de empezar el día: identificar UNA cosa postergada y comprometerse a iniciarla"],tarde:["Tomar al menos una decisión que normalmente postergas"],noche:["Celebra cada acción que tomaste hoy, sin minimizarla"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"El hombre determinado no es el que nunca tiene miedo. Es el que actúa aunque lo tenga."</div>`,questions:[{id:"d6c1",label:"¿En qué área necesitas más seguridad hoy? ¿Qué paso concreto darás esta semana?",rows:4},{id:"d6c2",label:"Compromiso del día 6:",rows:3}]}
+  ]},
+  {num:7,emoji:"🦅",guide:1,title:"Reconstruir la Identidad y el Futuro",desc:"El abandono fue parte de tu historia. El Fénix es lo que eliges ser desde hoy.",
+   verse:{t:'"Porque yo sé los pensamientos que tengo acerca de vosotros, dice Jehová, pensamientos de paz, y no de mal."',r:"Jeremías 29:11"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La sanación verdadera ocurre cuando la persona <strong>deja de verse únicamente desde sus heridas</strong>. El abandono fue parte de la historia. Pero ninguno de esos eventos define <em>quién eres</em> ni <em>a dónde vas</em>.</p><div class="key-quote">"No eres lo que te pasó. Eres lo que decides construir con lo que viviste."</div>`,questions:[{id:"d7a1",label:"Al llegar al día 7, ¿qué ha cambiado en ti esta semana? ¿Qué piensas diferente sobre ti mismo?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>La carta al nuevo yo es el ejercicio más importante de todo el proceso.</p>`,questions:[{id:"d7e1",label:"¿Cómo quiero vivir? ¿Cómo quiero sentirme — emocionalmente, relacionalmente, espiritualmente?",rows:5},{id:"d7e2",label:"¿Qué tipo de hombre quiero ser? ¿Cuáles son mis valores más profundos?",rows:5},{id:"d7e3",label:"¿Cómo quiero cuidar emocionalmente a mis hijos? ¿Qué ciclos familiares quiero romper?",rows:5}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d7p1",label:"🕊 Carta al niño de 6 años — Escríbele a ese niño. Dile lo que necesitaba escuchar. Dile que no fue su culpa.",rows:7},{id:"d7p2",label:"🕊 Carta al niño de 8 años — ¿Qué cargó solo que no debería haber cargado? ¿Qué le dirías hoy?",rows:7},{id:"d7p3",label:"Proyecto de Vida — El Plan del Fénix. Escribe metas en: Emocional / Familiar / Espiritual / Físico / Económico / Social:",rows:8}],recs:{mañana:["Leer la carta al nuevo yo — como ritual de cierre de los 7 días","Celebrar que completaste este proceso"],tarde:["Compartir lo que aprendiste con alguien de confianza"],noche:["La oración de cierre del proceso","Comprometerte a continuar con la guía 2 cuando estés listo"]}},
+    {id:"cierre",label:"Cierre",concept:`<p>Este es el cierre de la primera guía. No el final del proceso — el <em>comienzo</em> de él.</p><div class="key-quote">"No soy el abandono que viví. Soy alguien con la capacidad de reconstruirse."</div>`,questions:[{id:"d7c1",label:"Ritual de cierre — Completa: 'Ya no viviré definido por el abandono. Hoy elijo...'",rows:5},{id:"d7c2",label:"Oración de cierre personal — Escríbele a Dios lo que sientes al terminar estos 7 días:",rows:5}]}
+  ]}
+];
+
+const WOUNDS = {
+  abandono:{color:"#c94a30",colorLight:"rgba(201,74,48,.1)",colorBorder:"rgba(201,74,48,.3)",icon:"🔴",name:"El Abandono",belief:'"No soy suficiente para que alguien se quede. Debo estar solo."',origin:`<p>La herida de abandono se forma cuando las figuras de apego primarias están física o emocionalmente ausentes en momentos críticos del desarrollo. El cerebro del niño no puede procesar la ausencia del cuidador sin hacerse una pregunta devastadora: <strong>¿Por qué no se queda? ¿Qué falla en mí?</strong></p>`,manifestations:[{t:"Apego ansioso",d:"Miedo irracional a ser dejado; hipervigilancia en relaciones"},{t:"Autosuficiencia extrema",d:"'No necesito a nadie' como estrategia de protección"},{t:"People-pleasing",d:"Ganar el amor a través de la complacencia y la utilidad"},{t:"Miedo a la intimidad",d:"Acercarse demasiado aterra porque el que se queda, también puede irse"},{t:"Dificultad para pedir ayuda",d:"Pedir es exponerse a que digan no — que es el abandono repetido"},{t:"Autosabotaje relacional",d:"Destruir las relaciones antes de que el otro las destruya"}],healing:`<p>La sanación del abandono requiere tres caminos simultáneos:</p><ul><li><strong>Duelo real:</strong> Llorar lo que no fue</li><li><strong>Reparentalización:</strong> Aprender a ser el padre/madre que ese niño necesitaba</li><li><strong>Apego ganado:</strong> Construir conscientemente relaciones seguras</li></ul>`,questions:[{id:"w_ab1",label:"¿Cuándo fue la primera vez que recuerdas haberte sentido abandonado? Describe la escena con detalle.",rows:6},{id:"w_ab2",label:"¿Cómo se manifiesta la herida del abandono en tus relaciones actuales?",rows:6},{id:"w_ab3",label:"Carta a la figura que te abandonó — Sin censura. Di lo que nunca pudiste decir:",rows:8},{id:"w_ab4",label:"¿Qué necesitaría decirse a sí mismo ese niño para comenzar a creer que vale?",rows:5}]},
+  rechazo:{color:"#9030b0",colorLight:"rgba(144,48,176,.1)",colorBorder:"rgba(144,48,176,.3)",icon:"🟣",name:"El Rechazo",belief:'"Soy inaceptable tal como soy. Para ser amado, debo cambiar o esconderme."',origin:`<p>La herida del rechazo se forma cuando el niño recibe mensajes de que <strong>como es no es suficiente, no es correcto, no encaja</strong>. Puede venir de crítica crónica, comparaciones constantes, humillaciones o exclusión social.</p>`,manifestations:[{t:"Perfeccionismo",d:"Si soy perfecto, nadie podrá rechazarme"},{t:"People-pleasing extremo",d:"Esconder quien soy y mostrar solo lo que el otro quiere ver"},{t:"Hipersensibilidad a la crítica",d:"Cualquier crítica activa el dolor original del rechazo"},{t:"Miedo a mostrarse",d:"Esconder opiniones, talentos, necesidades para no ser juzgado"},{t:"Síndrome del impostor",d:"'Soy un fraude — si me conocieran de verdad, me rechazarían'"},{t:"Comparación crónica",d:"Siempre encontrar a alguien más válido, más capaz, más merecedor"}],healing:`<p>La sanación del rechazo requiere un proceso de <em>des-identificación de la máscara</em>:</p><ul><li><strong>Autocompasión:</strong> Tratarse con la misma gentileza que a un amigo querido</li><li><strong>Vulnerabilidad progresiva:</strong> Mostrarse auténticamente en entornos seguros</li><li><strong>Identidad anclada:</strong> Construir el sentido de valor en algo que no dependa de la aprobación externa</li></ul>`,questions:[{id:"w_re1",label:"¿Cuándo fue la primera vez que sentiste que como eras no era suficiente?",rows:6},{id:"w_re2",label:"¿Qué partes de ti escondes más frecuentemente por miedo al rechazo?",rows:5},{id:"w_re3",label:"¿Cómo se ve tu perfeccionismo o people-pleasing en la práctica?",rows:5},{id:"w_re4",label:"Si pudieras mostrarte completamente auténtico sin miedo al rechazo, ¿qué dirías? ¿Quién serías?",rows:6}]},
+  traicion:{color:"#2080c0",colorLight:"rgba(32,128,192,.1)",colorBorder:"rgba(32,128,192,.3)",icon:"🔵",name:"La Traición",belief:'"No puedo confiar en nadie. Quien dice amarte, eventualmente te daña."',origin:`<p>La herida de traición es la más desorientadora porque ocurre cuando <strong>la misma persona que se supone debe proteger, daña</strong>. El cerebro, ante esta contradicción, colapsa la categoría de "confianza".</p>`,manifestations:[{t:"Hipervigilancia relacional",d:"Buscar constantemente señales de que el otro va a fallar o dañar"},{t:"Dificultad para confiar",d:"Aun cuando el otro actúa bien, esperar que eventualmente defraude"},{t:"Control excesivo",d:"Controlar el entorno como manera de evitar nuevas traiciones"},{t:"Sabotaje de relaciones sanas",d:"Probar o destruir relaciones que funcionan antes de que fallen"},{t:"Ira y resentimiento crónicos",d:"Rabia acumulada que contamina relaciones presentes"},{t:"Dificultad para perdonar",d:"El perdón siente como traicionar al niño que fue dañado"}],healing:`<p>La sanación de la traición requiere reconstruir la <em>arquitectura de la confianza</em>:</p><ul><li><strong>Nombrar la traición sin minimizar:</strong> Llamar lo que pasó por su nombre</li><li><strong>Separar el pasado del presente:</strong> Distinguir quién merece confianza hoy</li><li><strong>El perdón como liberación propia:</strong> No como excusa del perpetrador</li></ul>`,questions:[{id:"w_tr1",label:"¿Cuál fue la traición más profunda que viviste? Escríbelo sin suavizarlo.",rows:6},{id:"w_tr2",label:"¿Cómo ha afectado esa traición tu capacidad de confiar en personas inocentes?",rows:5},{id:"w_tr3",label:"¿Qué diferencia hay entre el perpetrador que te traicionó y las personas en tu vida actual?",rows:5},{id:"w_tr4",label:"¿Qué peso cargas todavía por no haber podido soltar esa traición?",rows:6}]}
+};
+
+const ROOTS = [
+  {id:"emdr",icon:"👁",color:"#4a90c4",title:"EMDR — Desensibilización y Reprocesamiento",sub:"El tratamiento con mayor evidencia científica para trauma",body:`<p>El <strong>EMDR</strong> fue desarrollado por Francine Shapiro y es reconocido por la OMS como el tratamiento de primera línea para PTSD y trauma complejo. Mediante movimientos oculares bilaterales, permite que el cerebro procese memorias traumáticas sin re-traumatización.</p><h4>¿Por qué es esencial?</h4><ul><li>El abandono materno crea un trauma de apego procesable con EMDR</li><li>El trauma sexual infantil tiene protocolos EMDR específicos</li><li>No requiere hablar en detalle del evento</li></ul><span class="pill hi">OMS Aprobado</span><span class="pill hi">APA Recomendado</span>`,questions:[{id:"r_em1",label:"¿Qué te genera la idea de acceder a EMDR? ¿Qué esperas y qué temes?",rows:4}]},
+  {id:"apego",icon:"💞",color:"#c46a8a",title:"Teoría del Apego — El Vínculo Herido",sub:"Bowlby y Ainsworth: cómo el abandono temprano programa los vínculos adultos",body:`<p>John Bowlby demostró que los seres humanos somos <strong>seres de vínculo</strong>. Cuando la base segura falla en la infancia, se forma un estilo de apego inseguro que repite sus patrones en todas las relaciones adultas.</p><h4>Los 4 estilos</h4><ul><li><strong>Seguro:</strong> Confía, regula bien, puede pedir ayuda</li><li><strong>Ansioso:</strong> Miedo al abandono, hipervigilancia</li><li><strong>Evitativo:</strong> Autosuficiencia como escudo</li><li><strong>Desorganizado:</strong> Mezcla ansiedad y evitación</li></ul>`,questions:[{id:"r_ap1",label:"¿Cuál estilo de apego reconoces en ti? ¿Cómo se manifiesta?",rows:5}]},
+  {id:"somatics",icon:"🌊",color:"#4a8a6a",title:"Trauma Somático — El Cuerpo Habla",sub:"Peter Levine y Bessel van der Kolk: el trauma vive en el cuerpo",body:`<p>El trauma no solo es un evento mental — es una <strong>respuesta fisiológica atrapada en el sistema nervioso</strong>. El cuerpo sigue en modo alarma mucho después de que el peligro pasó.</p><h4>Señales del trauma en el cuerpo</h4><ul><li>Tensión crónica en hombros, cuello o mandíbula</li><li>Digestión irregular bajo estrés</li><li>Reacciones físicas ante ciertos estímulos sin causa aparente</li></ul><span class="pill hi">Somatic Experiencing</span>`,questions:[{id:"r_so1",label:"¿Dónde sientes el estrés en tu cuerpo? ¿Hay tensiones crónicas que reconoces?",rows:4}]}
+];
+
+const RESOURCES = {
+  books:[
+    {t:"El cuerpo lleva la cuenta",a:"Bessel van der Kolk",c:"Trauma"},
+    {t:"Sanar el trauma",a:"Peter Levine",c:"Trauma Somático"},
+    {t:"Sanar el niño herido interior",a:"John Bradshaw",c:"Niño Interior"},
+    {t:"Daring Greatly",a:"Brené Brown",c:"Vergüenza / Vulnerabilidad"},
+    {t:"Attached",a:"Levine & Heller",c:"Teoría del Apego"},
+    {t:"Running on Empty",a:"Jonice Webb",c:"Abandono Emocional"},
+    {t:"Iron John",a:"Robert Bly",c:"Masculinidad Sana"},
+    {t:"El hombre en busca de sentido",a:"Viktor Frankl",c:"Propósito"},
+    {t:"Atomic Habits",a:"James Clear",c:"Neuroplasticidad"},
+    {t:"The Body Keeps the Score",a:"Van der Kolk",c:"Trauma & Neurociencia"},
+  ],
+  practices:[
+    {t:"EMDR con terapeuta certificado",a:"Instituto EMDR Colombia",c:"Terapia"},
+    {t:"Meditación mindfulness",a:"Insight Timer (gratis), Calm, Headspace",c:"Regulación"},
+    {t:"Yoga trauma-sensible",a:"trauma-sensitive yoga",c:"Cuerpo"},
+    {t:"Journaling diario",a:"10 minutos cada mañana",c:"Escritura"},
+    {t:"Grupos de hombres en proceso",a:"Círculos de masculinidad",c:"Conexión"},
+    {t:"Ejercicio aeróbico",a:"Mínimo 30 min, 4 veces/semana",c:"Biológico"},
+    {t:"Somatic Experiencing",a:"SE Practitioners Colombia",c:"Cuerpo & Trauma"},
+  ]
+};
+
+/* ══════════════════════════════════════════════════
+   APP STATE
+══════════════════════════════════════════════════ */
+let APP = { user:null, days:{}, roots:{}, wounds:{}, unlocked:false, photo:null };
+let PIN_ENTRY = "";
+let CURRENT_DAY = null;
+let CURRENT_STEP = 0;
+let CURRENT_WOUND = "abandono";
+// Voice recordings stored as base64
+let RECORDINGS = {};
+
+// Camera state
+let camStream = null;
+let mediaRecorder = null;
+let recordingChunks = [];
+let recordingTimers = {};
+let recordingSeconds = {};
+let avancesBgRaf = null;
+
+function load(){
+  const r = localStorage.getItem('fenix_v3');
+  if(r) {
+    const d = JSON.parse(r);
+    APP = d.app || APP;
+    RECORDINGS = d.recordings || {};
+  }
+}
+function save(){
+  localStorage.setItem('fenix_v3', JSON.stringify({ app:APP, recordings:RECORDINGS }));
+}
+function toast(m="✓ Guardado"){
+  const t=document.getElementById('toast');
+  t.textContent=m;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ─── SCREEN NAV ─── */
+function goScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('topbar').style.display=(id==='screen-welcome'||id==='screen-pin')?'none':'flex';
+  window.scrollTo(0,0);
+  hideSaveBar();
+  // Stop avances bg if leaving
+  if(id!=='screen-avances'&&avancesBgRaf){ cancelAnimationFrame(avancesBgRaf); avancesBgRaf=null; }
+  if(id==='screen-dashboard') renderDashboard();
+  if(id==='screen-roots') renderRoots();
+  if(id==='screen-resources') renderResources();
+  if(id==='screen-progress') renderProgress();
+  if(id==='screen-wounds') renderWounds(CURRENT_WOUND);
+  if(id==='screen-affirmations') renderAffirmations();
+  if(id==='screen-avances'){ renderAvances(); startAvancesBg(); }
+}
+
+/* ─── PIN ─── */
+function pinKey(d){ if(PIN_ENTRY.length>=4)return; PIN_ENTRY+=d; updatePinDots(); if(PIN_ENTRY.length===4)setTimeout(checkPin,200); }
+function pinDel(){ PIN_ENTRY=PIN_ENTRY.slice(0,-1); updatePinDots(); }
+function updatePinDots(){ for(let i=0;i<4;i++){const el=document.getElementById('pd'+i);el.classList.toggle('filled',i<PIN_ENTRY.length);el.classList.remove('error');} }
+function checkPin(){
+  if(PIN_ENTRY===atob(APP.user.pin)){ APP.unlocked=true; goScreen('screen-dashboard'); }
+  else{ for(let i=0;i<4;i++)document.getElementById('pd'+i).classList.add('error'); setTimeout(()=>{PIN_ENTRY="";updatePinDots();},600); }
+}
+function pinForgot(){
+  const name=prompt("Ingresa tu nombre completo para verificar tu identidad:");
+  if(name&&name.trim().toLowerCase()===APP.user.name.toLowerCase()){
+    const np=prompt("Ingresa tu nuevo PIN (4 dígitos):");
+    if(np&&/^\d{4}$/.test(np)){APP.user.pin=btoa(np);save();alert("PIN actualizado.");}
+  } else if(name!==null){alert("El nombre no coincide.");}
+}
+function lockApp(){ APP.unlocked=false;PIN_ENTRY="";updatePinDots();goScreen('screen-pin'); }
+
+/* ─── REGISTER ─── */
+function register(){
+  const name=document.getElementById('rn').value.trim();
+  const age=document.getElementById('ra').value.trim();
+  const email=document.getElementById('re').value.trim();
+  const date=document.getElementById('rd').value;
+  const why=document.getElementById('rw').value.trim();
+  const pin=document.getElementById('rp').value;
+  const pin2=document.getElementById('rp2').value;
+  if(!name){alert('Por favor ingresa tu nombre.');return;}
+  if(!pin||!/^\d{4}$/.test(pin)){alert('El PIN debe ser exactamente 4 dígitos numéricos.');return;}
+  if(pin!==pin2){alert('Los dos PINs no coinciden.');return;}
+  APP.user={name,age,email,date:date||new Date().toISOString().split('T')[0],why,pin:btoa(pin)};
+  APP.unlocked=true;
+  save();
+  goScreen('screen-dashboard');
+}
+
+function loadDashPhoto(input){
+  const file=input.files[0]; if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    APP.dashPhoto=e.target.result; save();
+    applyDashPhoto(e.target.result);
+    toast('✓ Foto de perfil guardada');
+  };
+  reader.readAsDataURL(file);
+}
+function applyDashPhoto(src){
+  const img=document.getElementById('dash-avatar-img');
+  const ph=document.getElementById('dash-avatar-placeholder');
+  if(img&&src){ img.src=src; img.style.display='block'; if(ph)ph.style.display='none'; }
+}
+
+/* ─── DASHBOARD ─── */
+function renderDashboard(){
+  if(!APP.user)return;
+  if(APP.dashPhoto) applyDashPhoto(APP.dashPhoto);
+  document.getElementById('dh-name').textContent=APP.user.name;
+  document.getElementById('tb-user').textContent=APP.user.name.split(' ')[0];
+  const d=new Date(APP.user.date+'T12:00:00');
+  document.getElementById('dh-date').textContent=`Inicio: ${d.toLocaleDateString('es-CO',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}`;
+  const done=DAYS.filter(d=>APP.days[d.num]?.completed).length;
+  const pct=Math.round(done/DAYS.length*100);
+  const c=238.76;
+  document.getElementById('r-fill').style.strokeDashoffset=c-(c*pct/100);
+  document.getElementById('r-pct').textContent=pct+'%';
+  document.getElementById('guides-grid').innerHTML=GUIDES.map(g=>{
+    const completedDays=g.id===1?DAYS.filter(d=>APP.days[d.num]?.completed).length:0;
+    const pctG=g.id===1?Math.round(completedDays/g.days*100):0;
+    const statusBadge=!g.unlocked?`<span class="g-badge g-locked">🔒 Próximamente</span>`:
+      pctG===100?`<span class="g-badge g-done">✓ Completada</span>`:
+      pctG>0?`<span class="g-badge g-active">En progreso ${pctG}%</span>`:
+      `<span class="g-badge g-active">✦ Activa</span>`;
+    return `<div class="guide-card ${!g.unlocked?'locked':''} ${g.id===1?'active-guide':''}"
+      onclick="${g.unlocked?`goScreen('screen-day');openGuide(${g.id})`:''}">
+      <div class="gn">${g.emoji} Guía ${g.id}</div>
+      <div class="gt">${g.title}</div>
+      <div class="gd">${g.desc}</div>
+      ${statusBadge}
+      ${g.id===1&&pctG>0?`<div class="g-progress"><div class="g-progress-fill" style="width:${pctG}%"></div></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+/* ─── GUIDE / DAY ─── */
+function openGuide(guideId){
+  CURRENT_DAY=null;CURRENT_STEP=0;
+  const days=DAYS.filter(d=>d.guide===guideId);
+  const guide=GUIDES.find(g=>g.id===guideId);
+  let html=`<div class="day-hdr"><div class="dh-num">${guide.emoji} Guía ${guide.id} · ${guide.days} días</div><div class="dh-title">${guide.title}</div><div class="dh-desc">${guide.desc}</div></div><div class="guides-grid">`;
+  days.forEach(d=>{
+    const isDone=APP.days[d.num]?.completed;
+    html+=`<div class="guide-card ${isDone?'active-guide':''}" onclick="openDay(${d.num})"><div class="gn">${d.emoji} Día ${d.num}</div><div class="gt">${d.title}</div><div class="gd">${d.desc}</div><span class="g-badge ${isDone?'g-done':'g-active'}">${isDone?'✓ Completado':'Pendiente'}</span></div>`;
+  });
+  html+=`</div>`;
+  document.getElementById('day-content').innerHTML=html;
+}
+function openDay(num){ CURRENT_DAY=num;CURRENT_STEP=0;renderDay(); }
+function renderDay(){
+  const day=DAYS.find(d=>d.num===CURRENT_DAY);
+  const saved=APP.days[CURRENT_DAY]||{};
+  const step=day.steps[CURRENT_STEP];
+  const isDone=saved.completed;
+  let html=`<div class="day-hdr"><div class="dh-num">${day.emoji} Día ${day.num} · ${day.title}</div><div class="dh-title">${step.label}</div><div class="dh-desc">${day.desc}</div></div>
+    <div class="step-nav">${day.steps.map((s,i)=>`<button class="step-btn ${i===CURRENT_STEP?'active':''} ${(saved.stepsVisited||[]).includes(i)?'done':''}" onclick="gotoStep(${i})">${s.label}</button>`).join('')}</div>`;
+  if(step.concept) html+=`<div class="concept">${step.concept}</div>`;
+  if(step.emotions){
+    const emotions=[{e:"😔",l:"Triste"},{e:"😤",l:"Enojado"},{e:"😨",l:"Ansioso"},{e:"😶",l:"Entumecido"},{e:"😮",l:"Sorprendido"},{e:"🥺",l:"Vulnerable"},{e:"😌",l:"Tranquilo"},{e:"💪",l:"Fuerte"},{e:"🙏",l:"Esperanzado"},{e:"😴",l:"Agotado"}];
+    const sel=(saved.answers||{})[`d${CURRENT_DAY}_emotion`]||'';
+    html+=`<div class="emotion-check"><div class="ec-title">¿Cómo llegaste hoy a este ejercicio?</div><div class="emotion-grid">${emotions.map(em=>`<div class="emotion-btn ${sel===em.l?'sel':''}" onclick="selectEmotion('${em.l}',this)"><span class="emotion-icon">${em.e}</span><span class="emotion-lbl">${em.l}</span></div>`).join('')}</div></div>`;
+  }
+  if(step.questions){
+    step.questions.forEach(q=>{
+      const val=(saved.answers||{})[q.id]||'';
+      html+=`<div class="q-block"><div class="q-label">${q.label}</div><textarea id="${q.id}" rows="${q.rows||4}" placeholder="Escribe aquí con honestidad..." oninput="markUnsaved()">${esc(val)}</textarea></div>`;
+    });
+  }
+  if(step.recs){
+    html+=`<div class="recs-box"><div class="recs-title">🌅 Recomendaciones del día ${day.num}</div>`;
+    if(step.recs.mañana){html+=`<div class="rec-time"><div class="rec-time-label">🌤 Mañana</div>`;step.recs.mañana.forEach(r=>html+=`<div class="rec-item">${r}</div>`);html+=`</div>`;}
+    if(step.recs.tarde){html+=`<div class="rec-time"><div class="rec-time-label">☀️ Tarde</div>`;step.recs.tarde.forEach(r=>html+=`<div class="rec-item">${r}</div>`);html+=`</div>`;}
+    if(step.recs.noche){html+=`<div class="rec-time"><div class="rec-time-label">🌙 Noche</div>`;step.recs.noche.forEach(r=>html+=`<div class="rec-item">${r}</div>`);html+=`</div>`;}
+    html+=`</div>`;
+  }
+  if(CURRENT_STEP===day.steps.length-1){
+    html+=`<div class="verse"><div class="verse-t">${day.verse.t}</div><div class="verse-r">${day.verse.r}</div></div>`;
+  }
+  html+=`<div class="step-actions"><button class="btn btn-ghost btn-sm" onclick="${CURRENT_STEP>0?'gotoStep('+(CURRENT_STEP-1)+')':`openGuide(1)`}">${CURRENT_STEP>0?'← Anterior':'← Días'}</button><div style="display:flex;gap:10px;align-items:center;"><button class="btn btn-ghost btn-sm" onclick="saveDay()">💾 Guardar</button>${CURRENT_STEP<day.steps.length-1?`<button class="btn btn-primary btn-sm" onclick="nextStep()">Continuar →</button>`:isDone?`<span style="color:var(--success);font-family:'Cinzel',serif;font-size:11px;">✓ Día completado</span>`:`<button class="btn btn-primary btn-sm complete-day-btn" onclick="completeDay()">🦅 Completar día ${day.num}</button>`}</div></div>`;
+  document.getElementById('day-content').innerHTML=html;
+  window.scrollTo(0,0);
+}
+function gotoStep(i){ saveDaySilent();CURRENT_STEP=i;markStepVisited();renderDay(); }
+function nextStep(){ saveDaySilent();CURRENT_STEP++;markStepVisited();renderDay(); }
+function markStepVisited(){
+  if(!APP.days[CURRENT_DAY])APP.days[CURRENT_DAY]={answers:{},completed:false,stepsVisited:[]};
+  if(!(APP.days[CURRENT_DAY].stepsVisited||[]).includes(CURRENT_STEP)){
+    APP.days[CURRENT_DAY].stepsVisited=[...(APP.days[CURRENT_DAY].stepsVisited||[]),CURRENT_STEP];save();
+  }
+}
+function selectEmotion(lbl,el){
+  document.querySelectorAll('.emotion-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  if(!APP.days[CURRENT_DAY])APP.days[CURRENT_DAY]={answers:{},completed:false,stepsVisited:[]};
+  APP.days[CURRENT_DAY].answers[`d${CURRENT_DAY}_emotion`]=lbl;
+  save();
+}
+function markUnsaved(){ document.getElementById('save-bar').classList.add('vis');document.getElementById('ss').textContent='⬤ Cambios sin guardar';document.getElementById('ss').className='ss unsaved'; }
+function hideSaveBar(){ document.getElementById('save-bar').classList.remove('vis'); }
+function saveDaySilent(){
+  if(!CURRENT_DAY)return;
+  const day=DAYS.find(d=>d.num===CURRENT_DAY);
+  if(!APP.days[CURRENT_DAY])APP.days[CURRENT_DAY]={answers:{},completed:false,stepsVisited:[]};
+  day.steps.forEach(s=>{
+    (s.questions||[]).forEach(q=>{const el=document.getElementById(q.id);if(el)APP.days[CURRENT_DAY].answers[q.id]=el.value;});
+  });
+  save();
+}
+function saveDay(){ saveDaySilent();hideSaveBar();toast('✓ Guardado'); }
+function discardChanges(){ if(CURRENT_DAY)renderDay();hideSaveBar(); }
+function completeDay(){
+  saveDay();APP.days[CURRENT_DAY].completed=true;APP.days[CURRENT_DAY].completedAt=new Date().toISOString();
+  save();toast('🦅 ¡Día '+CURRENT_DAY+' completado!');renderDay();setTimeout(()=>renderDashboard(),500);
+}
+
+/* ─── WOUNDS ─── */
+function switchWound(w){ CURRENT_WOUND=w; document.querySelectorAll('.wound-tab').forEach(t=>t.classList.toggle('active',t.dataset.w===w)); renderWounds(w); }
+function renderWounds(w){
+  const wd=WOUNDS[w]; const saved=APP.wounds[w]||{};
+  document.getElementById('wounds-content').innerHTML=`<div class="wound-intro w-${w}"><div class="wound-icon">${wd.icon}</div><div class="wound-name">${wd.name}</div><div class="wound-belief">${wd.belief}</div></div><div class="wound-section"><div class="ws-title">¿Cómo se forma esta herida?</div><div class="ws-content">${wd.origin}</div></div><div class="wound-section"><div class="ws-title">Manifestaciones en la vida adulta</div><div class="manifest-grid">${wd.manifestations.map(m=>`<div class="manifest-item"><strong>${m.t}</strong>${m.d}</div>`).join('')}</div></div><div class="wound-section"><div class="ws-title">El camino de sanación</div><div class="healing-path"><div class="hp-title">✦ Ruta terapéutica recomendada</div><div class="ws-content">${wd.healing}</div></div></div><div class="wound-section"><div class="ws-title">Ejercicios de reflexión profunda</div>${wd.questions.map(q=>{const val=(saved[q.id])||'';return `<div class="q-block"><div class="q-label">${q.label}</div><textarea id="${q.id}" rows="${q.rows||5}" placeholder="Escribe sin censura..." oninput="saveWoundAnswer('${w}','${q.id}',this.value)">${esc(val)}</textarea></div>`;}).join('')}</div>`;
+}
+function saveWoundAnswer(w,qId,val){ if(!APP.wounds[w])APP.wounds[w]={};APP.wounds[w][qId]=val;save(); }
+
+/* ─── ROOTS ─── */
+function renderRoots(){
+  document.getElementById('roots-content').innerHTML=ROOTS.map(r=>{
+    const saved=APP.roots[r.id]||{};
+    return `<div class="root-card" id="root-${r.id}"><div class="root-hdr" onclick="toggleRoot('${r.id}')"><div class="root-ico" style="background:${r.color}18;border-color:${r.color}40;">${r.icon}</div><div><div class="root-t">${r.title}</div><div class="root-s">${r.sub}</div></div><div class="root-chevron">▶</div></div><div class="root-body">${r.body}<hr class="sep">${r.questions.map(q=>`<div class="q-block" style="margin-bottom:12px;"><div class="q-label">${q.label}</div><textarea id="${q.id}" rows="${q.rows||4}" placeholder="Reflexiona aquí..." oninput="saveRootA('${r.id}','${q.id}',this.value)">${esc(saved[q.id]||'')}</textarea></div>`).join('')}</div></div>`;
+  }).join('');
+}
+function toggleRoot(id){ document.getElementById('root-'+id).classList.toggle('open'); }
+function saveRootA(rId,qId,v){ if(!APP.roots[rId])APP.roots[rId]={};APP.roots[rId][qId]=v;save(); }
+
+/* ─── RESOURCES ─── */
+function renderResources(){
+  document.getElementById('resources-content').innerHTML=`<div class="ws-title" style="margin-bottom:16px;">📖 Libros recomendados</div><div class="res-grid">${RESOURCES.books.map(b=>`<div class="res-card"><div class="rc-type">${b.c}</div><div class="rc-title">${b.t}</div><div class="rc-auth">${b.a}</div></div>`).join('')}</div><hr class="sep"><div class="ws-title" style="margin-bottom:16px;">🛠 Prácticas y recursos</div><div class="res-grid">${RESOURCES.practices.map(b=>`<div class="res-card"><div class="rc-type">${b.c}</div><div class="rc-title">${b.t}</div><div class="rc-auth">${b.a}</div></div>`).join('')}</div><div class="verse" style="margin-top:32px;"><div class="verse-t">🦅 El Fénix no nace sin haber sido fuego primero.</div><div class="verse-r">La Transformación del León al Fénix</div></div>`;
+}
+
+/* ─── PROGRESS ─── */
+function renderProgress(){
+  let html='';
+  if(APP.user) html+=`<div class="concept" style="margin-bottom:20px;"><p><strong>Nombre:</strong> ${APP.user.name} &nbsp;·&nbsp; <strong>Edad:</strong> ${APP.user.age} &nbsp;·&nbsp; <strong>Inicio:</strong> ${APP.user.date}</p>${APP.user.why?`<p><strong>¿Por qué inicié?</strong> ${APP.user.why}</p>`:''}</div>`;
+  DAYS.forEach(day=>{
+    const s=APP.days[day.num];const isDone=s?.completed;
+    html+=`<div class="prog-card"><div class="prog-hdr" onclick="this.parentElement.classList.toggle('open')"><div class="prog-t">${day.emoji} Día ${day.num} — ${day.title}</div><span class="g-badge ${isDone?'g-done':'g-active'}" style="font-size:10px;">${isDone?'✓':'Pendiente'}</span></div><div class="prog-body">`;
+    if(!s?.answers||!Object.values(s.answers).some(v=>v)){
+      html+=`<p class="pa-empty">No hay respuestas guardadas todavía.</p>`;
+    } else {
+      day.steps.forEach(step=>{
+        (step.questions||[]).forEach(q=>{
+          const ans=(s.answers||{})[q.id]||'';
+          html+=`<div class="prog-q"><div class="pa-label">${q.label}</div>${ans?`<div class="pa-ans">${esc(ans)}</div>`:`<p class="pa-empty">Sin respuesta</p>`}</div>`;
+        });
+      });
+    }
+    html+=`</div></div>`;
+  });
+  document.getElementById('progress-content').innerHTML=html;
+}
+
+/* ══════════════════════════════════════════════════
+   CAMERA SYSTEM
+══════════════════════════════════════════════════ */
+async function toggleCamera(){
+  const liveEl = document.getElementById('cam-live');
+  const btn = document.getElementById('btn-cam-on');
+  const snapBtn = document.getElementById('btn-snap');
+  const hint = document.getElementById('cam-hint');
+
+  if(camStream){
+    camStream.getTracks().forEach(t=>t.stop());
+    camStream = null;
+    liveEl.classList.remove('on');
+    liveEl.srcObject = null;
+    btn.textContent = '📷 Activar cámara';
+    btn.classList.remove('active-cam');
+    snapBtn.style.display = 'none';
+    hint.textContent = 'La cámara solo se usa localmente — nada se envía a ningún servidor.';
+    return;
+  }
+
+  try {
+    camStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+    liveEl.srcObject = camStream;
+    liveEl.classList.add('on');
+    // Hide placeholder and photo if showing
+    document.getElementById('cam-placeholder').style.display = 'none';
+    document.getElementById('cam-photo').style.display = 'none';
+    btn.textContent = '⏹ Detener cámara';
+    btn.classList.add('active-cam');
+    snapBtn.style.display = 'inline-flex';
+    hint.textContent = '📹 Cámara activa — te observas mientras practicas las afirmaciones.';
+  } catch(e){
+    hint.textContent = '⚠️ No se pudo acceder a la cámara. Verifica los permisos del navegador.';
+  }
+}
+
+function capturePhoto(){
+  if(!camStream) return;
+  const liveEl = document.getElementById('cam-live');
+  const canvas = document.createElement('canvas');
+  canvas.width = liveEl.videoWidth || 400;
+  canvas.height = liveEl.videoHeight || 400;
+  canvas.getContext('2d').drawImage(liveEl, 0, 0);
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+  setPhoto(dataUrl);
+  toast('📸 Foto capturada');
+}
+
+function uploadPhoto(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    setPhoto(e.target.result);
+    toast('✓ Foto cargada');
+  };
+  reader.readAsDataURL(file);
+}
+
+function setPhoto(dataUrl){
+  APP.photo = dataUrl;
+  save();
+  const img = document.getElementById('cam-photo');
+  img.src = dataUrl;
+  img.style.display = 'block';
+  document.getElementById('cam-placeholder').style.display = 'none';
+  // Stop live if running
+  if(camStream){ camStream.getTracks().forEach(t=>t.stop()); camStream=null; }
+  const liveEl = document.getElementById('cam-live');
+  liveEl.classList.remove('on');
+  document.getElementById('btn-cam-on').textContent = '📷 Activar cámara';
+  document.getElementById('btn-cam-on').classList.remove('active-cam');
+  document.getElementById('btn-snap').style.display = 'none';
+}
+
+/* ══════════════════════════════════════════════════
+   AFFIRMATIONS & VOICE RECORDING
+══════════════════════════════════════════════════ */
+function renderAffirmations(){
+  // Restore photo if saved
+  if(APP.photo){
+    const img = document.getElementById('cam-photo');
+    if(img){ img.src=APP.photo; img.style.display='block'; document.getElementById('cam-placeholder').style.display='none'; }
+  }
+
+  const container = document.getElementById('affirmations-list');
+  container.innerHTML = AFFIRMATION_PHRASES.map((phrase, idx) => {
+    const hasRec = !!RECORDINGS[`aff_${idx}`];
+    return `
+    <div class="aff-phrase" id="aff-block-${idx}">
+      <div class="aff-phrase-text">"${phrase}"</div>
+      <div class="aff-controls">
+        <button class="aff-rec-btn" id="rec-btn-${idx}" onclick="toggleRecording(${idx})">
+          ⏺ Grabar
+        </button>
+        <span class="aff-timer" id="rec-timer-${idx}" style="display:none;">0s</span>
+        <button class="aff-play-btn" id="play-btn-${idx}" onclick="playRecording(${idx})" ${hasRec?'':'disabled'}>
+          ▶ Reproducir
+        </button>
+        ${hasRec ? `<span class="aff-has-rec">✓ Grabada</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function toggleRecording(idx){
+  const btn = document.getElementById(`rec-btn-${idx}`);
+  const timerEl = document.getElementById(`rec-timer-${idx}`);
+
+  if(mediaRecorder && mediaRecorder.state === 'recording' && mediaRecorder._idx === idx){
+    // Stop recording
+    mediaRecorder.stop();
+    return;
+  }
+
+  // Stop any existing recording
+  if(mediaRecorder && mediaRecorder.state === 'recording'){
+    mediaRecorder.stop();
+  }
+
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    recordingChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder._idx = idx;
+
+    btn.classList.add('recording');
+    btn.textContent = '⏹ Detener';
+    timerEl.style.display = 'inline-block';
+    let secs = 0;
+    timerEl.textContent = '0s';
+    recordingTimers[idx] = setInterval(()=>{ secs++; timerEl.textContent=secs+'s'; if(secs>=120){ mediaRecorder.stop(); }},1000);
+
+    mediaRecorder.ondataavailable = e => { if(e.data.size>0)recordingChunks.push(e.data); };
+    mediaRecorder.onstop = () => {
+      clearInterval(recordingTimers[idx]);
+      timerEl.style.display='none';
+      btn.classList.remove('recording');
+      btn.textContent='⏺ Grabar';
+      stream.getTracks().forEach(t=>t.stop());
+
+      const blob = new Blob(recordingChunks, {type:'audio/webm'});
+      const reader = new FileReader();
+      reader.onload = e => {
+        RECORDINGS[`aff_${idx}`] = e.target.result;
+        save();
+        // Update UI
+        const playBtn = document.getElementById(`play-btn-${idx}`);
+        if(playBtn) playBtn.disabled = false;
+        // Re-render the block to show checkmark
+        renderAffirmations();
+        toast('🎙️ Grabación guardada');
+      };
+      reader.readAsDataURL(blob);
+    };
+
+    mediaRecorder.start();
+  } catch(e){
+    toast('⚠️ No se pudo acceder al micrófono');
+  }
+}
+
+function playRecording(idx){
+  const data = RECORDINGS[`aff_${idx}`];
+  if(!data) return;
+  const audio = new Audio(data);
+  audio.play().catch(()=>toast('⚠️ No se pudo reproducir'));
+
+  const btn = document.getElementById(`play-btn-${idx}`);
+  if(btn){ btn.textContent='⏸ Reproduciendo...'; audio.onended=()=>{ btn.textContent='▶ Reproducir'; }; }
+}
+
+function clearAllRecordings(){
+  if(!confirm('¿Borrar todas las grabaciones de voz?')) return;
+  RECORDINGS = {};
+  save();
+  renderAffirmations();
+  toast('🗑️ Grabaciones eliminadas');
+}
+
+/* ══════════════════════════════════════════════════
+   PDF EXPORT — INFORME COMPLETO
+══════════════════════════════════════════════════ */
+function openExportModal(){ document.getElementById('modal-export').classList.add('open'); }
+function closeExportModal(e){
+  if(!e||e.target===document.getElementById('modal-export')||e.target.classList.contains('modal-close'))
+    document.getElementById('modal-export').classList.remove('open');
+}
+
+async function generatePDF(){
+  const btn = document.getElementById('btn-generate-pdf');
+  const progressWrap = document.getElementById('pdf-progress-wrap');
+  const progressFill = document.getElementById('pdf-progress-fill');
+  const status = document.getElementById('pdf-status');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Generando...';
+  progressWrap.style.display = 'block';
+  status.style.display = 'block';
+
+  const setProgress = (pct, msg) => {
+    progressFill.style.width = pct + '%';
+    status.textContent = msg;
+  };
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const PW = 210; const PH = 297;
+    const MAR = 20;
+    const CW = PW - MAR * 2;
+
+    // Color palette
+    const C = {
+      bg: [7,5,16],
+      bgPanel: [26,22,48],
+      gold: [201,148,58],
+      goldLight: [232,184,75],
+      ember: [224,92,26],
+      cream: [245,234,216],
+      text: [221,212,192],
+      muted: [122,111,144],
+      success: [58,158,104],
+    };
+
+    const setFill = c => doc.setFillColor(...c);
+    const setDraw = c => doc.setDrawColor(...c);
+    const setTextC = c => doc.setTextColor(...c);
+    const rect = (x,y,w,h,r=0) => { if(r>0) doc.roundedRect(x,y,w,h,r,r,'F'); else doc.rect(x,y,w,h,'F'); };
+
+    let page = 1;
+    const addPage = () => { doc.addPage(); page++; };
+
+    setProgress(5, 'Diseñando portada...');
+    await new Promise(r=>setTimeout(r,50));
+
+    // ══════════════ PAGE 1: COVER ══════════════
+    // Background
+    setFill(C.bg); rect(0,0,PW,PH);
+
+    // Decorative gradient arcs
+    doc.setDrawColor(201,148,58);
+    doc.setLineWidth(0.3);
+    for(let i=0;i<5;i++){
+      doc.setDrawColor(201,148,58-i*10);
+      doc.circle(PW/2, 60, 40+i*15, 'S');
+    }
+
+    // Phoenix symbol (simplified geometric)
+    const cx = PW/2, cy = 75;
+    // Wings
+    doc.setDrawColor(...C.goldLight);
+    doc.setLineWidth(1.5);
+    // Left wing
+    doc.lines([[30,-20],[20,-5],[-5,10]], cx-5, cy, [1,1], 'S', false);
+    // Right wing
+    doc.lines([[-30,-20],[-20,-5],[5,10]], cx+5, cy, [1,1], 'S', false);
+    // Body glow
+    setFill([40,20,10]); rect(cx-8,cy-15,16,30,3);
+    doc.setDrawColor(...C.ember); doc.setLineWidth(0.5);
+    doc.circle(cx, cy-5, 8, 'S');
+
+    // Flame particles (dots)
+    const flameColors = [[224,92,26],[201,148,58],[232,184,75]];
+    for(let i=0;i<20;i++){
+      const fc = flameColors[i%3];
+      setFill(fc);
+      const fx = cx + (Math.random()-0.5)*60;
+      const fy = cy + 10 + Math.random()*40;
+      doc.circle(fx, fy, 0.8+Math.random()*1.5, 'F');
+    }
+
+    // Title
+    setTextC(C.goldLight);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(22);
+    doc.text('LA TRANSFORMACIÓN DEL', PW/2, 120, {align:'center'});
+    doc.setFontSize(28);
+    setTextC(C.cream);
+    doc.text('LEÓN AL FÉNIX', PW/2, 133, {align:'center'});
+
+    // Subtitle
+    setTextC(C.muted);
+    doc.setFontSize(10);
+    doc.setFont('helvetica','normal');
+    doc.text('INFORME PERSONAL DE TRANSFORMACIÓN', PW/2, 142, {align:'center'});
+
+    // Gold line
+    setDraw(C.gold); doc.setLineWidth(0.5);
+    doc.line(MAR+10, 148, PW-MAR-10, 148);
+
+    // User info box
+    setFill(C.bgPanel);
+    rect(MAR, 154, CW, 60, 4);
+    setDraw(C.gold); doc.setLineWidth(0.3);
+    doc.roundedRect(MAR, 154, CW, 60, 4, 4, 'S');
+
+    // Photo if available
+    let photoX = MAR + 10;
+    if(APP.photo){
+      try {
+        doc.addImage(APP.photo, 'JPEG', MAR+8, 158, 30, 30, '', 'FAST');
+        // Circle clip simulation with border
+        doc.setDrawColor(...C.gold); doc.setLineWidth(0.5);
+        doc.circle(MAR+8+15, 158+15, 16, 'S');
+        photoX = MAR + 46;
+      } catch(e){ photoX = MAR + 10; }
+    }
+
+    setTextC(C.gold);
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.text('NOMBRE', photoX, 164);
+    setTextC(C.cream);
+    doc.setFontSize(14);
+    doc.text(APP.user?.name || '—', photoX, 172);
+
+    setTextC(C.gold);
+    doc.setFontSize(9);
+    doc.text('FECHA DE INICIO', photoX, 182);
+    setTextC(C.text);
+    doc.setFontSize(11);
+    doc.text(APP.user?.date || '—', photoX, 190);
+
+    setTextC(C.gold);
+    doc.setFontSize(9);
+    doc.text('GENERADO EL', photoX+60, 182);
+    setTextC(C.text);
+    doc.setFontSize(11);
+    doc.text(new Date().toLocaleDateString('es-CO'), photoX+60, 190);
+
+    // Progress
+    const done=DAYS.filter(d=>APP.days[d.num]?.completed).length;
+    const pct=Math.round(done/DAYS.length*100);
+    setTextC(C.gold); doc.setFontSize(9); doc.text('PROGRESO GUÍA 1', MAR+10, 206);
+    setFill([20,16,40]); rect(MAR+10, 208, CW-20, 4, 2);
+    setFill(C.ember); rect(MAR+10, 208, (CW-20)*pct/100, 4, 2);
+    setTextC(C.goldLight); doc.setFontSize(10); doc.text(`${done} / ${DAYS.length} días completados (${pct}%)`, PW/2, 208, {align:'center'});
+
+    // Decorative footer text
+    setTextC(C.muted); doc.setFontSize(8);
+    doc.text('"No eres lo que te pasó. Eres lo que decides construir con lo que viviste."', PW/2, 255, {align:'center',maxWidth:CW});
+    doc.setLineWidth(0.2); setDraw(C.muted);
+    doc.line(MAR+30, 260, PW-MAR-30, 260);
+    setTextC(C.muted); doc.setFontSize(7);
+    doc.text('Documento confidencial — Uso personal exclusivo', PW/2, 265, {align:'center'});
+
+    setProgress(20, 'Generando sección de propósito...');
+    await new Promise(r=>setTimeout(r,50));
+
+    // ══════════════ PAGE 2: WHY / MOTIVATION ══════════════
+    addPage();
+    setFill(C.bg); rect(0,0,PW,PH);
+
+    // Header bar
+    setFill(C.bgPanel); rect(0,0,PW,18);
+    setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text('LEÓN AL FÉNIX · INFORME PERSONAL', MAR, 12);
+    setTextC(C.muted); doc.text(`${APP.user?.name||''}`, PW-MAR, 12, {align:'right'});
+
+    let yPos = 30;
+    const writeSection = (title, content, y) => {
+      setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+      doc.text(title, MAR, y); y += 4;
+      setDraw(C.gold); doc.setLineWidth(0.3);
+      doc.line(MAR, y, PW-MAR, y); y += 6;
+      if(content){
+        setTextC(C.text); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+        const lines = doc.splitTextToSize(content, CW);
+        doc.text(lines, MAR, y);
+        y += lines.length * 5 + 8;
+      }
+      return y;
+    };
+
+    // Section: Why I started
+    setFill(C.bgPanel); rect(MAR, yPos-4, CW, 50, 3);
+    setDraw([60,50,100]); doc.setLineWidth(0.3); doc.roundedRect(MAR, yPos-4, CW, 50, 3, 3, 'S');
+    setTextC(C.goldLight); doc.setFont('helvetica','bold'); doc.setFontSize(12);
+    doc.text('¿Por qué inicié este proceso?', MAR+6, yPos+4);
+    setTextC(C.cream); doc.setFont('helvetica','italic'); doc.setFontSize(10);
+    const whyText = APP.user?.why || 'Sin respuesta registrada.';
+    const whyLines = doc.splitTextToSize(whyText, CW-12);
+    doc.text(whyLines, MAR+6, yPos+12);
+    yPos += 58;
+
+    // Affirmations section
+    yPos = writeSection('AFIRMACIONES DE IDENTIDAD', null, yPos);
+    AFFIRMATION_PHRASES.forEach((phrase, i) => {
+      const hasRec = !!RECORDINGS[`aff_${i}`];
+      if(yPos > PH-20){ addPage(); setFill(C.bg); rect(0,0,PW,PH); yPos=25; }
+      setFill([20,16,38]); rect(MAR, yPos-3, CW, 12, 2);
+      setTextC(hasRec ? C.success : C.muted);
+      doc.setFont('helvetica','normal'); doc.setFontSize(9);
+      doc.text(`${hasRec?'✓':'○'}  "${phrase}"`, MAR+4, yPos+4, {maxWidth:CW-8});
+      if(hasRec){ setTextC(C.success); doc.setFontSize(7); doc.text('[GRABADA CON VOZ PROPIA]', PW-MAR-2, yPos+4, {align:'right'}); }
+      yPos += 16;
+    });
+
+    setProgress(40, 'Procesando Guía 1...');
+    await new Promise(r=>setTimeout(r,50));
+
+    // ══════════════ PAGES: DAYS ══════════════
+    for(let dayIdx = 0; dayIdx < DAYS.length; dayIdx++){
+      const day = DAYS[dayIdx];
+      const dayData = APP.days[day.num] || {};
+      const answers = dayData.answers || {};
+      const isDone = dayData.completed;
+
+      addPage();
+      setFill(C.bg); rect(0,0,PW,PH);
+
+      // Header
+      setFill(C.bgPanel); rect(0,0,PW,18);
+      setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.text('GUÍA 1 · TRANSFORMACIÓN DEL ABANDONO', MAR, 12);
+      setTextC(isDone?C.success:C.muted);
+      doc.text(isDone?'✓ COMPLETADO':'PENDIENTE', PW-MAR, 12, {align:'right'});
+
+      yPos = 26;
+
+      // Day hero
+      setFill([20,16,42]); rect(MAR, yPos, CW, 22, 3);
+      setDraw(isDone?C.success:C.gold); doc.setLineWidth(0.5);
+      doc.roundedRect(MAR, yPos, CW, 22, 3, 3, 'S');
+
+      setTextC(C.muted); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+      doc.text(`DÍA ${day.num} DE 7  ·  GUÍA 1`, MAR+5, yPos+7);
+      setTextC(C.cream); doc.setFont('helvetica','bold'); doc.setFontSize(13);
+      doc.text(`${day.emoji}  ${day.title}`, MAR+5, yPos+16);
+      yPos += 30;
+
+      // Verse
+      setFill([20,16,50]); rect(MAR, yPos, CW, 16, 2);
+      setTextC(C.goldLight); doc.setFont('helvetica','italic'); doc.setFontSize(9);
+      const verseLines = doc.splitTextToSize(day.verse.t.replace(/"/g,''), CW-10);
+      doc.text(verseLines[0], MAR+5, yPos+6, {maxWidth:CW-10});
+      setTextC(C.muted); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text('— '+day.verse.r, PW-MAR-3, yPos+13, {align:'right'});
+      yPos += 22;
+
+      // Emotion
+      const emotion = answers[`d${day.num}_emotion`];
+      if(emotion){
+        setTextC(C.muted); doc.setFontSize(9);
+        doc.text('Estado emocional registrado: ', MAR, yPos);
+        setTextC(C.goldLight); doc.text(emotion, MAR+54, yPos);
+        yPos += 8;
+      }
+
+      // Questions & answers
+      for(let si=0; si<day.steps.length; si++){
+        const step = day.steps[si];
+        if(!step.questions) continue;
+
+        // Step label
+        setFill([28,22,55]); rect(MAR, yPos, CW, 8, 1);
+        setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+        doc.text(step.label.toUpperCase(), MAR+4, yPos+5.5);
+        yPos += 12;
+
+        for(const q of step.questions){
+          const ans = answers[q.id];
+          if(!ans) continue;
+
+          if(yPos > PH-35){ addPage(); setFill(C.bg); rect(0,0,PW,PH); yPos=20; }
+
+          // Question
+          setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+          const qLines = doc.splitTextToSize(q.label, CW);
+          doc.text(qLines, MAR, yPos);
+          yPos += qLines.length*4+2;
+
+          // Answer box
+          const aLines = doc.splitTextToSize(ans, CW-8);
+          const boxH = Math.min(aLines.length*4+8, 60);
+          setFill([10,8,22]); rect(MAR, yPos, CW, boxH, 2);
+          setDraw([50,42,80]); doc.setLineWidth(0.2); doc.roundedRect(MAR, yPos, CW, boxH, 2,2,'S');
+          setTextC(C.cream); doc.setFont('helvetica','italic'); doc.setFontSize(9);
+          const visibleLines = aLines.slice(0, Math.floor((boxH-8)/4));
+          doc.text(visibleLines, MAR+4, yPos+5.5, {maxWidth:CW-8});
+          yPos += boxH + 6;
+        }
+      }
+
+      setProgress(40 + Math.round((dayIdx+1)/DAYS.length*30), `Día ${day.num} procesado...`);
+      await new Promise(r=>setTimeout(r,20));
+    }
+
+    setProgress(75, 'Procesando heridas raíz...');
+    await new Promise(r=>setTimeout(r,50));
+
+    // ══════════════ PAGE: WOUNDS ══════════════
+    addPage();
+    setFill(C.bg); rect(0,0,PW,PH);
+    setFill(C.bgPanel); rect(0,0,PW,18);
+    setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text('LAS TRES HERIDAS RAÍZ', MAR, 12);
+
+    yPos = 26;
+    setTextC(C.cream); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+    doc.text('Las Tres Heridas Raíz', MAR, yPos); yPos += 10;
+    setTextC(C.muted); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    doc.text('Reflexiones de sanación profunda registradas en este proceso.', MAR, yPos); yPos += 12;
+
+    const woundColors = {abandono:[201,74,48], rechazo:[144,48,176], traicion:[32,128,192]};
+    const woundNames = {abandono:'El Abandono', rechazo:'El Rechazo', traicion:'La Traición'};
+
+    for(const [wKey, wData] of Object.entries(WOUNDS)){
+      const wAnswers = APP.wounds[wKey] || {};
+      const hasAnswers = Object.values(wAnswers).some(v=>v);
+      if(!hasAnswers) continue;
+
+      if(yPos > PH-40){ addPage(); setFill(C.bg); rect(0,0,PW,PH); yPos=20; }
+
+      const wc = woundColors[wKey];
+      setFill([wc[0]*0.15,wc[1]*0.15,wc[2]*0.15]);
+      rect(MAR, yPos, CW, 10, 2);
+      doc.setDrawColor(...wc); doc.setLineWidth(0.3); doc.roundedRect(MAR, yPos, CW, 10, 2,2,'S');
+      doc.setTextColor(...wc); doc.setFont('helvetica','bold'); doc.setFontSize(11);
+      doc.text(woundNames[wKey], MAR+5, yPos+7);
+      yPos += 15;
+
+      for(const q of wData.questions){
+        const ans = wAnswers[q.id];
+        if(!ans) continue;
+        if(yPos > PH-35){ addPage(); setFill(C.bg); rect(0,0,PW,PH); yPos=20; }
+
+        setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+        const qL = doc.splitTextToSize(q.label, CW);
+        doc.text(qL, MAR, yPos); yPos += qL.length*4+2;
+
+        const aL = doc.splitTextToSize(ans, CW-8);
+        const bH = Math.min(aL.length*4+8, 55);
+        setFill([10,8,22]); rect(MAR, yPos, CW, bH, 2);
+        setTextC(C.cream); doc.setFont('helvetica','italic'); doc.setFontSize(9);
+        doc.text(aL.slice(0, Math.floor((bH-8)/4)), MAR+4, yPos+5.5, {maxWidth:CW-8});
+        yPos += bH + 6;
+      }
+    }
+
+    setProgress(90, 'Finalizando informe...');
+    await new Promise(r=>setTimeout(r,50));
+
+    // ══════════════ LAST PAGE: SUMMARY ══════════════
+    addPage();
+    setFill(C.bg); rect(0,0,PW,PH);
+
+    // Background pattern
+    doc.setDrawColor(30,25,55); doc.setLineWidth(0.2);
+    for(let i=0;i<20;i++){ doc.line(0, i*15, PW, i*15); }
+
+    // Central emblem
+    setFill([20,12,38]); rect(PW/2-40, 40, 80, 80, 8);
+    doc.setDrawColor(...C.gold); doc.setLineWidth(0.5);
+    doc.roundedRect(PW/2-40, 40, 80, 80, 8,8,'S');
+    // Flame shapes
+    setFill(C.ember);
+    doc.circle(PW/2, 80, 15, 'F');
+    setFill(C.gold);
+    doc.circle(PW/2, 75, 8, 'F');
+    setFill(C.cream);
+    doc.circle(PW/2, 72, 3, 'F');
+
+    yPos = 136;
+    setTextC(C.goldLight); doc.setFont('helvetica','bold'); doc.setFontSize(18);
+    doc.text('Proceso de Transformación', PW/2, yPos, {align:'center'}); yPos += 10;
+    setTextC(C.muted); doc.setFont('helvetica','normal'); doc.setFontSize(10);
+    doc.text(`${APP.user?.name||''}  ·  Guía 1 de 18`, PW/2, yPos, {align:'center'}); yPos += 14;
+
+    // Stats grid
+    const stats = [
+      ['Días completados', `${done} / ${DAYS.length}`],
+      ['Progreso Guía 1', `${pct}%`],
+      ['Afirmaciones grabadas', Object.keys(RECORDINGS).length+' / '+AFFIRMATION_PHRASES.length],
+      ['Inicio del proceso', APP.user?.date||'—'],
+    ];
+    const statCW = (CW-10)/2;
+    stats.forEach((s,i)=>{
+      const sx = MAR + (i%2)*(statCW+10);
+      const sy = yPos + Math.floor(i/2)*22;
+      setFill(C.bgPanel); rect(sx, sy, statCW, 18, 3);
+      setTextC(C.muted); doc.setFontSize(7); doc.text(s[0], sx+5, sy+6);
+      setTextC(C.gold); doc.setFont('helvetica','bold'); doc.setFontSize(12);
+      doc.text(s[1], sx+5, sy+14);
+      doc.setFont('helvetica','normal');
+    });
+    yPos += 52;
+
+    // Closing quote
+    setFill([18,14,40]); rect(MAR, yPos, CW, 30, 4);
+    setDraw(C.gold); doc.setLineWidth(0.3); doc.roundedRect(MAR, yPos, CW, 30, 4,4,'S');
+    setTextC(C.cream); doc.setFont('helvetica','italic'); doc.setFontSize(11);
+    doc.text('"No soy el abandono que viví.', PW/2, yPos+10, {align:'center'});
+    doc.text('Soy alguien con la capacidad de reconstruirse."', PW/2, yPos+18, {align:'center'});
+    setTextC(C.muted); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.text('León al Fénix · Proceso de Sanación', PW/2, yPos+26, {align:'center'});
+    yPos += 40;
+
+    // Page numbers
+    const totalPages = doc.internal.getNumberOfPages();
+    for(let p=1;p<=totalPages;p++){
+      doc.setPage(p);
+      setTextC(C.muted); doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.text(`${p} / ${totalPages}`, PW/2, PH-8, {align:'center'});
+    }
+
+    setProgress(100, 'Descargando...');
+
+    const fname = `fenix_${(APP.user?.name||'proceso').replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fname);
+    toast('📄 Informe PDF generado y descargado');
+    setTimeout(()=>{
+      btn.disabled=false;
+      btn.textContent='📄 Generar Informe PDF';
+      progressWrap.style.display='none';
+      status.style.display='none';
+      progressFill.style.width='0%';
+    }, 1500);
+
+  } catch(err){
+    console.error(err);
+    toast('⚠️ Error al generar el PDF: '+err.message);
+    btn.disabled=false;
+    btn.textContent='📄 Generar Informe PDF';
+    progressWrap.style.display='none';
+    status.style.display='none';
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   AVANCES DASHBOARD
+══════════════════════════════════════════════════ */
+function renderAvances(){
+  if(!APP.user){ document.getElementById('avances-content').innerHTML='<p style="color:var(--muted);text-align:center;margin-top:60px;">Primero registra tu proceso.</p>'; return; }
+  const totalDays = DAYS.length;
+  const doneDays = DAYS.filter(d=>APP.days[d.num]?.completed).length;
+  const pct = Math.round(doneDays/totalDays*100);
+  const startDate = new Date(APP.user.date+'T12:00:00');
+  const today = new Date();
+  const diasTranscurridos = Math.floor((today-startDate)/(1000*60*60*24));
+  const woundsAnswered = Object.keys(APP.wounds).reduce((acc,w)=>acc+Object.values(APP.wounds[w]||{}).filter(v=>v&&v.trim()).length,0);
+  const rootsAnswered = Object.keys(APP.roots).reduce((acc,r)=>acc+Object.values(APP.roots[r]||{}).filter(v=>v&&v.trim()).length,0);
+  const affCount = Object.keys(RECORDINGS).length;
+  const totalAnswers = DAYS.reduce((acc,d)=>{
+    return acc + (d.steps||[]).reduce((a2,s)=>a2+(s.questions||[]).filter(q=>(APP.days[d.num]?.answers||{})[q.id]?.trim()).length,0);
+  },0);
+
+  // Racha de días consecutivos
+  let streak = 0;
+  const sortedDone = DAYS.filter(d=>APP.days[d.num]?.completed&&APP.days[d.num]?.completedAt)
+    .map(d=>({num:d.num,date:new Date(APP.days[d.num].completedAt)}))
+    .sort((a,b)=>b.date-a.date);
+  if(sortedDone.length>0){
+    let prev = today;
+    for(const d of sortedDone){
+      const diff = Math.floor((prev-d.date)/(1000*60*60*24));
+      if(diff<=1){ streak++; prev=d.date; } else break;
+    }
+  }
+
+  const c=Math.PI*2*38;
+  const dashOffset = c-(c*pct/100);
+  const phase = pct<30?'León encadenado':pct<60?'Rompiendo cadenas':pct<90?'Fénix emergiendo':'🔥 Fénix en vuelo';
+  const phaseColor = pct<30?'#c94a30':pct<60?'#c9943a':pct<90?'#e05c1a':'#f5d080';
+
+  document.getElementById('avances-content').innerHTML = `
+  <!-- HERO -->
+  <div style="text-align:center;padding:40px 0 32px;">
+    <div style="font-size:48px;margin-bottom:8px;filter:drop-shadow(0 0 20px #e05c1a88);">🔥</div>
+    <div style="font-family:'Cinzel Decorative',serif;font-size:clamp(18px,4vw,28px);background:linear-gradient(135deg,#f5d080,#e8b84b,#e05c1a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:6px;">Panel de Transformación</div>
+    <div style="font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;color:var(--muted);">${APP.user.name.toUpperCase()} · DÍA ${diasTranscurridos+1} DEL PROCESO</div>
+  </div>
+
+  <!-- FASE ACTUAL -->
+  <div style="background:linear-gradient(135deg,rgba(40,20,60,.8),rgba(60,30,10,.8));border:1px solid ${phaseColor}55;border-radius:16px;padding:24px 28px;margin-bottom:24px;display:flex;align-items:center;gap:20px;">
+    <svg width="100" height="100" viewBox="0 0 88 88" style="flex-shrink:0;">
+      <circle cx="44" cy="44" r="38" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="5"/>
+      <circle cx="44" cy="44" r="38" fill="none" stroke="${phaseColor}" stroke-width="5" stroke-linecap="round"
+        stroke-dasharray="${c.toFixed(2)}" stroke-dashoffset="${dashOffset.toFixed(2)}"
+        transform="rotate(-90 44 44)" style="transition:.8s ease;filter:drop-shadow(0 0 6px ${phaseColor});"/>
+      <text x="44" y="42" font-family="Cinzel,serif" font-size="13" fill="${phaseColor}" text-anchor="middle" font-weight="700">${pct}%</text>
+      <text x="44" y="55" font-family="Cinzel,serif" font-size="7" fill="#7a6f90" text-anchor="middle">completado</text>
+    </svg>
+    <div>
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Fase Actual</div>
+      <div style="font-family:'Cinzel Decorative',serif;font-size:18px;color:${phaseColor};margin-bottom:8px;">${phase}</div>
+      <div style="font-size:14px;color:var(--muted);line-height:1.5;">${doneDays} de ${totalDays} días completados · ${totalDays-doneDays} restantes para completar la Guía 1</div>
+    </div>
+  </div>
+
+  <!-- KPI GRID -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:24px;">
+    ${[
+      {icon:'📅',val:diasTranscurridos+1,label:'Días en proceso',color:'#c9943a'},
+      {icon:'✅',val:doneDays,label:'Días completados',color:'#3a9e68'},
+      {icon:'🔥',val:streak,label:'Racha actual',color:'#e05c1a'},
+      {icon:'✍️',val:totalAnswers,label:'Respuestas escritas',color:'#9060d0'},
+      {icon:'🩸',val:woundsAnswered,label:'Reflexiones heridas',color:'#c94a30'},
+      {icon:'🌱',val:rootsAnswered,label:'Ejercicios de raíz',color:'#3a9e68'},
+      {icon:'🎙️',val:affCount,label:'Afirmaciones grabadas',color:'#e8b84b'},
+      {icon:'📖',val:AFFIRMATION_PHRASES.length,label:'Total afirmaciones',color:'#5a5070'},
+    ].map(k=>`
+    <div style="background:var(--panel);border:1px solid ${k.color}33;border-radius:12px;padding:16px;text-align:center;">
+      <div style="font-size:24px;margin-bottom:6px;">${k.icon}</div>
+      <div style="font-family:'Cinzel',serif;font-size:22px;font-weight:700;color:${k.color};margin-bottom:4px;">${k.val}</div>
+      <div style="font-size:11px;color:var(--muted);font-family:'Cinzel',serif;letter-spacing:.5px;line-height:1.4;">${k.label}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- BARRA DE PROGRESO POR DÍAS -->
+  <div style="background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:24px;">
+    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;">📋 Progreso por día · Guía 1</div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px;">
+    ${DAYS.map(d=>{
+      const done=APP.days[d.num]?.completed;
+      const hasAnswers=APP.days[d.num]?.answers&&Object.values(APP.days[d.num].answers).some(v=>v?.trim());
+      const bg=done?'linear-gradient(135deg,#2a7a50,#3a9e68)':hasAnswers?'linear-gradient(135deg,rgba(201,148,58,.2),rgba(224,92,26,.2))':'var(--bg2)';
+      const border=done?'#3a9e68':'#2e2550';
+      const icon=done?'✓':hasAnswers?'✍️':'·';
+      const col=done?'#3a9e68':hasAnswers?'#c9943a':'#5a5070';
+      return `<div title="${d.emoji} Día ${d.num}: ${d.title}" onclick="goScreen('screen-day');openDay(${d.num})"
+        style="background:${bg};border:1px solid ${border};border-radius:8px;padding:10px 4px;text-align:center;cursor:pointer;transition:.2s;"
+        onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+        <div style="font-size:16px;margin-bottom:2px;">${d.emoji}</div>
+        <div style="font-family:'Cinzel',serif;font-size:9px;color:var(--muted);">Día ${d.num}</div>
+        <div style="font-size:12px;color:${col};margin-top:3px;">${icon}</div>
+      </div>`;
+    }).join('')}
+    </div>
+    <div style="display:flex;gap:16px;margin-top:14px;font-size:11px;color:var(--muted);font-family:'Cinzel',serif;">
+      <span>✓ Completado</span><span>✍️ En progreso</span><span>· Pendiente</span>
+    </div>
+  </div>
+
+  <!-- HERIDAS Y RAÍCES -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;">
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;">
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🩸 Heridas Raíz</div>
+      ${['abandono','rechazo','traicion'].map(w=>{
+        const cnt=Object.values(APP.wounds[w]||{}).filter(v=>v?.trim()).length;
+        const emojiW=w==='abandono'?'🔴':w==='rechazo'?'🟣':'🔵';
+        const col=w==='abandono'?'#e06a50':w==='rechazo'?'#b06ad0':'#50a0e0';
+        const max=WOUNDS[w]?.questions?.length||4;
+        return `<div style="margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <span style="font-size:13px;color:var(--text);font-family:'Cinzel',serif;">${emojiW} ${w.charAt(0).toUpperCase()+w.slice(1)}</span>
+            <span style="font-size:11px;color:${col};">${cnt}/${max}</span>
+          </div>
+          <div style="height:4px;background:var(--border);border-radius:2px;">
+            <div style="height:100%;width:${Math.round(cnt/max*100)}%;background:${col};border-radius:2px;transition:.5s;"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div style="background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;">
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:14px;">🌱 Tratamiento de Raíz</div>
+      ${(()=>{
+        const rootKeys=Object.keys(APP.roots);
+        if(rootKeys.length===0) return '<p style="color:var(--muted);font-size:13px;">Aún no has explorado esta sección.</p>';
+        return rootKeys.slice(0,4).map(r=>{
+          const cnt=Object.values(APP.roots[r]||{}).filter(v=>v?.trim()).length;
+          return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:13px;color:var(--text);">${r}</span>
+            <span style="font-size:11px;color:var(--success);">${cnt} resp.</span>
+          </div>`;
+        }).join('');
+      })()}
+    </div>
+  </div>
+
+  <!-- AFIRMACIONES -->
+  <div style="background:linear-gradient(135deg,rgba(20,12,40,.8),rgba(40,20,10,.8));border:1px solid rgba(232,184,75,.25);border-radius:16px;padding:24px;margin-bottom:24px;">
+    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:16px;">🎙️ Afirmaciones de Voz</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    ${AFFIRMATION_PHRASES.map((phrase,i)=>{
+      const hasRec=!!RECORDINGS[`aff_${i}`];
+      return `<div title="${phrase}" style="width:32px;height:32px;border-radius:50%;border:1px solid ${hasRec?'#e8b84b':'#2e2550'};background:${hasRec?'rgba(232,184,75,.2)':'var(--bg2)'};display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:.15s;" onclick="goScreen('screen-affirmations')">${hasRec?'🔥':'·'}</div>`;
+    }).join('')}
+    </div>
+    <div style="margin-top:12px;font-size:13px;color:var(--muted);">${affCount} de ${AFFIRMATION_PHRASES.length} frases grabadas con tu voz</div>
+  </div>
+
+  <!-- CITA MOTIVACIONAL -->
+  <div style="background:linear-gradient(135deg,rgba(30,26,56,.9),rgba(50,20,10,.9));border:1px solid rgba(201,148,58,.2);border-radius:16px;padding:32px;text-align:center;margin-bottom:40px;">
+    <div style="font-size:32px;margin-bottom:12px;">🦅</div>
+    <div style="font-size:17px;font-style:italic;color:var(--cream);line-height:1.7;margin-bottom:10px;">"No soy el abandono que viví.<br>Soy alguien con la capacidad de reconstruirse."</div>
+    <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--gold);">León al Fénix · Proceso de Sanación</div>
+    <div style="margin-top:20px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn btn-primary btn-sm" onclick="goScreen('screen-day');openDay(${Math.min(doneDays+1,7)})">Continuar Guía 1 →</button>
+      <button class="btn btn-ghost btn-sm" onclick="openExportModal()">📄 Exportar PDF</button>
+    </div>
+  </div>
+  `;
+}
+
+/* ══════════════════════════════════════════════════
+   ANIMACIÓN FONDO AVANCES — León encadenado → Fénix
+══════════════════════════════════════════════════ */
+function startAvancesBg(){
+  const canvas = document.getElementById('avances-bg');
+  if(!canvas) return;
+  if(avancesBgRaf){ cancelAnimationFrame(avancesBgRaf); avancesBgRaf=null; }
+  const ctx = canvas.getContext('2d');
+  let W, H, t = 0;
+  const FLAME = ['#e05c1a','#c9943a','#f5d080','#e8b84b','#ff7a30','#ff4400','#ff9900'];
+  const particles = [];
+
+  function resize(){ W=canvas.width=canvas.offsetWidth; H=canvas.height=canvas.offsetHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Ember {
+    constructor(){ this.reset(true); }
+    reset(init=false){
+      const cx=W/2, cy=H*0.52;
+      const angle=Math.random()*Math.PI*2;
+      const r=20+Math.random()*90;
+      this.x=cx+Math.cos(angle)*r; this.y=cy+Math.sin(angle)*r*0.5;
+      this.vx=(Math.random()-.5)*1.5; this.vy=-(0.8+Math.random()*2.5);
+      this.life=init?Math.random():0; this.maxLife=0.5+Math.random()*1.2;
+      this.size=1+Math.random()*5; this.color=FLAME[Math.floor(Math.random()*FLAME.length)];
+    }
+    tick(){
+      this.life+=0.014;
+      const p=this.life/this.maxLife;
+      this.alpha=p<.3?p/.3:1-(p-.3)/.7;
+      this.x+=this.vx+Math.sin(this.life*5)*.4;
+      this.y+=this.vy; this.vy*=.985;
+      if(this.life>=this.maxLife) this.reset();
+    }
+    draw(){
+      ctx.save(); ctx.globalAlpha=this.alpha*.8;
+      ctx.shadowBlur=this.size*3; ctx.shadowColor=this.color;
+      ctx.fillStyle=this.color; ctx.beginPath();
+      ctx.arc(this.x,this.y,this.size*(1-this.life/this.maxLife*.6),0,Math.PI*2);
+      ctx.fill(); ctx.restore();
+    }
+  }
+
+  for(let i=0;i<120;i++) particles.push(new Ember());
+
+  /* ── Draw chained lion ── */
+  function drawLion(cx,cy,alpha,breakProg){
+    if(alpha<.01) return;
+    ctx.save(); ctx.globalAlpha=alpha;
+
+    // Mane glow
+    const mg=ctx.createRadialGradient(cx,cy-30,10,cx,cy-30,110);
+    mg.addColorStop(0,'rgba(201,148,58,.35)'); mg.addColorStop(1,'transparent');
+    ctx.fillStyle=mg; ctx.beginPath(); ctx.arc(cx,cy-30,110,0,Math.PI*2); ctx.fill();
+
+    // Body
+    ctx.fillStyle='rgba(139,90,30,.6)';
+    ctx.beginPath(); ctx.ellipse(cx,cy+60,35,65,0,0,Math.PI*2); ctx.fill();
+
+    // Head
+    ctx.fillStyle='rgba(180,120,40,.7)';
+    ctx.beginPath(); ctx.arc(cx,cy-30,40,0,Math.PI*2); ctx.fill();
+
+    // Mane spikes
+    ctx.fillStyle='rgba(140,100,20,.5)';
+    for(let i=0;i<12;i++){
+      const a=(i/12)*Math.PI*2;
+      const rx=cx+Math.cos(a)*55; const ry=(cy-30)+Math.sin(a)*55;
+      ctx.beginPath(); ctx.ellipse(rx,ry,8,16,a,0,Math.PI*2); ctx.fill();
+    }
+
+    // Eyes
+    ctx.fillStyle='rgba(255,200,50,.9)';
+    ctx.beginPath(); ctx.arc(cx-14,cy-32,5,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+14,cy-32,5,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(20,0,0,.8)';
+    ctx.beginPath(); ctx.arc(cx-14,cy-32,2,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx+14,cy-32,2,0,Math.PI*2); ctx.fill();
+
+    // Chains (3 sets, breaking progressively)
+    ctx.lineWidth=2.5;
+    for(let c=0;c<3;c++){
+      const ox=cx+(c-1)*50;
+      const chainBreak=Math.min(1,breakProg*(1+c*.3));
+      ctx.strokeStyle=`rgba(${60+chainBreak*80},${60+chainBreak*80},${70+chainBreak*60},${.7-chainBreak*.5})`;
+      ctx.beginPath(); ctx.moveTo(ox,cy+110);
+      const segs=6;
+      for(let s=0;s<segs;s++){
+        const sx=ox+Math.sin(s*1.8+t*2)*7*(1+chainBreak*s*.3);
+        const sy=cy+110+s*16+chainBreak*s*12;
+        ctx.lineTo(sx,sy);
+      }
+      ctx.stroke();
+      // Chain links
+      for(let s=0;s<segs-1;s++){
+        if(s<segs*chainBreak) continue; // broken
+        const sx=ox+Math.sin(s*1.8)*7; const sy=cy+118+s*16;
+        ctx.strokeStyle='rgba(80,80,100,.5)';
+        ctx.beginPath(); ctx.ellipse(sx,sy,5,3,s*.5,0,Math.PI*2); ctx.stroke();
+      }
+      // Sparks at break point
+      if(chainBreak>0.1&&chainBreak<.95){
+        const bx=ox; const by=cy+110+Math.floor(segs*chainBreak)*16;
+        ctx.save(); ctx.globalAlpha=alpha*(1-chainBreak);
+        for(let sp=0;sp<6;sp++){
+          const sa=(sp/6)*Math.PI*2+t*3;
+          ctx.strokeStyle='#f5d080'; ctx.lineWidth=1.5;
+          ctx.beginPath(); ctx.moveTo(bx,by);
+          ctx.lineTo(bx+Math.cos(sa)*12,by+Math.sin(sa)*12);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    ctx.restore();
+  }
+
+  /* ── Draw phoenix ── */
+  function drawPhoenix(cx,cy,alpha,phase){
+    if(alpha<.01) return;
+    ctx.save(); ctx.globalAlpha=alpha;
+
+    // Core glow
+    const pg=ctx.createRadialGradient(cx,cy,0,cx,cy,90);
+    pg.addColorStop(0,'rgba(255,220,100,.5)');
+    pg.addColorStop(.4,'rgba(224,92,26,.3)');
+    pg.addColorStop(1,'transparent');
+    ctx.fillStyle=pg; ctx.beginPath(); ctx.arc(cx,cy,90,0,Math.PI*2); ctx.fill();
+
+    // Wings (left and right)
+    for(const flip of[-1,1]){
+      ctx.save(); ctx.translate(cx,cy-20); ctx.scale(flip,1);
+      const wg=ctx.createLinearGradient(0,-80,180,0);
+      wg.addColorStop(0,'rgba(245,208,128,.8)');
+      wg.addColorStop(.35,'rgba(232,184,75,.6)');
+      wg.addColorStop(.7,'rgba(224,92,26,.4)');
+      wg.addColorStop(1,'transparent');
+      ctx.fillStyle=wg;
+      const wave=Math.sin(phase)*15;
+      ctx.beginPath(); ctx.moveTo(0,0);
+      ctx.bezierCurveTo(50,-70+wave,130,-95+wave*.5,180,-25+wave*.3);
+      ctx.bezierCurveTo(130,15,65,25,0,0);
+      ctx.fill();
+      // Feather veins
+      ctx.strokeStyle='rgba(245,208,128,.4)'; ctx.lineWidth=1;
+      for(let f=0;f<6;f++){
+        const fx=28+f*26; const fy=-50+f*9+Math.sin(phase+f)*.6*8;
+        ctx.beginPath(); ctx.moveTo(fx*.4,fy*.4); ctx.lineTo(fx,fy); ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    // Body
+    const bg2=ctx.createRadialGradient(cx,cy,0,cx,cy,30);
+    bg2.addColorStop(0,'rgba(255,240,150,.9)');
+    bg2.addColorStop(.6,'rgba(224,92,26,.7)');
+    bg2.addColorStop(1,'transparent');
+    ctx.fillStyle=bg2; ctx.beginPath(); ctx.ellipse(cx,cy,22,35,0,0,Math.PI*2); ctx.fill();
+
+    // Head crest
+    ctx.fillStyle='rgba(245,208,128,.7)';
+    for(let i=-2;i<=2;i++){
+      ctx.save(); ctx.translate(cx+i*7,cy-35);
+      ctx.rotate(i*.2+Math.sin(phase+i)*.15);
+      ctx.beginPath(); ctx.ellipse(0,-10,4,16,0,0,Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    // Tail feathers
+    for(let i=-3;i<=3;i++){
+      ctx.beginPath();
+      ctx.moveTo(cx+i*8,cy+30);
+      const tg=ctx.createLinearGradient(cx,cy+30,cx+i*28,cy+130);
+      tg.addColorStop(0,'rgba(224,92,26,.6)');
+      tg.addColorStop(1,'rgba(245,208,128,.1)');
+      ctx.strokeStyle=tg; ctx.lineWidth=2.5;
+      ctx.quadraticCurveTo(
+        cx+i*18+Math.sin(phase+i)*8, cy+85+Math.sin(phase*.7+i)*18,
+        cx+i*30, cy+130
+      );
+      ctx.globalAlpha=alpha*.7; ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  /* ── Main loop ── */
+  function frame(){
+    avancesBgRaf = requestAnimationFrame(frame);
+    ctx.clearRect(0,0,W,H);
+    t+=.016;
+
+    const cycleLen=14;
+    const prog=(t%cycleLen)/cycleLen;
+
+    // Ambient bg glow
+    const radG=ctx.createRadialGradient(W/2,H*.45,0,W/2,H*.45,H*.75);
+    radG.addColorStop(0,`rgba(50,20,70,${.07+Math.sin(t*.4)*.03})`);
+    radG.addColorStop(.5,`rgba(60,20,10,${.04+Math.sin(t*.3+1)*.02})`);
+    radG.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=radG; ctx.fillRect(0,0,W,H);
+
+    const cx=W/2, cy=H*.5;
+    const lionAlpha=Math.max(0,1-prog*2.5)*.22;
+    const breakProg=Math.min(1,prog*4);
+    const phoenixAlpha=Math.max(0,(prog-.3)/.55)*.28;
+
+    drawLion(cx,cy,lionAlpha,breakProg);
+    drawPhoenix(cx,cy,phoenixAlpha,t*.9);
+
+    // Fire burst at transition
+    if(prog>.38&&prog<.62){
+      const burstAlpha=(1-Math.abs((prog-.5)/.12))*.35;
+      const burst=ctx.createRadialGradient(cx,cy,0,cx,cy,150);
+      burst.addColorStop(0,`rgba(255,180,50,${burstAlpha})`);
+      burst.addColorStop(.5,`rgba(224,92,26,${burstAlpha*.5})`);
+      burst.addColorStop(1,'transparent');
+      ctx.fillStyle=burst; ctx.beginPath(); ctx.arc(cx,cy,150,0,Math.PI*2); ctx.fill();
+    }
+
+    // Ember particles
+    particles.forEach(p=>{ p.tick(); p.draw(); });
+    // Spawn extra embers during phoenix rise
+    if(phoenixAlpha>.05&&Math.random()<.4){
+      const ep=new Ember();
+      ep.size=1+Math.random()*3; ep.vy=-(1+Math.random()*2);
+      ep.x=cx+(Math.random()-.5)*160; ep.y=cy+(Math.random()-.5)*60;
+      particles.push(ep);
+      if(particles.length>200) particles.shift();
+    }
+  }
+  frame();
+}
+
+/* ─── RESET ─── */
+function confirmReset(){
+  if(confirm('¿Seguro? Esta acción borrará TODO tu proceso y no se puede deshacer.')){
+    localStorage.removeItem('fenix_v3'); location.reload();
+  }
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded',()=>{
+  load();
+  const di=document.getElementById('rd');
+  if(di) di.value=new Date().toISOString().split('T')[0];
+  if(APP.user){
+    document.getElementById('topbar').style.display='flex';
+    document.getElementById('tb-user').textContent=APP.user.name.split(' ')[0];
+    if(APP.unlocked){ goScreen('screen-dashboard'); } else { goScreen('screen-pin'); }
+  } else { goScreen('screen-welcome'); }
+  document.addEventListener('keydown',e=>{
+    const ps=document.getElementById('screen-pin');
+    if(!ps.classList.contains('active'))return;
+    if(/^\d$/.test(e.key))pinKey(e.key);
+    if(e.key==='Backspace')pinDel();
+  });
+  document.addEventListener('blur',e=>{ if(CURRENT_DAY)saveDaySilent(); },true);
+});
+</script>
+
+<script>
+/* ── Registro del Service Worker (PWA offline) ── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('[Fénix SW] Registrado:', reg.scope))
+      .catch(err => console.warn('[Fénix SW] Error:', err));
+  });
+}
+</script>
+</body>
+</html>
