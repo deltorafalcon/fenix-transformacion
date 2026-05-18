@@ -1,42 +1,39 @@
 {
-  "name": "León al Fénix — Transformación Personal",
-  "short_name": "León al Fénix",
-  "description": "Cuaderno terapéutico personal · 18 Guías de Sanación",
-  "start_url": "./",
-  "scope": "./",
+  "background_color": "#ffffff",
+  "dir": "ltr",
   "display": "standalone",
-  "orientation": "portrait",
+  "name": "fenix-transformacion",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "TRANSFORMACION",
+  "start_url": "/",
   "theme_color": "#070510",
-  "background_color": "#070510",
-  "lang": "es",
-  "categories": ["lifestyle", "health"],
   "icons": [
     {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "./icon.svg",
-      "sizes": "any",
+      "src": "https://deltorafalcon.github.io/fenix-transformacion/icon.svg",
       "type": "image/svg+xml",
-      "purpose": "any"
+      "isSquare": false,
+      "isPng": false,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 0,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": false
+    },
+    {
+      "src": "https://deltorafalcon.github.io/fenix-transformacion/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "isSquare": true,
+      "isPng": true,
+      "isWebp": false,
+      "isJpg": false,
+      "width": 192,
+      "is512x512": false,
+      "is256x256": false,
+      "is192x192": true
     }
   ],
-  "screenshots": [],
-  "shortcuts": [
-    {
-      "name": "Mis Guías",
-      "short_name": "Guías",
-      "url": "./",
-      "description": "Ir al dashboard de guías"
-    }
-  ]
+  "description": "fenix-transformacion"
 }
