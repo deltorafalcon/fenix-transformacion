@@ -1,0 +1,36 @@
+{
+  "user": {
+    "name": "jose fernando castro",
+    "age": "44",
+    "email": "deltorafalcon@gmail.com",
+    "date": "2026-05-13",
+    "why": "sanacion",
+    "pin": "MTIzNA=="
+  },
+  "days": {
+    "1": {
+      "answers": {
+        "d1_emotion": "Vulnerable",
+        "d1a1": "sofocante, se agudiza cada dia que pasa",
+        "d1e1": "Desde a infancia\n\nDesde mi infancia, lo suplí con estudio y en ocupar  mi mente en cosas del colegio\nNo fui escuchado, validado protegido, acompañado emocionalmente, tuve que volverme fuerte, crecí en el debo resolverlo todo porque nadie más lo hará.\n",
+        "d1e2": "Padre: ausencia en protección por que se la pasaba trabajando\nMadre: ausencia cuando se fue y nos tocó defendernos solos, cocinar, hacer aseo, no tenía un apoyo emocional\nHermano: también cargado por la situación se fue a los 18 años abandono su casa porque llevaba todo el mal trato de las consecuencias de una separación o de unos padres imperfectos\nProfesores: no amparaban cuando había circunstancias\n",
+        "d1e3": "A que ser fuerte era la única opción salir adelante solo se reforzaba en esas largas caminatas por ausencia de medios de transporte\nMi valor solo dependía de mi de nadie más por eso cuando sufría bulín de los compañeros me interne en levantar pesas\nMi capacidad de ser amado se limitaba a pequeños espacios como los domingos día de comer helado \nMi seguridad no existía, la reforcé en lo que podía hacer y salir adelante\n",
+        "d1p1": "Miedo a perder, a no ser eficiente o efectivo, ansiedad en que tengo que estar haciendo cosas y cosas, necesidad de aprobación, dificultad para decidir por que todo lo someto a evaluación de riesgos, tristeza persistente, estoy solo ",
+        "d1p2": "Como mi gato debo acompañarlo para que se sienta seguro y pueda comer",
+        "d1c1": "Como mi gato debo acompañarlo para que se sienta seguro y pueda comer",
+        "d1c2": "me comprometo"
+      },
+      "completed": true,
+      "stepsVisited": [
+        1,
+        2,
+        3
+      ],
+      "completedAt": "2026-05-13T02:34:41.292Z"
+    }
+  },
+  "roots": {},
+  "wounds": {},
+  "unlocked": true,
+  "pin": "[OCULTO]"
+}

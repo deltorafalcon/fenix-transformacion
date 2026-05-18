@@ -1,0 +1,42 @@
+{
+  "name": "León al Fénix — Transformación Personal",
+  "short_name": "León al Fénix",
+  "description": "Cuaderno terapéutico personal · 18 Guías de Sanación",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#070510",
+  "background_color": "#070510",
+  "lang": "es",
+  "categories": ["lifestyle", "health"],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Mis Guías",
+      "short_name": "Guías",
+      "url": "./",
+      "description": "Ir al dashboard de guías"
+    }
+  ]
+}

@@ -1,64 +1,19 @@
-/* ══════════════════════════════════════════════
-   León al Fénix — Service Worker v1.0
-   PWA Offline Cache & Install Support
-   ══════════════════════════════════════════════ */
-
 const CACHE_NAME = 'fenix-v1';
+const ASSETS = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png'];
 
-const ASSETS = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon.svg',
-  './icon-192.png',
-  './icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
-];
-
-/* ─── INSTALL: precachear assets ─── */
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ASSETS.map(url => new Request(url, { mode: 'no-cors' })));
-    }).then(() => self.skipWaiting())
-  );
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS.map(u => new Request(u,{mode:'no-cors'})))).then(()=>self.skipWaiting()));
 });
-
-/* ─── ACTIVATE: limpiar caches viejos ─── */
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
-
-/* ─── FETCH: cache-first para assets, network-first para el resto ─── */
-self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-
-  // Solo interceptar GET
-  if (event.request.method !== 'GET') return;
-
-  // Estrategia: cache-first para assets locales
-  if (url.origin === self.location.origin || ASSETS.includes(event.request.url)) {
-    event.respondWith(
-      caches.match(event.request).then(cached => {
-        if (cached) return cached;
-        return fetch(event.request).then(response => {
-          if (response && response.status === 200) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-          }
-          return response;
-        }).catch(() => {
-          // Fallback offline: servir index.html
-          if (event.request.mode === 'navigate') {
-            return caches.match('./index.html');
-          }
-        });
-      })
-    );
-  }
+self.addEventListener('fetch', e => {
+  if(e.request.method!=='GET')return;
+  e.respondWith(caches.match(e.request).then(cached=>{
+    if(cached)return cached;
+    return fetch(e.request).then(r=>{
+      if(r&&r.status===200){const cl=r.clone();caches.open(CACHE_NAME).then(c=>c.put(e.request,cl));}
+      return r;
+    }).catch(()=>{ if(e.request.mode==='navigate')return caches.match('./index.html'); });
+  }));
 });

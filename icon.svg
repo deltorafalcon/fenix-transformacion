@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="#070510"/>
+  
+  <!-- Outer glow ring -->
+  <circle cx="256" cy="220" r="160" fill="none" stroke="#c9943a" stroke-width="1.5" opacity="0.25"/>
+  <circle cx="256" cy="220" r="130" fill="none" stroke="#c9943a" stroke-width="1" opacity="0.18"/>
+
+  <!-- Tail feathers -->
+  <line x1="256" y1="310" x2="196" y2="420" stroke="#e05c1a" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+  <line x1="256" y1="310" x2="220" y2="425" stroke="#c9943a" stroke-width="3.5" stroke-linecap="round" opacity="0.8"/>
+  <line x1="256" y1="310" x2="256" y2="430" stroke="#e8b84b" stroke-width="4" stroke-linecap="round" opacity="0.9"/>
+  <line x1="256" y1="310" x2="292" y2="425" stroke="#c9943a" stroke-width="3.5" stroke-linecap="round" opacity="0.8"/>
+  <line x1="256" y1="310" x2="316" y2="420" stroke="#e05c1a" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- Left Wing -->
+  <path d="M256,220 C230,170 170,130 90,140 C130,165 160,190 185,220 C165,205 120,200 80,215 C120,225 160,228 195,235 Z" 
+        fill="url(#wingL)" opacity="0.9"/>
+  <!-- Right Wing -->
+  <path d="M256,220 C282,170 342,130 422,140 C382,165 352,190 327,220 C347,205 392,200 432,215 C392,225 352,228 317,235 Z" 
+        fill="url(#wingR)" opacity="0.9"/>
+
+  <!-- Body flame glow -->
+  <ellipse cx="256" cy="245" rx="45" ry="75" fill="url(#bodyGlow)" opacity="0.95"/>
+  
+  <!-- Inner body -->
+  <ellipse cx="256" cy="250" rx="28" ry="55" fill="url(#innerBody)"/>
+
+  <!-- Head -->
+  <circle cx="256" cy="175" r="32" fill="url(#headGlow)"/>
+  
+  <!-- Eye -->
+  <circle cx="256" cy="172" r="9" fill="#070510"/>
+  <circle cx="256" cy="172" r="5" fill="#f5d080"/>
+  <circle cx="258" cy="170" r="2" fill="#fff" opacity="0.9"/>
+
+  <!-- Crest feathers -->
+  <ellipse cx="240" cy="143" rx="5" ry="20" fill="#f5d080" transform="rotate(-15,240,143)" opacity="0.9"/>
+  <ellipse cx="256" cy="138" rx="5" ry="24" fill="#e8b84b"/>
+  <ellipse cx="272" cy="143" rx="5" ry="20" fill="#f5d080" transform="rotate(15,272,143)" opacity="0.9"/>
+
+  <!-- Ember particles -->
+  <circle cx="180" cy="190" r="3.5" fill="#e8b84b" opacity="0.7"/>
+  <circle cx="168" cy="210" r="2.5" fill="#e05c1a" opacity="0.6"/>
+  <circle cx="332" cy="185" r="3" fill="#e8b84b" opacity="0.65"/>
+  <circle cx="345" cy="205" r="2" fill="#e05c1a" opacity="0.55"/>
+  <circle cx="210" cy="310" r="2.5" fill="#c9943a" opacity="0.5"/>
+  <circle cx="300" cy="315" r="2" fill="#e05c1a" opacity="0.5"/>
+  <circle cx="256" cy="390" r="3" fill="#e8b84b" opacity="0.4"/>
+  <circle cx="230" cy="380" r="1.5" fill="#e05c1a" opacity="0.35"/>
+  <circle cx="280" cy="378" r="2" fill="#c9943a" opacity="0.4"/>
+  
+  <!-- Gold accent line below -->
+  <line x1="130" y1="460" x2="382" y2="460" stroke="#c9943a" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- Text "LF" monogram (subtle) -->
+  <text x="256" y="492" text-anchor="middle" font-family="Georgia,serif" font-size="22" fill="#c9943a" opacity="0.55" font-weight="bold" letter-spacing="4">FENIX</text>
+
+  <defs>
+    <linearGradient id="wingL" x1="256" y1="220" x2="80" y2="215" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f5d080"/>
+      <stop offset="40%" stop-color="#e8b84b"/>
+      <stop offset="70%" stop-color="#e05c1a"/>
+      <stop offset="100%" stop-color="#e05c1a" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wingR" x1="256" y1="220" x2="432" y2="215" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f5d080"/>
+      <stop offset="40%" stop-color="#e8b84b"/>
+      <stop offset="70%" stop-color="#e05c1a"/>
+      <stop offset="100%" stop-color="#e05c1a" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="bodyGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#f5d080"/>
+      <stop offset="45%" stop-color="#e05c1a"/>
+      <stop offset="100%" stop-color="#c9400a" stop-opacity="0.4"/>
+    </radialGradient>
+    <radialGradient id="innerBody" cx="50%" cy="35%" r="55%">
+      <stop offset="0%" stop-color="#fff8e0"/>
+      <stop offset="50%" stop-color="#f5d080"/>
+      <stop offset="100%" stop-color="#e05c1a"/>
+    </radialGradient>
+    <radialGradient id="headGlow" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#fff5cc"/>
+      <stop offset="40%" stop-color="#f5d080"/>
+      <stop offset="80%" stop-color="#e05c1a"/>
+      <stop offset="100%" stop-color="#c9400a"/>
+    </radialGradient>
+  </defs>
+</svg>

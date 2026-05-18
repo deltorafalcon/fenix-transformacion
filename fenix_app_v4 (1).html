@@ -4,10 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#070510">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/svg+xml" href="./icon.svg">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>La Transformación del León al Fénix</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700;900&display=swap" rel="stylesheet">
@@ -469,11 +465,6 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
   </div>
   <div class="reg-wrap">
     <div class="reg-card">
-      <div style="display:flex;gap:0;margin-bottom:24px;border:1px solid var(--border2);border-radius:10px;overflow:hidden;">
-        <button id="tab-reg" onclick="showTab('reg')" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--gold),var(--ember));color:#06040e;font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;font-weight:700;border:none;cursor:pointer;">✦ NUEVO INICIO</button>
-        <button id="tab-login" onclick="showTab('login')" style="flex:1;padding:12px;background:transparent;color:var(--muted);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;border:none;cursor:pointer;transition:.2s;">REGRESAR</button>
-      </div>
-      <div id="form-reg">
       <h2>✦ Iniciar Mi Proceso ✦</h2>
       <div class="field-row">
         <div class="field"><label>Nombre completo</label><input type="text" id="rn" placeholder="Tu nombre" autocomplete="name"></div>
@@ -485,17 +476,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <div class="field"><label>Código PIN (4 dígitos)</label><input type="password" id="rp" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Ej. 1234" class="pin-input"><div class="hint">🔒 Este código protege tu información.</div></div>
       <div class="field"><label>Confirmar PIN</label><input type="password" id="rp2" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Repite el código" class="pin-input"></div>
       <button class="btn btn-primary btn-full" onclick="register()">Iniciar mi transformación →</button>
-      <p id="reg-err" style="color:#e05;font-size:13px;text-align:center;margin-top:10px;display:none;"></p>
-      <p class="sec-note">☁️ Tu progreso se sincroniza de forma segura en la nube.</p>
-      </div>
-      <div id="form-login" style="display:none;">
-        <h2 style="margin-bottom:20px;">✦ Regresar a tu Proceso ✦</h2>
-        <div class="field"><label>Correo electrónico</label><input type="email" id="le" placeholder="tu@correo.com" autocomplete="email"></div>
-        <div class="field"><label>Contraseña</label><input type="password" id="lp" placeholder="Tu contraseña" autocomplete="current-password"></div>
-        <button class="btn btn-primary btn-full" onclick="loginUser()" style="margin-top:8px;">Entrar →</button>
-        <p id="login-err" style="color:#e05;font-size:13px;text-align:center;margin-top:12px;display:none;"></p>
-        <p class="sec-note" style="margin-top:14px;">¿Olvidaste tu contraseña? <span onclick="resetPassword()" style="color:var(--gold);cursor:pointer;text-decoration:underline;">Recuperar</span></p>
-      </div>
+      <p class="sec-note">🔒 Toda la información se guarda solo en este dispositivo.</p>
     </div>
   </div>
 </div>
@@ -1068,31 +1049,16 @@ let recordingTimers = {};
 let recordingSeconds = {};
 let avancesBgRaf = null;
 
-/* ══════════════════════════════════
-   SUPABASE CONFIG
-   ══════════════════════════════════ */
-const SUPABASE_URL  = 'https://wkyzosrkdaxspczfyxvm.supabase.co/rest/v1/';
-const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndreXpvc3JrZGF4c3BjemZ5eHZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkxMzA4NTMsImV4cCI6MjA5NDcwNjg1M30.VX4RJFe8jSakeE487TfqCICq8hwkqs1HhOxHVHgwQWE';
-const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-let _saveTimer = null;
-
-async function load(){
-  try { RECORDINGS = JSON.parse(localStorage.getItem('fenix_rec')||'{}'); } catch(e){}
-  const { data:{ user } } = await _sb.auth.getUser();
-  if(!user) return;
-  const { data } = await _sb.from('user_data').select('data').eq('user_id', user.id).single();
-  if(data?.data){ APP = { ...APP, ...data.data }; APP.unlocked = false; }
+function load(){
+  const r = localStorage.getItem('fenix_v3');
+  if(r) {
+    const d = JSON.parse(r);
+    APP = d.app || APP;
+    RECORDINGS = d.recordings || {};
+  }
 }
-
 function save(){
-  try { localStorage.setItem('fenix_rec', JSON.stringify(RECORDINGS)); } catch(e){}
-  clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(async ()=>{
-    const { data:{ user } } = await _sb.auth.getUser();
-    if(!user) return;
-    const payload = { ...APP }; delete payload.unlocked;
-    await _sb.from('user_data').upsert({ user_id: user.id, data: payload, updated_at: new Date().toISOString() },{ onConflict:'user_id' });
-  }, 1500);
+  localStorage.setItem('fenix_v3', JSON.stringify({ app:APP, recordings:RECORDINGS }));
 }
 function toast(m="✓ Guardado"){
   const t=document.getElementById('toast');
@@ -1135,16 +1101,9 @@ function pinForgot(){
   } else if(name!==null){alert("El nombre no coincide.");}
 }
 function lockApp(){ APP.unlocked=false;PIN_ENTRY="";updatePinDots();goScreen('screen-pin'); }
-async function logoutUser(){
-  if(!confirm('¿Cerrar sesión? Tu progreso está guardado en la nube.'))return;
-  await _sb.auth.signOut();
-  APP={user:null,days:{},roots:{},wounds:{},unlocked:false,photo:null};
-  RECORDINGS={};
-  goScreen('screen-welcome');
-}
 
 /* ─── REGISTER ─── */
-async function register(){
+function register(){
   const name=document.getElementById('rn').value.trim();
   const age=document.getElementById('ra').value.trim();
   const email=document.getElementById('re').value.trim();
@@ -1152,59 +1111,13 @@ async function register(){
   const why=document.getElementById('rw').value.trim();
   const pin=document.getElementById('rp').value;
   const pin2=document.getElementById('rp2').value;
-  const errEl=document.getElementById('reg-err');
-  errEl.style.display='none';
-  if(!name){errEl.textContent='Por favor ingresa tu nombre.';errEl.style.display='block';return;}
-  if(!email){errEl.textContent='Por favor ingresa tu correo.';errEl.style.display='block';return;}
-  if(!pin||!/^\d{4}$/.test(pin)){errEl.textContent='El PIN debe ser 4 dígitos.';errEl.style.display='block';return;}
-  if(pin!==pin2){errEl.textContent='Los PINs no coinciden.';errEl.style.display='block';return;}
-  const password=prompt('Crea una contraseña para acceder desde otros dispositivos (mín. 8 caracteres):');
-  if(!password||password.length<8){errEl.textContent='Contraseña inválida (mínimo 8 caracteres).';errEl.style.display='block';return;}
-  const btn=document.querySelector('#form-reg .btn-primary');
-  btn.textContent='Creando cuenta...';btn.disabled=true;
-  const {error}=await _sb.auth.signUp({email,password});
-  if(error){errEl.textContent='Error: '+error.message;errEl.style.display='block';btn.textContent='Iniciar mi transformación →';btn.disabled=false;return;}
+  if(!name){alert('Por favor ingresa tu nombre.');return;}
+  if(!pin||!/^\d{4}$/.test(pin)){alert('El PIN debe ser exactamente 4 dígitos numéricos.');return;}
+  if(pin!==pin2){alert('Los dos PINs no coinciden.');return;}
   APP.user={name,age,email,date:date||new Date().toISOString().split('T')[0],why,pin:btoa(pin)};
   APP.unlocked=true;
   save();
   goScreen('screen-dashboard');
-  btn.textContent='Iniciar mi transformación →';btn.disabled=false;
-}
-
-async function loginUser(){
-  const email=document.getElementById('le').value.trim();
-  const pass=document.getElementById('lp').value;
-  const errEl=document.getElementById('login-err');
-  errEl.style.display='none';
-  if(!email||!pass){errEl.textContent='Ingresa correo y contraseña.';errEl.style.display='block';return;}
-  const btn=document.querySelector('#form-login .btn-primary');
-  btn.textContent='Entrando...';btn.disabled=true;
-  const {error}=await _sb.auth.signInWithPassword({email,password:pass});
-  if(error){errEl.textContent='Correo o contraseña incorrectos.';errEl.style.display='block';btn.textContent='Entrar →';btn.disabled=false;return;}
-  await load();
-  if(APP.user){
-    document.getElementById('topbar').style.display='flex';
-    document.getElementById('tb-user').textContent=APP.user.name.split(' ')[0];
-    goScreen('screen-pin');
-  } else { goScreen('screen-dashboard'); }
-  btn.textContent='Entrar →';btn.disabled=false;
-}
-
-async function resetPassword(){
-  const email=prompt('Ingresa tu correo para recibir el enlace de recuperación:');
-  if(!email)return;
-  await _sb.auth.resetPasswordForEmail(email);
-  alert('Si el correo existe, recibirás un enlace para restablecer tu contraseña.');
-}
-
-function showTab(t){
-  document.getElementById('form-reg').style.display=t==='reg'?'block':'none';
-  document.getElementById('form-login').style.display=t==='login'?'block':'none';
-  const gr='linear-gradient(135deg,var(--gold),var(--ember))';
-  document.getElementById('tab-reg').style.background=t==='reg'?gr:'transparent';
-  document.getElementById('tab-reg').style.color=t==='reg'?'#06040e':'var(--muted)';
-  document.getElementById('tab-login').style.background=t==='login'?gr:'transparent';
-  document.getElementById('tab-login').style.color=t==='login'?'#06040e':'var(--muted)';
 }
 
 function loadDashPhoto(input){
@@ -2415,22 +2328,19 @@ function startAvancesBg(){
 /* ─── RESET ─── */
 function confirmReset(){
   if(confirm('¿Seguro? Esta acción borrará TODO tu proceso y no se puede deshacer.')){
-    _sb.auth.getUser().then(({data:{user}})=>{ if(user) _sb.from('user_data').delete().eq('user_id',user.id); }); _sb.auth.signOut(); localStorage.removeItem('fenix_rec'); location.reload();
+    localStorage.removeItem('fenix_v3'); location.reload();
   }
 }
 
 /* ─── INIT ─── */
-document.addEventListener('DOMContentLoaded', async ()=>{
+document.addEventListener('DOMContentLoaded',()=>{
+  load();
   const di=document.getElementById('rd');
   if(di) di.value=new Date().toISOString().split('T')[0];
-  const {data:{session}}=await _sb.auth.getSession();
-  if(session){
-    await load();
+  if(APP.user){
     document.getElementById('topbar').style.display='flex';
-    if(APP.user){
-      document.getElementById('tb-user').textContent=APP.user.name.split(' ')[0];
-      goScreen('screen-pin');
-    } else { goScreen('screen-dashboard'); }
+    document.getElementById('tb-user').textContent=APP.user.name.split(' ')[0];
+    if(APP.unlocked){ goScreen('screen-dashboard'); } else { goScreen('screen-pin'); }
   } else { goScreen('screen-welcome'); }
   document.addEventListener('keydown',e=>{
     const ps=document.getElementById('screen-pin');
@@ -2440,15 +2350,6 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   });
   document.addEventListener('blur',e=>{ if(CURRENT_DAY)saveDaySilent(); },true);
 });
-</script>
-<script>
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('./sw.js')
-      .then(r=>console.log('[Fénix SW]',r.scope))
-      .catch(e=>console.warn('[Fénix SW]',e));
-  });
-}
 </script>
 </body>
 </html>
