@@ -438,34 +438,9 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
 <div id="topbar" style="display:none;">
   <div class="tb-brand">🦅 León al Fénix</div>
   <div id="tb-user" class="tb-user"></div>
-  <div class="tb-lock" title="Bloquear" onclick="lockApp()">🔒</div>
 </div>
 
-<!-- PIN SCREEN -->
-<div class="screen" id="screen-pin">
-  <div class="pin-logo">🦅</div>
-  <div class="pin-title">León al Fénix</div>
-  <div class="pin-sub" id="pin-sub">Ingresa tu código de acceso</div>
-  <div class="pin-dots" id="pin-dots">
-    <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
-    <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
-  </div>
-  <div class="numpad">
-    <button class="num-btn" onclick="pinKey('1')">1</button>
-    <button class="num-btn" onclick="pinKey('2')">2</button>
-    <button class="num-btn" onclick="pinKey('3')">3</button>
-    <button class="num-btn" onclick="pinKey('4')">4</button>
-    <button class="num-btn" onclick="pinKey('5')">5</button>
-    <button class="num-btn" onclick="pinKey('6')">6</button>
-    <button class="num-btn" onclick="pinKey('7')">7</button>
-    <button class="num-btn" onclick="pinKey('8')">8</button>
-    <button class="num-btn" onclick="pinKey('9')">9</button>
-    <button class="num-btn" style="visibility:hidden;"></button>
-    <button class="num-btn" onclick="pinKey('0')">0</button>
-    <button class="num-btn del" onclick="pinDel()">⌫</button>
-  </div>
-  <div class="pin-forgot" onclick="pinForgot()">¿Olvidaste tu código?</div>
-</div>
+<!-- PIN SCREEN REMOVED -->
 
 <!-- WELCOME SCREEN -->
 <div class="screen" id="screen-welcome">
@@ -484,8 +459,6 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <div class="field"><label>Correo electrónico</label><input type="email" id="re" placeholder="tu@correo.com"></div>
       <div class="field"><label>Fecha de inicio</label><input type="date" id="rd"></div>
       <div class="field"><label>¿Por qué inicias este proceso hoy?</label><textarea id="rw" placeholder="Lo que te trajo hasta aquí..."></textarea></div>
-      <div class="field"><label>Código PIN (4 dígitos)</label><input type="password" id="rp" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Ej. 1234" class="pin-input"><div class="hint">🔒 Este código protege tu información.</div></div>
-      <div class="field"><label>Confirmar PIN</label><input type="password" id="rp2" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Repite el código" class="pin-input"></div>
       <p id="reg-err" style="display:none;color:#d04040;font-size:13px;text-align:center;margin-bottom:10px;font-family:'Cinzel',serif;letter-spacing:.5px;padding:10px;background:rgba(208,64,64,.1);border:1px solid rgba(208,64,64,.3);border-radius:8px;"></p>
       <button class="btn btn-primary btn-full" onclick="register()">Iniciar mi transformación →</button>
       <p class="sec-note">🔒 Tu información se guarda de forma segura en este dispositivo.</p>
@@ -765,7 +738,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       ctx.shadowColor = this.color;
       ctx.fillStyle = this.color;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * (1 - this.life / this.maxLife * 0.5), 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, Math.max(0.1, this.size * (1 - this.life / this.maxLife * 0.5)), 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1115,7 +1088,7 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 function goScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.getElementById('topbar').style.display=(id==='screen-welcome'||id==='screen-pin')?'none':'flex';
+  document.getElementById('topbar').style.display=(id==='screen-welcome')?'none':'flex';
   window.scrollTo(0,0);
   hideSaveBar();
   // Stop avances bg if leaving
@@ -1144,7 +1117,7 @@ function pinForgot(){
     }
   }
 }
-function lockApp(){ APP.unlocked=false;PIN_ENTRY="";updatePinDots();goScreen('screen-pin'); }
+function lockApp(){ APP.unlocked=false; goScreen('screen-dashboard'); }
 
 /* ─── REGISTER ─── */
 function register(){
@@ -1153,14 +1126,10 @@ function register(){
   const email=document.getElementById('re').value.trim();
   const date=document.getElementById('rd').value;
   const why=document.getElementById('rw').value.trim();
-  const pin=document.getElementById('rp').value;
-  const pin2=document.getElementById('rp2').value;
   const errEl=document.getElementById('reg-err');
   errEl.style.display='none';
   if(!name){ errEl.textContent='Por favor ingresa tu nombre.'; errEl.style.display='block'; return; }
-  if(!pin||!/^\d{4}$/.test(pin)){ errEl.textContent='El PIN debe ser exactamente 4 dígitos.'; errEl.style.display='block'; return; }
-  if(pin!==pin2){ errEl.textContent='Los dos PINs no coinciden.'; errEl.style.display='block'; return; }
-  APP.user={name,age,email,date:date||new Date().toISOString().split('T')[0],why,pin:btoa(pin)};
+  APP.user={name,age,email,date:date||new Date().toISOString().split('T')[0],why};
   APP.unlocked=true;
   save();
   document.getElementById('topbar').style.display='flex';
@@ -2176,7 +2145,7 @@ function startAvancesBg(){
       ctx.save(); ctx.globalAlpha=this.alpha*.8;
       ctx.shadowBlur=this.size*3; ctx.shadowColor=this.color;
       ctx.fillStyle=this.color; ctx.beginPath();
-      ctx.arc(this.x,this.y,this.size*(1-this.life/this.maxLife*.6),0,Math.PI*2);
+      ctx.arc(this.x,this.y,Math.max(0.1,this.size*(1-this.life/this.maxLife*.6)),0,Math.PI*2);
       ctx.fill(); ctx.restore();
     }
   }
@@ -2386,16 +2355,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   const di=document.getElementById('rd');
   if(di) di.value=new Date().toISOString().split('T')[0];
   if(APP.user){
+    APP.unlocked=true;
     document.getElementById('topbar').style.display='flex';
     document.getElementById('tb-user').textContent=APP.user.name.split(' ')[0];
-    if(APP.unlocked){ goScreen('screen-dashboard'); } else { goScreen('screen-pin'); }
+    goScreen('screen-dashboard');
   } else { goScreen('screen-welcome'); }
-  document.addEventListener('keydown',e=>{
-    const ps=document.getElementById('screen-pin');
-    if(!ps.classList.contains('active'))return;
-    if(/^\d$/.test(e.key))pinKey(e.key);
-    if(e.key==='Backspace')pinDel();
-  });
   document.addEventListener('blur',e=>{ if(CURRENT_DAY)saveDaySilent(); },true);
 });
 </script>
