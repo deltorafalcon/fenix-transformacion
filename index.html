@@ -438,9 +438,34 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
 <div id="topbar" style="display:none;">
   <div class="tb-brand">🦅 León al Fénix</div>
   <div id="tb-user" class="tb-user"></div>
+  <div class="tb-lock" title="Bloquear" onclick="lockApp()">🔒</div>
 </div>
 
-<!-- PIN SCREEN REMOVED -->
+<!-- PIN SCREEN -->
+<div class="screen" id="screen-pin">
+  <div class="pin-logo">🦅</div>
+  <div class="pin-title">León al Fénix</div>
+  <div class="pin-sub" id="pin-sub">Ingresa tu código de acceso</div>
+  <div class="pin-dots" id="pin-dots">
+    <div class="pin-dot" id="pd0"></div><div class="pin-dot" id="pd1"></div>
+    <div class="pin-dot" id="pd2"></div><div class="pin-dot" id="pd3"></div>
+  </div>
+  <div class="numpad">
+    <button class="num-btn" onclick="pinKey('1')">1</button>
+    <button class="num-btn" onclick="pinKey('2')">2</button>
+    <button class="num-btn" onclick="pinKey('3')">3</button>
+    <button class="num-btn" onclick="pinKey('4')">4</button>
+    <button class="num-btn" onclick="pinKey('5')">5</button>
+    <button class="num-btn" onclick="pinKey('6')">6</button>
+    <button class="num-btn" onclick="pinKey('7')">7</button>
+    <button class="num-btn" onclick="pinKey('8')">8</button>
+    <button class="num-btn" onclick="pinKey('9')">9</button>
+    <button class="num-btn" style="visibility:hidden;"></button>
+    <button class="num-btn" onclick="pinKey('0')">0</button>
+    <button class="num-btn del" onclick="pinDel()">⌫</button>
+  </div>
+  <div class="pin-forgot" onclick="pinForgot()">¿Olvidaste tu código?</div>
+</div>
 
 <!-- WELCOME SCREEN -->
 <div class="screen" id="screen-welcome">
@@ -459,6 +484,8 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <div class="field"><label>Correo electrónico</label><input type="email" id="re" placeholder="tu@correo.com"></div>
       <div class="field"><label>Fecha de inicio</label><input type="date" id="rd"></div>
       <div class="field"><label>¿Por qué inicias este proceso hoy?</label><textarea id="rw" placeholder="Lo que te trajo hasta aquí..."></textarea></div>
+      <div class="field"><label>Código PIN (4 dígitos)</label><input type="password" id="rp" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Ej. 1234" class="pin-input"><div class="hint">🔒 Este código protege tu información.</div></div>
+      <div class="field"><label>Confirmar PIN</label><input type="password" id="rp2" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Repite el código" class="pin-input"></div>
       <p id="reg-err" style="display:none;color:#d04040;font-size:13px;text-align:center;margin-bottom:10px;font-family:'Cinzel',serif;letter-spacing:.5px;padding:10px;background:rgba(208,64,64,.1);border:1px solid rgba(208,64,64,.3);border-radius:8px;"></p>
       <button class="btn btn-primary btn-full" onclick="register()">Iniciar mi transformación →</button>
       <p class="sec-note">🔒 Tu información se guarda de forma segura en este dispositivo.</p>
@@ -538,15 +565,68 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
   </div>
 </div>
 
-<!-- RENOVACIÓN SENSORIAL MODAL -->
-<div id="renovacion-modal" style="display:none;position:fixed;inset:0;z-index:9500;background:#000;flex-direction:column;">
-  <div style="position:absolute;top:12px;right:16px;z-index:9999;display:flex;gap:10px;align-items:center;">
+<!-- RENOVACIÓN SENSORIAL MODAL - INTEGRADO -->
+<div id="renovacion-modal" style="display:none;position:fixed;inset:0;z-index:9500;background:#000;flex-direction:column;overflow:hidden;">
+  <!-- Barra de controles -->
+  <div style="position:absolute;top:12px;right:16px;z-index:99999;display:flex;gap:10px;align-items:center;">
     <button id="btn-musica" onclick="toggleMusica()" style="padding:8px 18px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:20px;cursor:pointer;font-size:.9rem;backdrop-filter:blur(8px);">🎵 Activar Música</button>
     <button onclick="closeRenovacion()" style="padding:8px 18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:20px;cursor:pointer;font-size:.9rem;backdrop-filter:blur(8px);">✕ Salir</button>
   </div>
-  <iframe id="renovacion-iframe" src="" style="width:100%;height:100%;border:none;flex:1;"></iframe>
-  <audio id="audio-sanidad" src="./sana-mi-interior.mp3" loop preload="none"></audio>
+  <audio id="audio-sanidad" src="https://deltorafalcon.github.io/fenix-transformacion/sana-mi-interior.mp3" loop preload="none"></audio>
+
+  <!-- Pantalla de advertencia / inicio -->
+  <div id="ren-start-screen" style="position:absolute;inset:0;z-index:9998;background:rgba(0,0,0,.97);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px;box-sizing:border-box;">
+    <div style="color:#ff3333;font-size:1.3rem;font-weight:bold;margin-bottom:16px;max-width:700px;">⚠️ ADVERTENCIA DE FOTOSENSIBILIDAD ⚠️</div>
+    <p style="max-width:700px;font-size:1rem;line-height:1.6;margin-bottom:24px;color:#ddd;">
+      Este contenido tiene destellos estroboscópicos y colores intensos.<br>
+      <strong>No inicies</strong> si padeces epilepsia fotosensible o migrañas severas.
+    </p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;">
+      <button onclick="iniciarRenovacion(false)" style="padding:14px 28px;font-size:1rem;background:#fff;color:#000;border:none;cursor:pointer;text-transform:uppercase;font-weight:bold;letter-spacing:2px;border-radius:6px;">Iniciar (solo audio)</button>
+      <button onclick="iniciarRenovacion(true)" style="padding:14px 28px;font-size:1rem;background:linear-gradient(135deg,#7928ca,#ff0080);color:#fff;border:none;cursor:pointer;text-transform:uppercase;font-weight:bold;letter-spacing:2px;border-radius:6px;">Iniciar Experiencia Completa</button>
+    </div>
+  </div>
+
+  <!-- Fondo psicodélico -->
+  <div id="ren-psycho-bg" style="display:none;position:absolute;top:-50%;left:-50%;width:200%;height:200%;z-index:10;opacity:0.5;
+    background:conic-gradient(from 0deg at 50% 50%,#ff0080,#7928ca,#0070f3,#00dfd8,#ffbf00,#ff0080);
+    animation:ren-rotate-bg 20s linear infinite;pointer-events:none;filter:hue-rotate(0deg) contrast(1.5) blur(20px);">
+  </div>
+  <div id="ren-mandala" style="display:none;position:absolute;top:50%;left:50%;
+    transform:translate(-50%,-50%);width:100vmin;height:100vmin;
+    background-image:repeating-radial-gradient(circle at center,transparent 0,transparent 20px,rgba(255,255,255,.1) 20px,rgba(255,255,255,.2) 40px);
+    border-radius:50%;z-index:15;animation:ren-pulse-mandala 4s ease-in-out infinite alternate;pointer-events:none;">
+  </div>
+
+  <!-- Texto principal -->
+  <div id="ren-content" style="display:none;position:relative;z-index:100;text-align:center;width:90%;max-width:1100px;margin:auto;">
+    <div id="ren-main-text" style="font-size:4vw;font-weight:900;text-transform:uppercase;color:#fff;
+      text-shadow:0 0 30px rgba(255,255,255,1),0 0 60px rgba(255,255,255,.8);
+      opacity:0;transition:opacity .1s;line-height:1.2;"></div>
+  </div>
+
+  <!-- Flash overlay -->
+  <div id="ren-flash" style="position:absolute;inset:0;background:white;z-index:9997;opacity:0;pointer-events:none;mix-blend-mode:overlay;"></div>
 </div>
+
+<style>
+@keyframes ren-rotate-bg{
+  0%{transform:rotate(0deg);filter:hue-rotate(0deg) contrast(1.5) blur(20px);}
+  50%{filter:hue-rotate(180deg) contrast(2) blur(30px);}
+  100%{transform:rotate(360deg);filter:hue-rotate(360deg) contrast(1.5) blur(20px);}
+}
+@keyframes ren-pulse-mandala{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:.3;}
+  100%{transform:translate(-50%,-50%) scale(1.5);opacity:.8;}
+}
+@keyframes ren-strobe{0%{opacity:1;}100%{opacity:0;}}
+@keyframes ren-mega-strobe{0%{opacity:1;background:#fff;}50%{opacity:1;background:#fff;}100%{opacity:0;background:#000;}}
+@keyframes ren-float-echo{
+  0%{transform:scale(.5) translateY(50px);opacity:0;}
+  20%{opacity:.4;}80%{opacity:.4;}
+  100%{transform:scale(1.5) translateY(-100px);opacity:0;filter:blur(5px);}
+}
+</style>
 
 <!-- AVANCES SCREEN -->
 <div class="screen" id="screen-avances">
@@ -738,7 +818,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       ctx.shadowColor = this.color;
       ctx.fillStyle = this.color;
       ctx.beginPath();
-      ctx.arc(this.x, this.y, Math.max(0.1, this.size * (1 - this.life / this.maxLife * 0.5)), 0, Math.PI * 2);
+      ctx.arc(this.x, this.y, this.size * (1 - this.life / this.maxLife * 0.5), 0, Math.PI * 2);
       ctx.fill();
       ctx.restore();
     }
@@ -1088,7 +1168,7 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').repla
 function goScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.getElementById('topbar').style.display=(id==='screen-welcome')?'none':'flex';
+  document.getElementById('topbar').style.display=(id==='screen-welcome'||id==='screen-pin')?'none':'flex';
   window.scrollTo(0,0);
   hideSaveBar();
   // Stop avances bg if leaving
@@ -1117,7 +1197,7 @@ function pinForgot(){
     }
   }
 }
-function lockApp(){ APP.unlocked=false; goScreen('screen-dashboard'); }
+function lockApp(){ APP.unlocked=false;PIN_ENTRY="";updatePinDots();goScreen('screen-pin'); }
 
 /* ─── REGISTER ─── */
 function register(){
@@ -1126,10 +1206,14 @@ function register(){
   const email=document.getElementById('re').value.trim();
   const date=document.getElementById('rd').value;
   const why=document.getElementById('rw').value.trim();
+  const pin=document.getElementById('rp').value;
+  const pin2=document.getElementById('rp2').value;
   const errEl=document.getElementById('reg-err');
   errEl.style.display='none';
   if(!name){ errEl.textContent='Por favor ingresa tu nombre.'; errEl.style.display='block'; return; }
-  APP.user={name,age,email,date:date||new Date().toISOString().split('T')[0],why};
+  if(!pin||!/^\d{4}$/.test(pin)){ errEl.textContent='El PIN debe ser exactamente 4 dígitos.'; errEl.style.display='block'; return; }
+  if(pin!==pin2){ errEl.textContent='Los dos PINs no coinciden.'; errEl.style.display='block'; return; }
+  APP.user={name,age,email,date:date||new Date().toISOString().split('T')[0],why,pin:btoa(pin)};
   APP.unlocked=true;
   save();
   document.getElementById('topbar').style.display='flex';
@@ -2145,7 +2229,7 @@ function startAvancesBg(){
       ctx.save(); ctx.globalAlpha=this.alpha*.8;
       ctx.shadowBlur=this.size*3; ctx.shadowColor=this.color;
       ctx.fillStyle=this.color; ctx.beginPath();
-      ctx.arc(this.x,this.y,Math.max(0.1,this.size*(1-this.life/this.maxLife*.6)),0,Math.PI*2);
+      ctx.arc(this.x,this.y,this.size*(1-this.life/this.maxLife*.6),0,Math.PI*2);
       ctx.fill(); ctx.restore();
     }
   }
@@ -2355,11 +2439,16 @@ document.addEventListener('DOMContentLoaded',()=>{
   const di=document.getElementById('rd');
   if(di) di.value=new Date().toISOString().split('T')[0];
   if(APP.user){
-    APP.unlocked=true;
     document.getElementById('topbar').style.display='flex';
     document.getElementById('tb-user').textContent=APP.user.name.split(' ')[0];
-    goScreen('screen-dashboard');
+    if(APP.unlocked){ goScreen('screen-dashboard'); } else { goScreen('screen-pin'); }
   } else { goScreen('screen-welcome'); }
+  document.addEventListener('keydown',e=>{
+    const ps=document.getElementById('screen-pin');
+    if(!ps.classList.contains('active'))return;
+    if(/^\d$/.test(e.key))pinKey(e.key);
+    if(e.key==='Backspace')pinDel();
+  });
   document.addEventListener('blur',e=>{ if(CURRENT_DAY)saveDaySilent(); },true);
 });
 </script>
@@ -2666,29 +2755,148 @@ function closeCarta(){
 
 /* ─── RENOVACIÓN SENSORIAL ─── */
 let musicaActiva=false;
+/* ─── RENOVACIÓN SENSORIAL INTEGRADA ─── */
+let renAudioCtx=null, renSequenceRunning=false, renModo='completo';
+const renAffirmations=[
+  "No soy el abandono que viví.",
+  "Soy alguien capaz de reconstruirse.",
+  "Señor, sana mi corazón, fortalece mi mente y enséñame a vivir desde la fe y no desde el abandono.",
+  "Ya no viviré definido por el abandono.",
+  "Dios no me creó para vivir paralizado.",
+  "Tengo derecho a construir estabilidad.",
+  "Tengo derecho a avanzar.",
+  "Tengo derecho a sanar.",
+  "Dios, devuelve fuerzas a mi interior.",
+  "Mi vida todavía tiene propósito.",
+  "Porque no nos ha dado Dios espíritu de cobardía, sino de poder, de amor y de dominio propio.",
+  "No viviré dirigido por el miedo.",
+  "Tengo capacidad para construir una vida diferente.",
+  "No todo es peligro.",
+  "Transformaos por medio de la renovación de vuestro entendimiento.",
+  "Dios no me abandonó aunque me sentí abandonado.",
+  "Estoy aprendiendo a vivir diferente."
+];
+
 function openRenovacionSensorial(){
   const modal=document.getElementById('renovacion-modal');
-  const iframe=document.getElementById('renovacion-iframe');
-  iframe.src='./renovacion_sensorial_v3.html';
   modal.style.display='flex';
+  document.getElementById('ren-start-screen').style.display='flex';
+  document.getElementById('ren-psycho-bg').style.display='none';
+  document.getElementById('ren-mandala').style.display='none';
+  document.getElementById('ren-content').style.display='none';
+  document.getElementById('ren-flash').style.opacity=0;
   musicaActiva=false;
+  renSequenceRunning=false;
   document.getElementById('btn-musica').textContent='🎵 Activar Música';
-  document.getElementById('audio-sanidad').pause();
-  document.getElementById('audio-sanidad').currentTime=0;
+  const audio=document.getElementById('audio-sanidad');
+  audio.pause(); audio.currentTime=0;
+}
+
+function iniciarRenovacion(completo){
+  renModo=completo?'completo':'audio';
+  document.getElementById('ren-start-screen').style.display='none';
+  if(completo){
+    document.getElementById('ren-psycho-bg').style.display='block';
+    document.getElementById('ren-mandala').style.display='block';
+    document.getElementById('ren-content').style.display='flex';
+    document.getElementById('ren-content').style.justifyContent='center';
+    document.getElementById('ren-content').style.alignItems='center';
+    document.getElementById('ren-content').style.height='100%';
+    if(!renAudioCtx) renInitAudio();
+  } else {
+    // Solo audio: mostrar texto limpio sin efectos stroboscópicos
+    document.getElementById('ren-content').style.display='flex';
+    document.getElementById('ren-content').style.justifyContent='center';
+    document.getElementById('ren-content').style.alignItems='center';
+    document.getElementById('ren-content').style.height='100%';
+    document.getElementById('ren-main-text').style.textShadow='none';
+  }
+  renSequenceRunning=true;
+  renRunSequence();
 }
 
 function closeRenovacion(){
   document.getElementById('renovacion-modal').style.display='none';
-  document.getElementById('renovacion-iframe').src='';
-  document.getElementById('audio-sanidad').pause();
+  renSequenceRunning=false;
+  const audio=document.getElementById('audio-sanidad');
+  audio.pause(); audio.currentTime=0;
   musicaActiva=false;
+  document.getElementById('btn-musica').textContent='🎵 Activar Música';
+  if(renAudioCtx){ renAudioCtx.close().catch(()=>{}); renAudioCtx=null; }
 }
 
 function toggleMusica(){
   const audio=document.getElementById('audio-sanidad');
   const btn=document.getElementById('btn-musica');
   if(musicaActiva){ audio.pause(); musicaActiva=false; btn.textContent='🎵 Activar Música'; }
-  else { audio.play(); musicaActiva=true; btn.textContent='🔇 Pausar Música'; }
+  else { audio.play().catch(()=>toast('⚠️ No se pudo reproducir el audio')); musicaActiva=true; btn.textContent='🔇 Pausar Música'; }
+}
+
+function renInitAudio(){
+  try{
+    renAudioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    const osc=renAudioCtx.createOscillator();
+    osc.type='sine'; osc.frequency.setValueAtTime(528,renAudioCtx.currentTime);
+    const gain=renAudioCtx.createGain(); gain.gain.setValueAtTime(0.06,renAudioCtx.currentTime);
+    const lfo=renAudioCtx.createOscillator(); lfo.type='sine'; lfo.frequency.setValueAtTime(1,renAudioCtx.currentTime);
+    const lfoGain=renAudioCtx.createGain(); lfoGain.gain.setValueAtTime(0.04,renAudioCtx.currentTime);
+    lfo.connect(lfoGain); lfoGain.connect(gain.gain);
+    osc.connect(gain); gain.connect(renAudioCtx.destination);
+    osc.start(); lfo.start();
+    setInterval(()=>{ if(renAudioCtx) lfo.frequency.linearRampToValueAtTime(Math.random()*6+1,renAudioCtx.currentTime+2); },8000);
+  }catch(e){}
+}
+
+function renTriggerFlash(mega){
+  if(renModo!=='completo') return;
+  const f=document.getElementById('ren-flash');
+  f.style.animation='none'; void f.offsetWidth;
+  f.style.animation=mega?'ren-mega-strobe .25s ease-out forwards':'ren-strobe .08s ease-out forwards';
+}
+
+function renSpawnEcho(text){
+  if(renModo!=='completo') return;
+  for(let i=0;i<3;i++){
+    setTimeout(()=>{
+      const e=document.createElement('div');
+      e.style.cssText='position:absolute;color:rgba(255,255,255,.2);font-size:2vw;font-weight:bold;z-index:50;pointer-events:none;text-align:center;width:100%;animation:ren-float-echo 5s linear forwards;text-shadow:0 0 10px rgba(255,255,255,.5);';
+      e.style.top=(Math.random()*60+20)+'%';
+      e.innerText=text;
+      document.getElementById('renovacion-modal').appendChild(e);
+      setTimeout(()=>e.remove(),5000);
+    },i*400);
+  }
+}
+
+async function renRunSequence(){
+  const txt=document.getElementById('ren-main-text');
+  const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+  while(renSequenceRunning){
+    for(const phrase of renAffirmations){
+      if(!renSequenceRunning) break;
+      txt.style.fontSize=phrase.length>80?'2.5vw':phrase.length>40?'3.5vw':'5vw';
+      txt.innerText=phrase;
+      txt.style.opacity=1;
+      renTriggerFlash(false);
+      renSpawnEcho(phrase);
+      const readTime=Math.max(1800,phrase.length*45);
+      setTimeout(()=>renTriggerFlash(false),readTime/2);
+      await sleep(readTime);
+      if(!renSequenceRunning) break;
+      renTriggerFlash(true);
+      txt.style.opacity=0;
+      if(renAudioCtx){
+        try{
+          const b=renAudioCtx.createOscillator();
+          b.type='triangle'; b.frequency.setValueAtTime(2000,renAudioCtx.currentTime);
+          const bg=renAudioCtx.createGain(); bg.gain.setValueAtTime(0.04,renAudioCtx.currentTime);
+          bg.gain.exponentialRampToValueAtTime(0.001,renAudioCtx.currentTime+0.1);
+          b.connect(bg); bg.connect(renAudioCtx.destination); b.start(); b.stop(renAudioCtx.currentTime+0.1);
+        }catch(e){}
+      }
+      await sleep(800);
+    }
+  }
 }
 
 // Patch goScreen to render cartas
