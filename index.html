@@ -486,6 +486,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <div class="field"><label>¿Por qué inicias este proceso hoy?</label><textarea id="rw" placeholder="Lo que te trajo hasta aquí..."></textarea></div>
       <div class="field"><label>Código PIN (4 dígitos)</label><input type="password" id="rp" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Ej. 1234" class="pin-input"><div class="hint">🔒 Este código protege tu información.</div></div>
       <div class="field"><label>Confirmar PIN</label><input type="password" id="rp2" maxlength="4" inputmode="numeric" pattern="[0-9]{4}" placeholder="Repite el código" class="pin-input"></div>
+      <p id="reg-err" style="display:none;color:#d04040;font-size:13px;text-align:center;margin-bottom:10px;font-family:'Cinzel',serif;letter-spacing:.5px;padding:10px;background:rgba(208,64,64,.1);border:1px solid rgba(208,64,64,.3);border-radius:8px;"></p>
       <button class="btn btn-primary btn-full" onclick="register()">Iniciar mi transformación →</button>
       <p class="sec-note">🔒 Tu información se guarda de forma segura en este dispositivo.</p>
     </div>
