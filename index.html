@@ -536,6 +536,7 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
       <div class="quick-card" onclick="goScreen('screen-affirmations')"><div class="qc-icon">🎙️</div><div class="qc-t">Afirmaciones de Voz</div><div class="qc-d">Graba y repite con tu propia voz</div></div>
       <div class="quick-card" onclick="goScreen('screen-cartas')" style="background:linear-gradient(135deg,rgba(60,20,80,.6),rgba(30,10,50,.6));border-color:rgba(180,100,220,.4);"><div class="qc-icon">🦅</div><div class="qc-t" style="color:#d4a0f0;">Cartas del Fénix</div><div class="qc-d">Tus cartas de transformación</div></div>
       <div class="quick-card" onclick="openRenovacionSensorial()" style="background:linear-gradient(135deg,rgba(20,40,80,.6),rgba(10,20,60,.6));border-color:rgba(80,150,255,.4);"><div class="qc-icon">🌀</div><div class="qc-t" style="color:#80b8ff;">Renovación Sensorial</div><div class="qc-d">Inmersión de afirmaciones + audio</div></div>
+      <div class="quick-card" onclick="goScreen('screen-reencuadre')" style="background:linear-gradient(135deg,rgba(20,60,60,.6),rgba(10,30,40,.6));border-color:rgba(52,216,166,.4);"><div class="qc-icon">🧠</div><div class="qc-t" style="color:#34D8A6;">Reencuadre + Metas</div><div class="qc-d">CBT, respiración y marcos de metas (SMART, WOOP, OKR...)</div></div>
       <div class="quick-card" onclick="openExportModal()" style="background:linear-gradient(135deg,rgba(26,50,106,.5),rgba(32,22,48,.5));border-color:#3080c040;">
         <div class="qc-icon">📄</div><div class="qc-t" style="color:#90c8f0;">Exportar Informe PDF</div><div class="qc-d">Informe completo de tu proceso</div>
       </div>
@@ -558,6 +559,12 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
     <div id="cartas-list" style="display:flex;flex-direction:column;gap:12px;"></div>
   </div>
 </div>
+<!-- REENCUADRE + METAS SCREEN -->
+<div class="screen" id="screen-reencuadre" style="min-height:100vh;background:#0E1320;">
+  <button onclick="goScreen('screen-dashboard')" style="position:fixed;top:14px;left:14px;z-index:9999;display:inline-flex;align-items:center;gap:6px;background:rgba(11,15,26,.9);border:1px solid rgba(255,255,255,.18);color:#EAEEF6;border-radius:20px;padding:8px 16px;font-size:.78rem;font-family:'Cinzel',serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(8px);">← Volver</button>
+  <iframe id="reencuadre-iframe" data-src="./reencuadre.html" title="Reencuadre + Metas" style="width:100%;height:100vh;border:0;display:block;"></iframe>
+</div>
+
 <div id="carta-modal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.85);overflow-y:auto;padding:20px;box-sizing:border-box;">
   <div id="carta-modal-inner" style="max-width:780px;margin:0 auto;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:36px 32px;position:relative;">
     <button onclick="closeCarta()" style="position:absolute;top:16px;right:16px;background:transparent;border:1px solid var(--border);color:var(--text2);font-size:1rem;padding:6px 14px;border-radius:8px;cursor:pointer;">✕ Cerrar</button>
@@ -1010,13 +1017,14 @@ const GUIDES = [
   {id:9,emoji:"🌹",title:"Sanando la Sexualidad",desc:"Reconectar con la intimidad desde la sanidad y no desde la herida.",unlocked:false,days:7},
   {id:10,emoji:"🕊️",title:"El Arte del Perdón",desc:"Liberar el peso que no es tuyo sin minimizar lo que viviste.",unlocked:false,days:7},
   {id:11,emoji:"🛡️",title:"Límites Sanos",desc:"Aprender a decir no desde el amor propio, no desde el miedo.",unlocked:false,days:7},
-  {id:12,emoji:"🌊",title:"Regulación Emocional Avanzada",desc:"Gestionar las emociones intensas sin suprimirlas ni desbordarte.",unlocked:false,days:7},
+  {id:12,emoji:"🌊",title:"Regulación Emocional Avanzada",desc:"Gestionar las emociones intensas sin suprimirlas ni desbordarte.",unlocked:true,days:7},
   {id:13,emoji:"👨‍👦",title:"Paternidad Consciente",desc:"Romper los ciclos generacionales y amar a tus hijos sanamente.",unlocked:false,days:7},
   {id:14,emoji:"⚡",title:"El Sistema Nervioso Restaurado",desc:"Salir del modo supervivencia y entrar al modo vida plena.",unlocked:false,days:7},
   {id:15,emoji:"🙏",title:"Identidad, Fe y Propósito",desc:"Anclar la identidad en lo espiritual y no en las heridas del pasado.",unlocked:false,days:7},
   {id:16,emoji:"💰",title:"Libertad Financiera Interior",desc:"Las creencias de escasez heredadas del trauma y cómo sanarlas.",unlocked:false,days:7},
   {id:17,emoji:"🏛️",title:"Construir el Legado",desc:"El hombre transformado que deja huella en su familia y comunidad.",unlocked:false,days:7},
   {id:18,emoji:"🔥",title:"El Fénix en Vuelo — Integración",desc:"Cierre de las 18 guías: integrar, celebrar y continuar.",unlocked:false,days:7},
+  {id:19,emoji:"🌅",title:"Etapa 2 — Miedo, Seguridad y Restauración",desc:"20 días para dejar de vivir gobernado por el miedo, construir seguridad interior y restaurar tus relaciones más importantes.",unlocked:true,days:20},
 ];
 
 const AFFIRMATION_PHRASES = [
@@ -1088,6 +1096,166 @@ const DAYS = [
     {id:"ejercicio",label:"Ejercicio",concept:`<p>La carta al nuevo yo es el ejercicio más importante de todo el proceso.</p>`,questions:[{id:"d7e1",label:"¿Cómo quiero vivir? ¿Cómo quiero sentirme — emocionalmente, relacionalmente, espiritualmente?",rows:5},{id:"d7e2",label:"¿Qué tipo de hombre quiero ser? ¿Cuáles son mis valores más profundos?",rows:5},{id:"d7e3",label:"¿Cómo quiero cuidar emocionalmente a mis hijos? ¿Qué ciclos familiares quiero romper?",rows:5}]},
     {id:"profundidad",label:"Profundizar",questions:[{id:"d7p1",label:"🕊 Carta al niño de 6 años — Escríbele a ese niño. Dile lo que necesitaba escuchar. Dile que no fue su culpa.",rows:7},{id:"d7p2",label:"🕊 Carta al niño de 8 años — ¿Qué cargó solo que no debería haber cargado? ¿Qué le dirías hoy?",rows:7},{id:"d7p3",label:"Proyecto de Vida — El Plan del Fénix. Escribe metas en: Emocional / Familiar / Espiritual / Físico / Económico / Social:",rows:8}],recs:{mañana:["Leer la carta al nuevo yo — como ritual de cierre de los 7 días","Celebrar que completaste este proceso"],tarde:["Compartir lo que aprendiste con alguien de confianza"],noche:["La oración de cierre del proceso","Comprometerte a continuar con la guía 2 cuando estés listo"]}},
     {id:"cierre",label:"Cierre",concept:`<p>Este es el cierre de la primera guía. No el final del proceso — el <em>comienzo</em> de él.</p><div class="key-quote">"No soy el abandono que viví. Soy alguien con la capacidad de reconstruirse."</div>`,questions:[{id:"d7c1",label:"Ritual de cierre — Completa: 'Ya no viviré definido por el abandono. Hoy elijo...'",rows:5},{id:"d7c2",label:"Oración de cierre personal — Escríbele a Dios lo que sientes al terminar estos 7 días:",rows:5}]}
+  ]},
+{num:8,emoji:"😨",guide:19,title:"Reconocer el Miedo sin Dejar que Gobierne",desc:"El miedo no siempre es peligro real. Aprende a distinguir hechos de interpretaciones.",
+   verse:{t:'"Porque Dios no nos ha dado espíritu de cobardía, sino de poder, de amor y de dominio propio."',r:"2 Timoteo 1:7"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Comienza hoy la <strong>Etapa 2</strong> de tu proceso: 20 días para seguir construyendo sobre lo que ya trabajaste. El miedo no siempre representa un peligro real — muchas veces es <strong>una interpretación anticipada de lo que podría ocurrir</strong>. Aprender a distinguir entre hechos e interpretaciones disminuye la ansiedad.</p><div class="key-quote">"No soy mis pensamientos. Soy una persona capaz de decidir con sabiduría."</div><p>Durante estos 20 días, dedica cada día aproximadamente una hora: 10 minutos de oración consciente, 10 de lectura bíblica, 15 de escritura terapéutica, 15 de ejercicio físico y 10 minutos para un acto intencional de amor hacia alguien cercano.</p>`,questions:[{id:"d8a1",label:"¿Qué miedo sientes con más frecuencia últimamente? Descríbelo tal como aparece en tu mente y en tu cuerpo.",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Escribe en tres columnas. Ejemplo — Temor: "Mi esposa dejará de quererme." Hechos: "Me llamó hoy, me escribió, seguimos construyendo la relación." Interpretación alternativa: "Mi ansiedad me hace pensar en el abandono."</p>`,questions:[{id:"d8e1",label:"Columna 1 — ¿Qué temo? Escribe el miedo concreto que más te inquieta hoy.",rows:3},{id:"d8e2",label:"Columna 2 — ¿Qué evidencia objetiva tengo de que eso está pasando realmente? (solo hechos, no interpretaciones)",rows:3},{id:"d8e3",label:"Columna 3 — ¿Qué otra explicación, más realista, es posible?",rows:3}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d8p1",label:"Tarea del día — Respira profundamente 5 minutos, tres veces al día, repitiendo: 'No soy mis pensamientos. Soy una persona capaz de decidir con sabiduría.' ¿Qué notaste en tu cuerpo y en tu mente al hacerlo?",rows:5}],recs:{mañana:["Al despertar: 5 minutos de respiración profunda repitiendo la frase del día"],tarde:["Repite el ejercicio de respiración una segunda vez"],noche:["Tercera repetición antes de dormir","Revisa tus tres columnas: ¿el miedo de hoy sigue teniendo el mismo peso?"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Porque Dios no nos ha dado espíritu de cobardía, sino de poder, de amor y de dominio propio." — 2 Timoteo 1:7</div>`,questions:[{id:"d8c1",label:"¿Qué diferencia notaste hoy entre el miedo que sentiste y los hechos reales?",rows:4},{id:"d8c2",label:"Compromiso del día 1 (Etapa 2) — Completa: 'Hoy elijo responder a mis miedos con...'",rows:3}]}
+  ]},
+  {num:9,emoji:"🌱",guide:19,title:"Construir Seguridad Interior",desc:"La autoestima sana nace cuando el valor personal depende de principios, no solo de la aprobación de otros.",
+   verse:{t:'"Te alabaré porque formidables y maravillosas son tus obras."',r:"Salmos 139:14"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La autoestima sana nace cuando el valor personal depende de <strong>principios</strong> y no exclusivamente de la aprobación de otras personas.</p><div class="key-quote">"Te alabaré porque formidables y maravillosas son tus obras." — Salmos 139:14</div>`,questions:[{id:"d9a1",label:"¿En qué momentos sientes que tu valor depende de lo que otros opinan de ti?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Escribe diez fortalezas personales. No logros — fortalezas. Ejemplo: perseverante, responsable, honesto, compasivo.</p>`,questions:[{id:"d9e1",label:"Escribe tus diez fortalezas personales (cualidades, no logros):",rows:8},{id:"d9e2",label:"De esas diez, ¿cuáles te cuesta más reconocer en ti mismo? ¿Por qué?",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d9p1",label:"Tarea del día — Pregunta a tres personas cercanas: '¿Cuál crees que es mi mayor fortaleza?' Escribe lo que te respondieron.",rows:6}],recs:{mañana:["Elige a las tres personas que preguntarás hoy"],tarde:["Haz las preguntas con calma, sin justificarte ni minimizar la respuesta"],noche:["Escribe qué sentiste al escuchar cómo te ven otros"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"No eres lo que otros necesitaban que fueras. Eres lo que Dios diseñó que fueras."</div>`,questions:[{id:"d9c1",label:"¿Qué te sorprendió de las respuestas que recibiste hoy?",rows:4},{id:"d9c2",label:"Compromiso del día 2 (Etapa 2):",rows:3}]}
+  ]},
+  {num:10,emoji:"🌊",guide:19,title:"Aprender a Regular las Emociones",desc:"Las emociones son mensajeras, no jefes. No todo lo que siento necesita convertirse en acción.",
+   verse:{t:'"Airaos, pero no pequéis; no se ponga el sol sobre vuestro enojo."',r:"Efesios 4:26"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Las emociones son <strong>mensajeras</strong>; no son jefes. No todo lo que siento necesita convertirse en una acción.</p><div class="key-quote">"Airaos, pero no pequéis; no se ponga el sol sobre vuestro enojo." — Efesios 4:26</div>`,questions:[{id:"d10a1",label:"¿Qué emoción te ha costado más regular esta semana?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Durante el día registra al menos tres momentos: situación, emoción, intensidad (1-10) y la respuesta que elegiste.</p>`,questions:[{id:"d10e1",label:"Registro 1 — Situación / Emoción / Intensidad (1-10) / Respuesta elegida:",rows:4},{id:"d10e2",label:"Registro 2 — Situación / Emoción / Intensidad (1-10) / Respuesta elegida:",rows:4},{id:"d10e3",label:"Registro 3 — Situación / Emoción / Intensidad (1-10) / Respuesta elegida:",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d10p1",label:"Mirando tus tres registros, ¿qué patrón notas entre la intensidad de la emoción y la respuesta que elegiste?",rows:5}],recs:{mañana:["Antes de reaccionar, nombra la emoción en voz baja: 'Estoy sintiendo...'"],tarde:["Haz una pausa de 10 segundos antes de responder en momentos de tensión"],noche:["Revisa tus tres registros del día"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Sentir no es débil. Actuar sin pensar sí puede serlo."</div>`,questions:[{id:"d10c1",label:"¿Qué te gustaría hacer diferente la próxima vez que sientas esa emoción con intensidad alta?",rows:4},{id:"d10c2",label:"Compromiso del día 3 (Etapa 2):",rows:3}]}
+  ]},
+  {num:11,emoji:"🤝",guide:19,title:"La Confianza se Construye",desc:"La confianza no aparece de repente. Se construye mediante coherencia repetida.",
+   verse:{t:'"Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia."',r:"Proverbios 3:5-6"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La confianza no aparece de repente. Se construye mediante <strong>coherencia repetida</strong> — entre lo que se dice y lo que se hace.</p><div class="key-quote">"Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia." — Proverbios 3:5-6</div>`,questions:[{id:"d11a1",label:"¿En quién confías plenamente hoy? ¿Qué hizo esa persona para ganarse esa confianza?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d11e1",label:"Haz una lista de personas confiables en tu vida:",rows:4},{id:"d11e2",label:"Haz una lista de personas poco confiables en tu vida:",rows:4},{id:"d11e3",label:"Identifica las conductas concretas que producen confianza en la primera lista, y las que la rompen en la segunda.",rows:5}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d11p1",label:"De esas conductas que producen confianza, ¿cuáles practicas tú de forma constante con las personas que amas?",rows:5}],recs:{mañana:["Cumple una pequeña promesa que hagas hoy, aunque sea insignificante"],tarde:["Sé puntual en algo que tengas agendado"],noche:["Escribe una conducta concreta que fortalecerás esta semana para ser más confiable"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"La confianza no se declara. Se demuestra, un día a la vez."</div>`,questions:[{id:"d11c1",label:"¿Qué conducta concreta necesitas repetir para reconstruir confianza en alguna relación importante?",rows:4},{id:"d11c2",label:"Compromiso del día 4 (Etapa 2):",rows:3}]}
+  ]},
+  {num:12,emoji:"🗣️",guide:19,title:"Cambiar el Diálogo Interno",desc:"La mente habla constantemente. Lo importante es aprender a responderle.",
+   verse:{t:'"No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento."',r:"Romanos 12:2"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La mente habla constantemente. Lo importante no es silenciarla, sino <strong>aprender a responderle</strong>. Cada pensamiento negativo puede convertirse en uno realista.</p><div class="key-quote">"No soy suficiente." → "Estoy creciendo y aprendiendo."</div><p style="text-align:right;opacity:.7;">— Romanos 12:2</p>`,questions:[{id:"d12a1",label:"¿Cuál es el pensamiento negativo que más se repite en tu mente?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d12e1",label:"Pensamiento negativo 1 → conviértelo en un pensamiento realista:",rows:3},{id:"d12e2",label:"Pensamiento negativo 2 → conviértelo en un pensamiento realista:",rows:3},{id:"d12e3",label:"Pensamiento negativo 3 → conviértelo en un pensamiento realista:",rows:3}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d12p1",label:"¿De dónde crees que aprendiste ese diálogo interno negativo? ¿De quién lo escuchaste primero?",rows:5}],recs:{mañana:["Cuando aparezca un pensamiento negativo, nómbralo: 'Ese es un pensamiento, no un hecho'"],tarde:["Practica reemplazar un pensamiento negativo en tiempo real"],noche:["Repite en voz alta tus tres pensamientos realistas de hoy"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"No tienes que creer todo lo que piensas."</div>`,questions:[{id:"d12c1",label:"¿Qué cambió en tu cuerpo o tu ánimo al reemplazar esos pensamientos?",rows:4},{id:"d12c2",label:"Compromiso del día 5 (Etapa 2):",rows:3}]}
+  ]},
+  {num:13,emoji:"🕊️",guide:19,title:"Aprender a Perdonar",desc:"Perdonar no significa justificar. Significa dejar de cargar el peso emocional.",
+   verse:{t:'"Antes sed benignos unos con otros, misericordiosos, perdonándoos unos a otros."',r:"Efesios 4:32"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Perdonar no significa justificar. Significa <strong>dejar de cargar el peso emocional</strong> de lo que otros hicieron o dejaron de hacer.</p><div class="key-quote">"Antes sed benignos unos con otros, misericordiosos, perdonándoos unos a otros." — Efesios 4:32</div>`,questions:[{id:"d13a1",label:"¿Qué o a quién sientes que aún no has terminado de perdonar?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Escribe una carta que nunca entregarás. Exprésalo todo, sin censura. Luego ora por esa persona.</p>`,questions:[{id:"d13e1",label:"Carta que nunca entregarás — Escribe todo lo que necesitas decir:",rows:8},{id:"d13e2",label:"Después de escribirla, ora por esa persona. ¿Qué sentiste al hacerlo?",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d13p1",label:"¿Qué ganarías si soltaras ese peso hoy? ¿Qué temes perder si perdonas?",rows:5}],recs:{mañana:["Lee tu carta en voz baja, solo para ti"],tarde:["Ora específicamente por esa persona, aunque te cueste"],noche:["Guarda o destruye la carta, como sientas que corresponde"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Perdonar no es decir que estuvo bien. Es decidir que ya no te controlará."</div>`,questions:[{id:"d13c1",label:"¿Qué cambió en ti después de este ejercicio?",rows:4},{id:"d13c2",label:"Compromiso del día 6 (Etapa 2):",rows:3}]}
+  ]},
+  {num:14,emoji:"☁️",guide:19,title:"La Paz Comienza Dentro",desc:"No existe paz exterior sin orden interior.",
+   verse:{t:'"La paz os dejo, mi paz os doy; yo no os la doy como el mundo la da."',r:"Juan 14:27"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>No existe paz exterior sin <strong>orden interior</strong>. La paz que buscas afuera empieza siempre por dentro.</p><div class="key-quote">"La paz os dejo, mi paz os doy; yo no os la doy como el mundo la da." — Juan 14:27</div>`,questions:[{id:"d14a1",label:"¿Qué tan en paz te sientes contigo mismo hoy, del 1 al 10? ¿Por qué ese número?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Dedica 20 minutos sin celular. Solo respiración. Oración. Silencio.</p>`,questions:[{id:"d14e1",label:"Después de tus 20 minutos de silencio, ¿qué pensamientos o emociones aparecieron cuando no había ruido ni distracción?",rows:6}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d14p1",label:"¿Qué ruido interior (preocupaciones, pendientes, exigencias) te impide sentir paz con más frecuencia?",rows:5}],recs:{mañana:["Empieza el día con 5 minutos de silencio antes de tomar el teléfono"],tarde:["Haz una pausa de 5 minutos sin pantallas"],noche:["Repite los 20 minutos de silencio, respiración y oración"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"La paz no es ausencia de ruido afuera. Es orden adentro."</div>`,questions:[{id:"d14c1",label:"¿Qué necesitas soltar esta semana para tener más orden interior?",rows:4},{id:"d14c2",label:"Compromiso del día 7 (Etapa 2):",rows:3}]}
+  ]},
+  {num:15,emoji:"💞",guide:19,title:"Amar sin Controlar",desc:"El amor saludable no controla. Respeta.",
+   verse:{t:'"El amor es sufrido, es benigno... no busca lo suyo."',r:"1 Corintios 13:4-5"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>El amor saludable no controla. <strong>Respeta.</strong> Controlar suele nacer del miedo a perder, no del amor mismo.</p><div class="key-quote">"El amor es sufrido, es benigno... no busca lo suyo." — 1 Corintios 13:4-5</div>`,questions:[{id:"d15a1",label:"¿En qué momentos notas que intentas controlar en vez de confiar, con tu esposa o tus hijos?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Durante todo el día evita corregir o controlar a tu esposa o hijos. Solo escucha.</p>`,questions:[{id:"d15e1",label:"¿Qué situaciones se presentaron hoy en las que normalmente hubieras corregido o controlado? ¿Qué hiciste en su lugar?",rows:6}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d15p1",label:"¿Qué miedo hay detrás de tu necesidad de controlar? ¿Qué pasaría si simplemente confiaras?",rows:5}],recs:{mañana:["Antes de corregir algo, pregúntate: '¿esto realmente lo necesita, o lo necesito yo?'"],tarde:["Practica escuchar sin dar tu opinión, aunque no estés de acuerdo"],noche:["Agradece a tu esposa o hijos por algo específico de hoy"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Amar es soltar la necesidad de tener siempre la razón."</div>`,questions:[{id:"d15c1",label:"¿Qué aprendiste hoy sobre la diferencia entre amar y controlar?",rows:4},{id:"d15c2",label:"Compromiso del día 8 (Etapa 2):",rows:3}]}
+  ]},
+  {num:16,emoji:"👂",guide:19,title:"Escucha Activa",desc:"Escuchar de verdad, sin interrumpir ni aconsejar.",
+   verse:{t:'"Todo hombre sea pronto para oír, tardo para hablar, tardo para airarse."',r:"Santiago 1:19"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Escuchar de verdad no es esperar tu turno para hablar. Es <strong>hacer espacio</strong> para que el otro se sienta comprendido.</p><div class="key-quote">"Todo hombre sea pronto para oír, tardo para hablar, tardo para airarse." — Santiago 1:19</div>`,questions:[{id:"d16a1",label:"¿Con quién te cuesta más escuchar sin interrumpir o sin aconsejar de inmediato?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Ten una conversación de 20 minutos. No interrumpir. No aconsejar. Solo preguntar.</p>`,questions:[{id:"d16e1",label:"¿Con quién tuviste la conversación? ¿Qué fue lo más difícil de solo escuchar y preguntar, sin aconsejar?",rows:6}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d16p1",label:"¿Qué descubriste de esa persona que no sabías, simplemente por escuchar más y hablar menos?",rows:5}],recs:{mañana:["Recuerda tu propósito del día: escuchar más de lo que hablas"],tarde:["Ten la conversación de 20 minutos"],noche:["Anota una cosa nueva que aprendiste de esa persona hoy"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Escuchar bien es una forma silenciosa de amar."</div>`,questions:[{id:"d16c1",label:"¿Cómo cambió la conversación cuando dejaste de intentar resolver y solo escuchaste?",rows:4},{id:"d16c2",label:"Compromiso del día 9 (Etapa 2):",rows:3}]}
+  ]},
+  {num:17,emoji:"👨‍👧‍👦",guide:19,title:"Fortalecer la Relación con los Hijos",desc:"Preguntas simples y presencia real construyen vínculos duraderos.",
+   verse:{t:'"Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él."',r:"Proverbios 22:6"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La conexión con los hijos no se construye con grandes gestos, sino con <strong>presencia repetida</strong> — preguntas simples, escucha genuina, contacto físico.</p><div class="key-quote">"Instruye al niño en su camino, y aun cuando fuere viejo no se apartará de él." — Proverbios 22:6</div>`,questions:[{id:"d17a1",label:"¿Cómo describirías la conexión actual con tus hijos? ¿Qué te gustaría que fuera diferente?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Hazles estas preguntas: ¿Qué fue lo mejor de tu día? ¿Qué aprendiste hoy? ¿Cómo puedo ayudarte? Después abrázalos durante 20 segundos.</p>`,questions:[{id:"d17e1",label:"¿Qué te respondieron a esas tres preguntas? Escribe lo que más te llamó la atención.",rows:6},{id:"d17e2",label:"¿Qué sentiste durante el abrazo de 20 segundos?",rows:3}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d17p1",label:"¿Qué patrón de tu propia infancia quieres romper conscientemente en tu forma de relacionarte con tus hijos?",rows:5}],recs:{mañana:["Planea el momento del día en que harás las tres preguntas"],tarde:["Hazlas sin prisa, con el teléfono guardado"],noche:["El abrazo de 20 segundos, sin apuro"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Los hijos no necesitan un padre perfecto. Necesitan un padre presente."</div>`,questions:[{id:"d17c1",label:"¿Qué quieres que tus hijos recuerden de ti dentro de veinte años?",rows:4},{id:"d17c2",label:"Compromiso del día 10 (Etapa 2):",rows:3}]}
+  ]},
+  {num:18,emoji:"🙏",guide:19,title:"Aprender Gratitud",desc:"La gratitud entrena a la mente a notar lo que sí funciona.",
+   verse:{t:'"Dad gracias en todo, porque esta es la voluntad de Dios para con vosotros."',r:"1 Tesalonicenses 5:18"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La gratitud no niega el dolor. <strong>Entrena a la mente</strong> a notar también lo que sí está funcionando, lo que sí sostiene.</p><div class="key-quote">"Dad gracias en todo, porque esta es la voluntad de Dios para con vosotros." — 1 Tesalonicenses 5:18</div>`,questions:[{id:"d18a1",label:"¿Qué tan fácil o difícil te resulta sentir gratitud en este momento de tu vida?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Escribe 30 bendiciones. No repitas ninguna.</p>`,questions:[{id:"d18e1",label:"Escribe tus 30 bendiciones (personas, capacidades, momentos, cosas simples):",rows:12}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d18p1",label:"De esas 30, ¿cuál te costó más reconocer? ¿Por qué crees que no la tenías presente antes?",rows:4}],recs:{mañana:["Menciona en voz alta una bendición antes de levantarte de la cama"],tarde:["Agradece directamente a una persona de tu lista"],noche:["Relee tu lista completa antes de dormir"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Lo que agradeces, crece en tu atención."</div>`,questions:[{id:"d18c1",label:"¿Cómo cambió tu ánimo después de escribir las 30 bendiciones?",rows:4},{id:"d18c2",label:"Compromiso del día 11 (Etapa 2):",rows:3}]}
+  ]},
+  {num:19,emoji:"🌪️",guide:19,title:"Manejar la Ansiedad",desc:"Un protocolo simple para los momentos en que la ansiedad aparece.",
+   verse:{t:'"Por nada estéis afanosos... y la paz de Dios... guardará vuestros corazones."',r:"Filipenses 4:6-7"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Cuando aparezca la ansiedad, sigue este protocolo: <strong>detente. Respira. Ora. Escribe. Luego actúa.</strong> El orden importa — actuar desde la ansiedad casi siempre empeora las cosas.</p><div class="key-quote">"Por nada estéis afanosos... y la paz de Dios... guardará vuestros corazones." — Filipenses 4:6-7</div>`,questions:[{id:"d19a1",label:"¿Qué situación te generó ansiedad recientemente? ¿Cómo reaccionaste en ese momento?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>La próxima vez que sientas ansiedad hoy, aplica el protocolo: detente, respira, ora, escribe, y solo entonces actúa.</p>`,questions:[{id:"d19e1",label:"Describe un momento de hoy en que aplicaste el protocolo. ¿Qué escribiste antes de actuar?",rows:6},{id:"d19e2",label:"¿Cambió tu forma de actuar comparado con lo que hubieras hecho antes, reaccionando de inmediato?",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d19p1",label:"¿Qué situaciones específicas disparan tu ansiedad con más frecuencia? ¿Qué tienen en común?",rows:5}],recs:{mañana:["Recuerda el protocolo: detente, respira, ora, escribe, actúa"],tarde:["Aplícalo ante la primera señal de ansiedad que notes"],noche:["Escribe qué tan bien te funcionó el protocolo hoy"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"No tienes que resolverlo todo de inmediato. Puedes detenerte primero."</div>`,questions:[{id:"d19c1",label:"¿Qué parte del protocolo te resulta más difícil de aplicar? ¿Por qué?",rows:4},{id:"d19c2",label:"Compromiso del día 12 (Etapa 2):",rows:3}]}
+  ]},
+  {num:20,emoji:"🎯",guide:19,title:"Disciplina Emocional",desc:"Elegir lo importante antes que lo urgente-aparente.",
+   verse:{t:'"Golpeo mi cuerpo, y lo pongo en servidumbre."',r:"1 Corintios 9:27"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La disciplina emocional se entrena en decisiones pequeñas: <strong>elegir lo importante antes que lo urgente-aparente</strong>, como el teléfono.</p><div class="key-quote">"Golpeo mi cuerpo, y lo pongo en servidumbre." — 1 Corintios 9:27</div>`,questions:[{id:"d20a1",label:"¿Cuál es tu primer impulso al despertar: revisar el teléfono o hacer algo intencional? ¿Cómo te hace sentir eso?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Haz una tarea importante antes de revisar el teléfono.</p>`,questions:[{id:"d20e1",label:"¿Qué tarea importante hiciste hoy antes de tomar el teléfono? ¿Cómo te sentiste al lograrlo?",rows:5}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d20p1",label:"¿Qué otra área de tu vida necesita más disciplina — no por castigo, sino para vivir con más libertad?",rows:5}],recs:{mañana:["Deja el teléfono fuera de alcance los primeros 30 minutos del día"],tarde:["Identifica una distracción y postérgala 15 minutos"],noche:["Revisa si cumpliste tu tarea importante antes del teléfono"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"La disciplina no te quita libertad. Te la devuelve."</div>`,questions:[{id:"d20c1",label:"¿Qué pequeño hábito de disciplina quieres sostener esta semana?",rows:4},{id:"d20c2",label:"Compromiso del día 13 (Etapa 2):",rows:3}]}
+  ]},
+  {num:21,emoji:"🪞",guide:19,title:"Identidad",desc:"Quién eres, no qué haces ni cuánto ganas.",
+   verse:{t:'"Vosotros sois linaje escogido, real sacerdocio, nación santa."',r:"1 Pedro 2:9"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Tu identidad no es tu trabajo, ni tus ingresos, ni tus logros. Es <strong>quién eres</strong> cuando nada de eso está presente.</p><div class="key-quote">"Vosotros sois linaje escogido, real sacerdocio, nación santa." — 1 Pedro 2:9</div>`,questions:[{id:"d21a1",label:"Si te quitaran tu trabajo y tus logros mañana, ¿quién quedaría? ¿Qué sientes al pensar en esa pregunta?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Escribe quién eres. No qué haces. No cuánto ganas. Quién eres.</p>`,questions:[{id:"d21e1",label:"Escribe quién eres, en tus propias palabras, sin mencionar tu trabajo ni tus logros:",rows:8}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d21p1",label:"¿Cuánto de tu valor personal actual depende todavía de lo que produces? ¿Qué tendría que cambiar para que dependiera menos de eso?",rows:5}],recs:{mañana:["Repite: 'Mi valor no depende de lo que produzco hoy'"],tarde:["Nota si te descubres midiendo tu día solo por logros"],noche:["Relee lo que escribiste sobre quién eres"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Antes de ser útil, ya eras valioso."</div>`,questions:[{id:"d21c1",label:"¿Qué parte de tu identidad quieres reforzar, más allá de lo que haces?",rows:4},{id:"d21c2",label:"Compromiso del día 14 (Etapa 2):",rows:3}]}
+  ]},
+  {num:22,emoji:"🗺️",guide:19,title:"Proyecto de Vida",desc:"Metas claras, divididas en pasos pequeños y alcanzables.",
+   verse:{t:'"Encomienda a Jehová tus obras, y tus pensamientos serán afirmados."',r:"Proverbios 16:3"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Un proyecto de vida no es una lista de deseos. Es un mapa de <strong>metas claras divididas en pasos pequeños</strong>.</p><div class="key-quote">"Encomienda a Jehová tus obras, y tus pensamientos serán afirmados." — Proverbios 16:3</div>`,questions:[{id:"d22a1",label:"¿Qué tan claro tienes hoy hacia dónde quieres dirigir tu vida en los próximos años?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Escribe tus metas a 6 meses, 1 año, 3 años y 5 años. Después divídelas en pequeños pasos.</p>`,questions:[{id:"d22e1",label:"Metas a 6 meses:",rows:3},{id:"d22e2",label:"Metas a 1 año:",rows:3},{id:"d22e3",label:"Metas a 3 y 5 años:",rows:4},{id:"d22e4",label:"Elige una meta y divídela en 3 pasos pequeños que puedas empezar esta semana:",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d22p1",label:"¿Qué te ha frenado hasta ahora para avanzar en estas metas? ¿Qué necesitas soltar o pedir ayuda para lograrlo?",rows:5}],recs:{mañana:["Revisa tu meta a 6 meses y el primer paso pequeño"],tarde:["Da un paso concreto, aunque sea mínimo, hacia una de tus metas"],noche:["Escribe qué avanzaste hoy"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Un proyecto de vida sin pasos pequeños es solo un buen deseo."</div>`,questions:[{id:"d22c1",label:"¿Cuál de tus metas te genera más ilusión hoy? ¿Por qué?",rows:4},{id:"d22c2",label:"Compromiso del día 15 (Etapa 2):",rows:3}]}
+  ]},
+  {num:23,emoji:"🧠",guide:19,title:"Inteligencia Emocional",desc:"Antes de responder a un conflicto, preguntar qué necesita realmente la otra persona.",
+   verse:{t:'"El que responde palabra antes de oír, le es fatuidad y confusión."',r:"Proverbios 18:13"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Antes de responder cualquier conflicto, pregúntate: <strong>¿qué necesita realmente esta persona?</strong> No siempre necesita razón. A veces necesita ser vista.</p><div class="key-quote">"El que responde palabra antes de oír, le es fatuidad y confusión." — Proverbios 18:13</div>`,questions:[{id:"d23a1",label:"¿Cuál fue el último conflicto que tuviste? ¿Qué respondiste, y qué crees ahora que la otra persona realmente necesitaba?",rows:5}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d23e1",label:"Ante un conflicto de hoy, aplica la pregunta '¿qué necesita realmente esta persona?' antes de responder. Describe qué pasó.",rows:6}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d23p1",label:"¿Sueles responder desde la razón o desde la necesidad del otro? ¿Qué cambiaría si invirtieras el orden?",rows:5}],recs:{mañana:["Recuerda la pregunta clave del día antes de cualquier conversación difícil"],tarde:["Practícala en un conflicto real, por pequeño que sea"],noche:["Anota si cambió el resultado de la conversación"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Tener razón y tener conexión no siempre son lo mismo."</div>`,questions:[{id:"d23c1",label:"¿Qué aprendiste hoy sobre cómo manejas los conflictos?",rows:4},{id:"d23c2",label:"Compromiso del día 16 (Etapa 2):",rows:3}]}
+  ]},
+  {num:24,emoji:"💍",guide:19,title:"Comunicación Matrimonial",desc:"Reconocer el carácter, no solo el físico.",
+   verse:{t:'"Panal de miel son las palabras suaves; suavidad al alma y medicina para los huesos."',r:"Proverbios 16:24"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Reconocer a tu esposa en su <strong>carácter</strong> — no solo en lo físico — construye una intimidad más profunda que cualquier halago superficial.</p><div class="key-quote">"Panal de miel son las palabras suaves; suavidad al alma y medicina para los huesos." — Proverbios 16:24</div>`,questions:[{id:"d24a1",label:"¿Cuándo fue la última vez que reconociste el carácter de tu esposa, más allá de lo físico?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Durante el día expresa cinco reconocimientos sinceros a tu esposa. No halagos físicos. Reconoce su carácter.</p>`,questions:[{id:"d24e1",label:"Escribe los cinco reconocimientos que le expresaste hoy:",rows:6},{id:"d24e2",label:"¿Cómo reaccionó ella? ¿Qué sentiste tú al expresarlos?",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d24p1",label:"¿Qué cualidad de carácter de tu esposa admiras más y rara vez le dices?",rows:4}],recs:{mañana:["Piensa en el primer reconocimiento del día"],tarde:["Exprésalos de forma directa, mirándola a los ojos"],noche:["Pregúntale cómo se sintió al escucharlos"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Ser visto en el carácter, no solo en la apariencia, es una forma profunda de amor."</div>`,questions:[{id:"d24c1",label:"¿Qué aprendiste hoy sobre cómo comunicas afecto en tu relación?",rows:4},{id:"d24c2",label:"Compromiso del día 17 (Etapa 2):",rows:3}]}
+  ]},
+  {num:25,emoji:"📖",guide:19,title:"Fortaleza Espiritual",desc:"Leer, encontrar y sostenerse de las promesas.",
+   verse:{t:'"No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios."',r:"Isaías 41:10"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>La fortaleza espiritual se construye leyendo y sosteniéndote de <strong>promesas concretas</strong>, no solo de buenas intenciones.</p><div class="key-quote">"No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios." — Isaías 41:10</div>`,questions:[{id:"d25a1",label:"¿En qué área de tu vida sientes que necesitas más fortaleza espiritual hoy?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Lee Salmo 23, Filipenses 4 e Isaías 41. Escribe las promesas que encuentres en cada uno.</p>`,questions:[{id:"d25e1",label:"Promesas encontradas en Salmo 23:",rows:4},{id:"d25e2",label:"Promesas encontradas en Filipenses 4:",rows:4},{id:"d25e3",label:"Promesas encontradas en Isaías 41:",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d25p1",label:"De todas las promesas que anotaste, ¿cuál necesitas más en este momento de tu vida? ¿Por qué esa?",rows:5}],recs:{mañana:["Lee uno de los tres pasajes con calma"],tarde:["Repite en voz alta la promesa que más necesitas hoy"],noche:["Lee el segundo o tercer pasaje antes de dormir"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"Las promesas no eliminan la tormenta. Sostienen al que camina en ella."</div>`,questions:[{id:"d25c1",label:"¿Qué promesa quieres llevar contigo esta semana?",rows:4},{id:"d25c2",label:"Compromiso del día 18 (Etapa 2):",rows:3}]}
+  ]},
+  {num:26,emoji:"🌠",guide:19,title:"Descubrir Propósito",desc:"En la intersección de lo que haces bien, lo que disfrutas y lo que el mundo necesita.",
+   verse:{t:'"Cada uno según el don que ha recibido, minístrelo a los otros."',r:"1 Pedro 4:10"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>El propósito no suele aparecer de golpe. Se descubre en la intersección de cuatro preguntas honestas.</p><div class="key-quote">"Cada uno según el don que ha recibido, minístrelo a los otros." — 1 Pedro 4:10</div>`,questions:[{id:"d26a1",label:"¿Qué tan conectado te sientes hoy con un propósito más grande que tu rutina diaria?",rows:4}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",questions:[{id:"d26e1",label:"¿Qué hago bien?",rows:3},{id:"d26e2",label:"¿Qué disfruto?",rows:3},{id:"d26e3",label:"¿Qué necesita el mundo (o las personas cercanas a ti)?",rows:3},{id:"d26e4",label:"¿Dónde puedo servir con eso que hago bien y disfruto?",rows:3}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d26p1",label:"Mirando tus cuatro respuestas juntas, ¿qué patrón o dirección empieza a aparecer?",rows:5}],recs:{mañana:["Relee tus cuatro respuestas con calma"],tarde:["Da un paso pequeño hacia servir con lo que descubriste"],noche:["Escribe qué sentiste al dar ese paso"]}},
+    {id:"cierre",label:"Cierre",concept:`<div class="key-quote">"El propósito no siempre se encuentra pensando. A veces se encuentra sirviendo."</div>`,questions:[{id:"d26c1",label:"¿Qué próximo paso concreto darás para acercarte a tu propósito?",rows:4},{id:"d26c2",label:"Compromiso del día 19 (Etapa 2):",rows:3}]}
+  ]},
+  {num:27,emoji:"🦅",guide:19,title:"Renovación Integral",desc:"Cierre de la Etapa 2: evaluar el camino recorrido y comprometerte con lo que sigue.",
+   verse:{t:'"De modo que si alguno está en Cristo, nueva criatura es; las cosas viejas pasaron; he aquí todas son hechas nuevas."',r:"2 Corintios 5:17"},
+   steps:[
+    {id:"apertura",label:"Apertura",concept:`<p>Llegaste al día 20 de la Etapa 2. Es momento de <strong>evaluar</strong> — no para juzgarte, sino para reconocer con honestidad lo que cambió.</p><div class="key-quote">"Las cosas viejas pasaron; he aquí todas son hechas nuevas." — 2 Corintios 5:17</div>`,questions:[{id:"d27a1",label:"En una palabra, ¿cómo te sientes al llegar al final de estos 20 días?",rows:3}],emotions:true},
+    {id:"ejercicio",label:"Ejercicio",concept:`<p>Haz una evaluación honesta de estos 20 días.</p>`,questions:[{id:"d27e1",label:"¿Qué cambió en ti durante estos 20 días?",rows:5},{id:"d27e2",label:"¿Qué pensamientos desaparecieron o perdieron fuerza?",rows:4},{id:"d27e3",label:"¿Qué emociones disminuyeron en intensidad?",rows:4},{id:"d27e4",label:"¿Qué relaciones mejoraron?",rows:4},{id:"d27e5",label:"¿Qué hábitos de estos 20 días vas a continuar?",rows:4}]},
+    {id:"profundidad",label:"Profundizar",questions:[{id:"d27p1",label:"Escribe un compromiso personal para los próximos seis meses, basado en todo lo que trabajaste en esta etapa:",rows:7}],recs:{mañana:["Lee tu evaluación completa con calma"],tarde:["Comparte con alguien de confianza lo que trabajaste en estos 20 días"],noche:["Ora agradeciendo por el camino recorrido"]}},
+    {id:"cierre",label:"Cierre",concept:`<p>Este es el cierre de la Etapa 2. No el final del proceso — otro escalón en tu transformación.</p><div class="key-quote">"El Fénix no vuela una sola vez. Cada etapa es un nuevo despegue."</div>`,questions:[{id:"d27c1",label:"Ritual de cierre — Completa: 'Termino esta etapa siendo alguien que...'",rows:5},{id:"d27c2",label:"Oración de cierre — Escríbele a Dios lo que sientes al terminar esta etapa de 20 días:",rows:5}]}
   ]}
 ];
 
@@ -1180,6 +1348,10 @@ function goScreen(id){
   if(id==='screen-wounds') renderWounds(CURRENT_WOUND);
   if(id==='screen-affirmations') renderAffirmations();
   if(id==='screen-avances'){ renderAvances(); startAvancesBg(); }
+  if(id==='screen-reencuadre'){
+    const f=document.getElementById('reencuadre-iframe');
+    if(f&&!f.getAttribute('src')) f.setAttribute('src',f.getAttribute('data-src'));
+  }
 }
 
 /* ─── PIN ─── */
@@ -1251,19 +1423,19 @@ function renderDashboard(){
   document.getElementById('r-fill').style.strokeDashoffset=c-(c*pct/100);
   document.getElementById('r-pct').textContent=pct+'%';
   document.getElementById('guides-grid').innerHTML=GUIDES.map(g=>{
-    const completedDays=g.id===1?DAYS.filter(d=>APP.days[d.num]?.completed).length:0;
-    const pctG=g.id===1?Math.round(completedDays/g.days*100):0;
+    const completedDays=g.unlocked?DAYS.filter(d=>d.guide===g.id&&APP.days[d.num]?.completed).length:0;
+    const pctG=g.unlocked?Math.round(completedDays/g.days*100):0;
     const statusBadge=!g.unlocked?`<span class="g-badge g-locked">🔒 Próximamente</span>`:
       pctG===100?`<span class="g-badge g-done">✓ Completada</span>`:
       pctG>0?`<span class="g-badge g-active">En progreso ${pctG}%</span>`:
       `<span class="g-badge g-active">✦ Activa</span>`;
-    return `<div class="guide-card ${!g.unlocked?'locked':''} ${g.id===1?'active-guide':''}"
+    return `<div class="guide-card ${!g.unlocked?'locked':''} ${g.unlocked&&pctG>0?'active-guide':''}"
       onclick="${g.unlocked?`goScreen('screen-day');openGuide(${g.id})`:''}">
       <div class="gn">${g.emoji} Guía ${g.id}</div>
       <div class="gt">${g.title}</div>
       <div class="gd">${g.desc}</div>
       ${statusBadge}
-      ${g.id===1&&pctG>0?`<div class="g-progress"><div class="g-progress-fill" style="width:${pctG}%"></div></div>`:''}
+      ${g.unlocked&&pctG>0?`<div class="g-progress"><div class="g-progress-fill" style="width:${pctG}%"></div></div>`:''}
     </div>`;
   }).join('');
 }
@@ -1273,7 +1445,19 @@ function openGuide(guideId){
   CURRENT_DAY=null;CURRENT_STEP=0;
   const days=DAYS.filter(d=>d.guide===guideId);
   const guide=GUIDES.find(g=>g.id===guideId);
-  let html=`<div class="day-hdr"><div class="dh-num">${guide.emoji} Guía ${guide.id} · ${guide.days} días</div><div class="dh-title">${guide.title}</div><div class="dh-desc">${guide.desc}</div></div><div class="guides-grid">`;
+  let html=`<div class="day-hdr"><div class="dh-num">${guide.emoji} Guía ${guide.id} · ${guide.days} días</div><div class="dh-title">${guide.title}</div><div class="dh-desc">${guide.desc}</div></div>`;
+  if(guideId===12){
+    html+=`<div class="guide-card" onclick="goScreen('screen-reencuadre')" style="background:linear-gradient(135deg,rgba(20,60,60,.55),rgba(10,30,40,.55));border-color:rgba(52,216,166,.4);margin-bottom:18px;">
+      <div class="gn" style="color:#34D8A6;">🧠 Herramienta guiada</div>
+      <div class="gt">Reencuadre + Metas</div>
+      <div class="gd">Reestructuración cognitiva (CBT), respiración guiada y marcos de metas para practicar la regulación emocional en tiempo real.</div>
+      <span class="g-badge g-active">Abrir herramienta →</span>
+    </div>`;
+    if(days.length===0){
+      html+=`<p style="color:var(--text2);font-size:.85rem;text-align:center;margin:18px 0 4px;">Los 7 días guiados de esta guía llegarán pronto. Mientras tanto, practica con la herramienta de arriba.</p>`;
+    }
+  }
+  html+=`<div class="guides-grid">`;
   days.forEach(d=>{
     const isDone=APP.days[d.num]?.completed;
     html+=`<div class="guide-card ${isDone?'active-guide':''}" onclick="openDay(${d.num})"><div class="gn">${d.emoji} Día ${d.num}</div><div class="gt">${d.title}</div><div class="gd">${d.desc}</div><span class="g-badge ${isDone?'g-done':'g-active'}">${isDone?'✓ Completado':'Pendiente'}</span></div>`;
