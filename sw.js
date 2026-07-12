@@ -1,4 +1,4 @@
-const CACHE='fenix-v1';
+const CACHE='fenix-v2';
 const ASSETS=['./', './index.html','./manifest.json','./icon.svg','./icon-192.png','./icon-512.png','./reencuadre.html'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS.map(u=>new Request(u,{mode:'no-cors'})))).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});
