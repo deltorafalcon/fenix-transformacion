@@ -415,6 +415,22 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
 .modal-close{position:absolute;top:16px;right:16px;background:none;border:none;
   color:var(--muted);cursor:pointer;font-size:18px;transition:.2s;}
 .modal-close:hover{color:var(--gold);}
+
+/* Respuestas de Ejemplo (gemini-code content) */
+.example-content{text-align:left;padding-top:4px;}
+.example-content h3{color:var(--gold2);font-family:'Cinzel',serif;font-size:15px;letter-spacing:.5px;margin:22px 0 10px;}
+.example-content h3:first-child{margin-top:0;}
+.example-content p{color:var(--text);font-size:14.5px;line-height:1.75;margin-bottom:12px;}
+.example-content strong{color:var(--gold2);}
+.example-content em{color:var(--cream);font-style:italic;}
+.example-content .quote,.example-content .key-quote{border-left:3px solid var(--gold);padding:10px 16px;margin:16px 0;color:var(--cream);font-size:15px;font-style:italic;background:rgba(201,148,58,.06);border-radius:0 8px 8px 0;}
+.example-content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px;}
+.example-content th,.example-content td{border:1px solid var(--border2);padding:9px 10px;text-align:left;vertical-align:top;color:var(--text2);}
+.example-content th{background:rgba(201,148,58,.1);color:var(--gold2);font-weight:700;}
+.example-content ul,.example-content ol{margin:10px 0 14px 22px;color:var(--text2);}
+.example-content li{margin-bottom:7px;font-size:14px;line-height:1.6;}
+.example-day-title{font-family:'Cinzel Decorative',serif;font-size:17px;color:var(--gold);text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--border2);}
+.example-note{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:20px;font-style:italic;}
 .pdf-progress{background:var(--bg3);border-radius:8px;height:6px;margin:16px 0;overflow:hidden;}
 .pdf-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--ember));
   border-radius:8px;transition:.4s;}
@@ -754,6 +770,16 @@ body{background:var(--bg);color:var(--text);font-family:'Cormorant Garamond',Geo
     <div style="text-align:center;margin-top:16px;">
       <button class="btn btn-ghost btn-sm" onclick="clearAllRecordings()">🗑️ Borrar todas las grabaciones</button>
     </div>
+  </div>
+</div>
+
+<!-- RESPUESTAS DE EJEMPLO MODAL (Guía 2 / Etapa 2) -->
+<div class="modal-overlay" id="modal-example" onclick="closeExampleModal(event)">
+  <div class="modal-box" id="example-modal-box" style="position:relative;max-width:760px;">
+    <button class="modal-close" onclick="closeExampleModal()">✕</button>
+    <div class="modal-title">📋 Respuestas de Ejemplo</div>
+    <div class="modal-sub">Guía 2 · Etapa 2 — Referencia personal ya completada</div>
+    <div id="example-modal-content" class="example-content"></div>
   </div>
 </div>
 
@@ -2226,6 +2252,583 @@ const DAYS = [
   ]}
 ];
 
+
+/* ══ RESPUESTAS DE EJEMPLO — Etapa 2 (Guía 2), basadas en el proceso personal ══ */
+const EXAMPLE_DAYS_1_4 = [
+  { id: 1, title: `DÍA 1: RECONOCER EL MIEDO SIN DEJAR QUE GOBIERNE`, content: `<h3>Concepto Psicológico</h3>
+            <p>El miedo no siempre representa un peligro real. Muchas veces es una interpretación anticipada de lo que podría ocurrir, construida a partir de experiencias pasadas de pérdida o abandono. Aprender a distinguir entre hechos e interpretaciones disminuye la ansiedad de forma medible.</p>
+            <div class="quote">
+                "Porque Dios no nos ha dado espíritu de cobardía, sino de poder, de amor y de dominio propio." — 2 Timoteo 1:7
+            </div>
+            
+            <h3>Ejercicio: Las Tres Columnas</h3>
+            <table>
+                <tr>
+                    <th>¿Qué temo?</th>
+                    <th>Evidencia objetiva</th>
+                    <th>Explicación alternativa</th>
+                </tr>
+                <tr>
+                    <td>Que mis hijos no valoren lo que hago por ellos.</td>
+                    <td>Ana y Joel me buscan, me cuentan su día y confían en mí.</td>
+                    <td>Es la ansiedad heredada del rechazo de mi padre, no algo real de ellos.</td>
+                </tr>
+                <tr>
+                    <td>Fallar en un proyecto y que no salga como lo planeé.</td>
+                    <td>Saqué adelante el laboratorio, mis estudios y mi pensión en momentos difíciles.</td>
+                    <td>El miedo a fallar viene de la exigencia de no fallar de mi madre, no de mi capacidad real.</td>
+                </tr>
+                <tr>
+                    <td>Que se olviden de mí o no me tengan en cuenta o me abandonen.</td>
+                    <td>Mi esposa y mis hijos sí me celebran y están presentes.</td>
+                    <td>Es la herida del niño que aprendió que callar era la única opción. La ansiedad me hace pensar en el abandono</td>
+                </tr>
+                <tr>
+                    <td>Temo a no administrar bien y quedarme sin presupuesto como encargado de los gastos de mi hogar para el fin de mes</td>
+                    <td>Dios siempre envía recursos inesperados, una que otra mi esposa me ayuda con gastos no programados</td>
+                    <td>Es el miedo a no proveer o no tener para sufragar gastos, este aspecto cambio abruptamente luego de dejar la policía.</td>
+                </tr>
+                <tr>
+                    <td>Temo no ser un buen padre y fallar cuando sean adolescentes</td>
+                    <td>Me preocupo activamente por su bienestar, los acompaño en sus tareas y busco crear momentos de calidad y recreación para ellos.</td>
+                    <td>Mi miedo viene de la incertidumbre al futuro y de querer protegerlos siempre, pero mi dedicación constante es la base sólida que los sostendrá.</td>
+                </tr>
+                <tr>
+                    <td>Temo a fallar a Dios</td>
+                    <td>Busco actuar con rectitud, honrar mis compromisos, cuidar de mi familia. Mi fe se refleja en mis valores diarios...</td>
+                    <td>La gracia y el amor de Dios no dependen de una perfección humana inalcanzable... Este miedo es solo el reflejo de mi profundo respeto...</td>
+                </tr>
+                <tr>
+                    <td>Temo no estar a la altura de los nuevos retos tecnológicos y profesionales.</td>
+                    <td>Demuestro constantemente mi capacidad de adaptación en mi campo laboral.</td>
+                    <td>Este temor nace de la presión que me impongo por ser un proveedor infalible. Los cambios son oportunidades de aprendizaje...</td>
+                </tr>
+                <tr>
+                    <td>Evidencio el desgaste del día a día afecte la conexión y el romance con mi esposa.</td>
+                    <td>Nos apoyamos mutuamente en las actividades del hogar la crianza de nuestros hijos y nos mantenemos presentes...</td>
+                    <td>La rutina y las responsabilidades cansan, pero el amor maduro se construye en el apoyo diario. No es falta de afecto...</td>
+                </tr>
+                <tr>
+                    <td>Temo descuidar mi propia salud con los dolores en espalda y mis venas y bienestar por priorizar siempre las necesidades de los demás.</td>
+                    <td>Sigo activo, gestiono mis proyectos y busco espacios de desarrollo personal y familiar para mantener el equilibrio.</td>
+                    <td>El miedo a enfermar o faltar surge de mi fuerte sentido de responsabilidad hacia quienes dependen de mí. Cuidar de mí mismo no es egoísmo...</td>
+                </tr>
+            </table>
+
+            <h3>Tarea del día — Respiración</h3>
+            <p>5 min x3, repitiendo: "No soy mis pensamientos."</p>
+            <p><strong>¿Qué noté?:</strong> Cuando repito la frase siento que bajo la velocidad, como si el cuerpo entendiera antes que la mente. Me cuesta soltar el control, pero reconozco que no todo pensamiento de fracaso es una verdad — es una alarma vieja que ya no aplica a mi vida de hoy.</p>` },
+  { id: 2, title: `DÍA 2: CONSTRUIR SEGURIDAD INTERIOR`, content: `<h3>Concepto Psicológico</h3>
+            <p>La autoestima sana nace cuando el valor personal depende de principios propios y no exclusivamente de la aprobación de otras personas.</p>
+            <div class="quote">
+                "Te alabaré; porque formidables, maravillosas son tus obras." — Salmos 139:14
+            </div>
+            
+            <h3>Ejercicio: Diez Fortalezas — no logros</h3>
+            <ol>
+                <li>Honestidad</li>
+                <li>Disciplina</li>
+                <li>Integridad</li>
+                <li>Capacidad de análisis y lógica</li>
+                <li>Perseverancia — seguí adelante después de que me apuñalaron</li>
+                <li>Habilidad manual (manualidades y costura)</li>
+                <li>Sentido de servicio</li>
+                <li>Responsabilidad</li>
+                <li>Fe firme en momentos duros</li>
+                <li>Capacidad de reconstruirme incluso cuando me abandonaron en el laboratorio.</li>
+            </ol>
+
+            <h3>Tarea</h3>
+            <p>Pregunta a tres personas: '¿Cuál crees que es mi mayor fortaleza?'</p>
+            <p><strong>Resultado:</strong> Le pregunté a mi esposa, a uno de mis hijos. coincidieron en algo parecido: mi constancia y mi capacidad de no rendirme, incluso cuando las cosas se ponen difíciles. Me sorprendió que ninguno mencionó un logro — todos hablaron de cómo soy, no de lo que he hecho.</p>` },
+  { id: 3, title: `DÍA 3: APRENDER A REGULAR LAS EMOCIONES`, content: `<h3>Concepto Psicológico</h3>
+            <p>Las emociones son mensajeras, no jefes. No todo lo que se siente necesita convertirse en una acción inmediata.</p>
+            <div class="quote">
+                "Airaos, pero no pequéis; no se ponga el sol sobre vuestro enojo." — Efesios 4:26
+            </div>
+
+            <h3>Ejercicio: Registro Emocional del Día</h3>
+            <table>
+                <tr>
+                    <th>Situación</th>
+                    <th>Emoción</th>
+                    <th>Intensidad</th>
+                    <th>Respuesta elegida</th>
+                </tr>
+                <tr>
+                    <td>Corregí a uno de mis hijos por una tarea</td>
+                    <td>Frustración</td>
+                    <td>6/10</td>
+                    <td>Respiré antes de hablar y bajé el tono de voz</td>
+                </tr>
+                <tr>
+                    <td>Un comentario de mi esposa</td>
+                    <td>Inseguridad</td>
+                    <td>5/10</td>
+                    <td>Recordé mis logros en vez de reaccionar</td>
+                </tr>
+                <tr>
+                    <td>Un recuerdo de la infancia apareció de golpe</td>
+                    <td>Tristeza</td>
+                    <td>7/10</td>
+                    <td>Lo escribí y oré, en vez de guardármelo</td>
+                </tr>
+                <tr>
+                    <td>Mi hija sufre ansiedad por ir al colegio por lo que esta requiriendo ir al baño antes de irse es la presión que siente</td>
+                    <td>inseguridad</td>
+                    <td>8/10</td>
+                    <td>Cambio mi chip en vez de represión hacer el cambio de llevarlos con amor paciencia acunándola dándole protección</td>
+                </tr>
+                <tr>
+                    <td>Mi hijo se siente solo y manifiesta hiperactividad para hacerse manifiesto</td>
+                    <td>Impotencia/culpa</td>
+                    <td>7/10</td>
+                    <td>En lugar de estresarme por su comportamiento... elijo pausar lo que estoy haciendo, ponerme a su altura física, abrazarlo y proponerle un juego corto...</td>
+                </tr>
+                <tr>
+                    <td>Mi esposa no hace el pasa y pasa de las redes pero si reduce su ansiedad pasando artículos en mercadolibre o en you tube</td>
+                    <td>Impaciencia / Preocupación</td>
+                    <td>6/10</td>
+                    <td>En vez de juzgar su método de escape... reconozco que es su propia válvula de escape para la ansiedad cotidiana. Elijo acercarme con suavidad...</td>
+                </tr>
+                <tr>
+                    <td>Sanar la compulsibidad de comprar cosas que no necesito, revisar el presupuesto del mes...</td>
+                    <td>Ansiedad / Vacío / Agobio / Temor al futuro</td>
+                    <td>8/10</td>
+                    <td>Aplico la regla de las 24 horas antes de hacer clic en "comprar". En ese tiempo, escribo qué vacío o estrés personal estoy intentando calmar...</td>
+                </tr>
+                <tr>
+                    <td>Estoy concentrado trabajando en un diseño de red, programando o estudiando y mis hijos me interrumpen constantemente para jugar o pedirme ayuda.</td>
+                    <td>Irritabilidad</td>
+                    <td>6/10</td>
+                    <td>Entiendo que su interrupción no es para molestarme, sino porque me extrañan y me necesitan cerca. En lugar de responder con un "ahora no" cortante, les explico con cariño usando un temporizador visual...</td>
+                </tr>
+            </table>
+            
+            <h3>Reflexión del día</h3>
+            <p>Reconozco que cuando la emoción es fuerte, mi primer impulso sigue siendo callar — así aprendí de niño, que enojarse era casi pecado. Hoy elegí nombrar lo que sentía antes de tragármelo. No fue perfecto, pero fue distinto.</p>` },
+  { id: 4, title: `DÍA 4: LA CONFIANZA SE CONSTRUYE`, content: `<h3>Concepto Psicológico</h3>
+            <p>La confianza no aparece de repente. Se construye mediante coherencia repetida.</p>
+            <div class="quote">
+                "Fíate de Jehová de todo tu corazón, y no te apoyes en tu propia prudencia." — Proverbios 3:5-6
+            </div>
+
+            <h3>Ejercicio: Mapa de Confianza</h3>
+            <table>
+                <tr>
+                    <th>Personas confiables</th>
+                    <th>Personas poco confiables</th>
+                </tr>
+                <tr>
+                    <td>Mi esposa — está presente en lo difícil</td>
+                    <td>Personas que solo se acercan cuando necesitan algo</td>
+                </tr>
+                <tr>
+                    <td>Ana y Joel, cuando me buscan para contarme algo</td>
+                    <td>Quienes prometen apoyo y luego desaparecen</td>
+                </tr>
+                <tr>
+                    <td>Padre y madre</td>
+                    <td>Personas que juzgan sin conocer la historia completa</td>
+                </tr>
+                <tr>
+                    <td>amigos</td>
+                    <td>Personas que minimizan tus esfuerzos o subestiman tu camino y tus logros.</td>
+                </tr>
+                <tr>
+                    <td>Mi círculo de fe — personas que oran conmigo y me recuerdan mis valores éticos.</td>
+                    <td>Quienes rompen la confidencialidad de lo que les cuentas en un momento de vulnerabilidad.</td>
+                </tr>
+                <tr>
+                    <td>Colegas y estudiantes que demuestran respeto mutuo, honestidad y valoran el conocimiento</td>
+                    <td>Envidia, Personas que cambian de actitud o de versión según su conveniencia o interés del momento.</td>
+                </tr>
+            </table>
+
+            <h3>Sostienen la confianza en cualquier relación humana:</h3>
+            <ul>
+                <li><strong>La Congruencia (Coherencia):</strong> Que las palabras coincidan con las acciones a lo largo del tiempo.</li>
+                <li><strong>La Presencia Activa e Incondicional:</strong> Estar disponible no solo en los momentos de éxito... sino especialmente en los momentos difíciles...</li>
+                <li><strong>La Escucha Empática y Sin Juicios:</strong> Prestar atención plena, validar las emociones del otro...</li>
+                <li><strong>La Confidencialidad y el Respeto al Límite:</strong> Respetar la privacidad de lo compartido y cuidar la dignidad de la otra persona...</li>
+                <li><strong>La Responsabilidad y Capacidad de Reparar:</strong> Admitir los errores propios con humildad, pedir disculpas sinceras...</li>
+            </ul>
+
+            <p><strong>Lo que genera confianza en mí:</strong> cumplir la palabra, estar presente en los momentos difíciles, ser coherente entre lo que se dice y lo que se hace. Lo que la rompe: la ausencia, la indiferencia y las promesas que nunca se convierten en acción — quizás porque eso fue justamente lo que viví de niño.</p>` },
+];
+
+const EXAMPLE_DAYS_5_20 = [
+            {
+                id: 5,
+                title: "DÍA 5: CAMBIAR EL DIÁLOGO INTERNO",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>La mente habla constantemente. Lo importante es aprender a responderle, no a creerle sin cuestionarla.</p>
+                    <div class="quote">"No os conforméis a este siglo, sino transformaos por medio de la renovación de vuestro entendimiento." — Romanos 12:2</div>
+                    <h3>Ejercicio: Transformación del Diálogo Interno</h3>
+                    <table>
+                        <tr><th>Pensamiento negativo</th><th>Pensamiento realista</th></tr>
+                        <tr><td>No voy a lograrlo.</td><td>He sacado adelante cosas más difíciles que esta.</td></tr>
+                        <tr><td>No soy suficiente.</td><td>Mi valor no depende de lo que produzco.</td></tr>
+                        <tr><td>Todo tiene que salir perfecto.</td><td>Puedo equivocarme y seguir siendo válido.</td></tr>
+                        <tr><td>Si fallo, me van a dejar de lado.</td><td>El amor real no depende de mi rendimiento.</td></tr>
+                        <tr><td>Debo callar lo que siento.</td><td>Puedo expresar lo que siento sin que eso me haga menos hombre.</td></tr>
+                        <tr><td>Si mis hijos cometen errores o sufren por ansiedad, es porque estoy fallando como papá.</td><td>El sufrimiento y los errores son parte del crecimiento de Ana y Joel. Mi labor no es evitarles todo obstáculo, sino ser su refugio seguro y acompañarlos con paciencia.</td></tr>
+                        <tr><td>Tengo que cargar yo solo con todo el peso económico...</td><td>No estoy solo en esto; mi esposa y yo somos un equipo... Planificar con orden y fe es suficiente para salir adelante.</td></tr>
+                        <tr><td>Comprar este artículo de inmediato me va a quitar este estrés o vacío que siento ahora mismo.</td><td>La tranquilidad real viene de respirar, ordenar mi mente y regular mis emociones, no de acumular cosas. Puedo sostener este momento incómodo sin comprar.</td></tr>
+                        <tr><td>Si no domino cada nueva tecnología, herramienta o certificación a la perfección, perderé mi valor profesional.</td><td>Mi trayectoria demuestra mi capacidad de aprendizaje y adaptación. Estudiar es un proceso paso a paso y fallar en el camino no me hace menos inteligente.</td></tr>
+                        <tr><td>Cada vez que me equivoco, siento rabia o pierdo la paciencia, estoy decepcionando a Dios.</td><td>Dios conoce mi corazón y mi deseo sincero de ser un buen hombre. Mi fe no me exige una perfección inalcanzable, sino la humildad de reconocer mis errores y levantarme.</td></tr>
+                        <tr><td>Si me tomo un tiempo para descansar o no hacer nada, estoy siendo improductivo y descuidando mis deberes.</td><td>El descanso es una necesidad biológica y mental, no un premio que debo ganarme. Cuidar de mí es indispensable para poder cuidar bien a quienes amo.</td></tr>
+                    </table>
+                `
+            },
+            {
+                id: 6,
+                title: "DÍA 6: APRENDER A PERDONAR",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Perdonar no significa justificar. Significa dejar de cargar el peso emocional.</p>
+                    <h3>Ejercicio: La Carta que Nunca Entregarás</h3>
+                    <p>Papá, mamá: quiero decirles lo que nunca pude decir de niño. Aprendí a callar porque sentí que llorar o enojarme no tenía espacio en la casa. Aprendí que debía ser el mejor para que me vieran, y que si no resaltaba, era invisible. Eso me dolió más de lo que dejé ver. Hoy no vengo a reclamar — vengo a soltar el peso. Los libero de la carga de haber sido perfectos, porque nadie lo es. Y me libero a mí de seguir cargando ese silencio. Elijo perdonar, no porque lo que pasó estuvo bien, sino porque ya no quiero que siga gobernando mis días.</p>
+                    <p><strong>Después de escribirla, oré por esa persona. ¿Qué sentí?</strong></p>
+                    <p>Sentí un peso menos en el pecho, aunque no fue instantáneo. Orar por ellos, después de escribir todo lo que sentía, me hizo entender que el perdón no borra la historia — solo me quita a mí la tarea de seguir cargándola.</p>
+                `
+            },
+            {
+                id: 7,
+                title: "DÍA 7: LA PAZ COMIENZA DENTRO",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>No existe paz exterior sin orden interior.</p>
+                    <div class="quote">"La paz os dejo, mi paz os doy; yo no os la doy como el mundo la da." — Juan 14:27</div>
+                    <h3>Ejercicio: 20 Minutos de Silencio</h3>
+                    <p><strong>¿Qué apareció en mi mente durante el silencio?</strong></p>
+                    <p>Al principio aparecieron las tareas pendientes — el recurso legal, los proyectos del SENA, cosas por resolver. Pero pasados los primeros minutos, apareció algo más simple: cansancio. No físico, sino de años sosteniendo todo solo. El silencio no resolvió nada, pero me recordó que no todo necesita una acción inmediata. Al resistir el impulso de moverme y simplemente dejar pasar esos pensamientos como nubes, el ruido de la superficie empieza a perder fuerza. Es ahí cuando cae el velo de la productividad y aparece algo mucho más profundo y simple: un cansancio acumulado. No es el cansancio físico de una mala noche de sueño; es el peso invisible de los años. Es el cansancio de haberme habituado a ser el pilar inquebrantable...</p>
+                    <p>Me doy cuenta de que he llevado puesta una armadura tan pesada que ya la sentía como parte de mi propia piel. El silencio me obliga a mirar de frente esa fatiga y a reconocer que, detrás del profesional, el esposo y el padre, hay un ser humano que también necesita ser sostenido... En el tramo final, la necesidad de control se rinde. Al aceptar el cansancio en lugar de luchar contra él, el peso en el pecho se aligera... Aparece una sensación de entrega y de fe: el mundo no se va a derrumbar si me detengo 20 minutos.</p>
+                    <p><strong>Reflexión de Cierre para tu Bitácora</strong><br>
+                    La lección del silencio: "Aprender a sostener el silencio es también aprender a soltar las cargas que no me corresponden. Sostener a mi familia con amor no significa que deba llevar todo el peso del mundo sobre mis hombros en absoluta soledad."</p>
+                `
+            },
+            {
+                id: 8,
+                title: "DÍA 8: AMAR SIN CONTROLAR",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>El amor saludable no controla — respeta.<br>
+                    El control suele ser la máscara que se pone la ansiedad. Cuando amamos profundamente a alguien, el miedo a que sufra, a que se equivoque o a que no alcance su máximo potencial nos empuja a querer dirigir sus pasos, corregir sus métodos y moldear sus decisiones bajo nuestros propios estándares...</p>
+                    <ul>
+                        <li><strong>El control busca la obediencia y la réplica:</strong> Se alimenta de la idea de que existe una única forma correcta de hacer las cosas... asfixia la autoestima, genera tensión y distancia emocional.</li>
+                        <li><strong>El respeto fomenta la autonomía y la confianza:</strong> Reconoce que la otra persona —incluso si es un niño en crecimiento— es un ser individual con su propio ritmo... El respeto le dice al otro: "Confío en tu capacidad para resolver esto, y aquí estoy si me necesitas".</li>
+                    </ul>
+                    <p><strong>La gran verdad del amor respetuoso:</strong> Amar de forma saludable implica aprender a sostener nuestra propia incomodidad ante el error ajeno. Nuestro rol no es evitarles el tropiezo, sino ser la red de seguridad que los sostenga cuando decidan levantarse.</p>
+                    <h3>Ejercicio del Día</h3>
+                    <p>Lo más difícil fue no intervenir cuando vi a uno de mis hijos resolver algo 'a su manera' y no como yo lo hubiera hecho. Me costó quedarme callado. Pero cuando lo dejé terminar sin corregirlo, lo vi más relajado, hablando más — como si mi silencio le hubiera dado permiso de ser él mismo.</p>
+                    <p>Lo más difícil fue el combate interno contra mi propio piloto automático de "solucionador"... Me costó un esfuerzo físico y mental quedarme callado, contener las palabras en la garganta y cruzar los brazos para no intervenir físicamente.</p>
+                    <p><strong>¿Qué noté en la otra persona (mi hijo)?</strong><br>
+                    Físicamente: Sus hombros se relajaron, la tensión de su cuello disminuyó notablemente y dejó de actuar con la rigidez de quien se siente constantemente evaluado.<br>
+                    Emocionalmente: Empezó a tararear, a hablar más libremente y a explicarme lo que hacía con un entusiasmo que antes no mostraba. Se adueñó por completo de su tarea.</p>
+                    <div class="quote">"Mi silencio paciente y amoroso construye la seguridad de mis hijos mucho más que mi corrección constante."</div>
+                `
+            },
+            {
+                id: 9,
+                title: "DÍA 9: ESCUCHA ACTIVA",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Escuchar para comprender, no para responder — sin interrumpir, sin aconsejar.</p>
+                    <ul>
+                        <li><strong>La presencia sin agenda:</strong> Significa silenciar nuestro propio diálogo interno...</li>
+                        <li><strong>La renuncia al rol de "solucionador":</strong> Dar un consejo no solicitado, aunque nazca del amor, puede enviar un mensaje implícito dañino: "Yo sé cómo resolver tu vida mejor que tú".</li>
+                        <li><strong>El silencio como catalizador:</strong> Al abstenernos de interrumpir o aconsejar, permitimos que la otra persona escuche sus propios pensamientos en voz alta.</li>
+                    </ul>
+                    <p><strong>La regla de oro de la conexión:</strong> Tus hijos no necesitan que seas el ingeniero de sus vidas; necesitan que seas el puerto seguro donde puedan aprender a navegar sus propias tormentas.</p>
+                    <h3>Ejercicio del Día</h3>
+                    <p>Hablé con Joel, que suele pedir ayuda con más naturalidad que yo. Me costó no aconsejarlo de inmediato — mi instinto es resolver rápido. Cuando solo pregunté y dejé que él llegara a su propia conclusión, habló mucho más de lo que esperaba. Entendí que muchas veces lo que necesitan mis hijos no es mi solución, sino mi atención completa.</p>
+                    <p>La transición hacia las preguntas abiertas: En lugar de decirle "lo que tienes que hacer es...", decidí respirar, tragarme mi consejo y hacer preguntas sencillas que sirvieran de guía, como: ¿Y tú qué piensas de eso? o ¿Cómo te hace sentir esa situación?.</p>
+                    <p>La asombrosa respuesta de Joel: Al notar que no había interrupciones... Joel se sintió completamente libre. Habló muchísimo más de lo que esperaba... él mismo llegó a una conclusión brillante y lógica para su problema.</p>
+                    <div class="quote">"Aconsejar rápido alivia mi ansiedad de control; escuchar con paciencia construye la autoconfianza y el carácter de mi hijo."</div>
+                `
+            },
+            {
+                id: 10,
+                title: "DÍA 10: FORTALECER LA RELACIÓN CON LOS HIJOS",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Los hijos no necesitan padres perfectos — necesitan padres presentes.</p>
+                    <p>La verdadera seguridad emocional de un niño no se construye sobre la ausencia de errores, sino sobre la presencia constante de sus figuras de apego:</p>
+                    <ul>
+                        <li><strong>La presencia como ancla:</strong> Estar presente significa sintonizar con el aquí y el ahora.</li>
+                        <li><strong>La imperfección como escuela de resiliencia:</strong> Un padre perfecto e infalible sería un modelo inalcanzable y frustrante para un niño...</li>
+                        <li><strong>El poder regulador del contacto físico:</strong> El sistema nervioso de un niño se corregula con el de sus padres. Un abrazo sostenido reduce los niveles de cortisol (la hormona del estrés) y libera oxitocina...</li>
+                    </ul>
+                    <h3>Ejercicio del Día</h3>
+                    <p>Josué me contó algo pequeño del colegio que normalmente no comparte. Joel, como siempre, fue más directo con lo que sintió en el día. En el abrazo largo con cada uno, noté que al principio se sorprendieron — no es algo que hacíamos con frecuencia — pero después de unos segundos se relajaron. Yo también.</p>
+                    <ul>
+                        <li><strong>La sorpresa inicial:</strong> Sentí una leve rigidez en sus cuerpos; la sorpresa natural de quien recibe un gesto que no forma parte de la rutina diaria habitual.</li>
+                        <li><strong>La entrega y la relajación:</strong> Alrededor del segundo 10, ocurrió la magia de la corregulación. Sentí cómo sus hombros cedían, sus pechos se apoyaban con confianza en el mío...</li>
+                        <li><strong>Mi propia transformación:</strong> En ese abrazo largo, no fui el ingeniero, ni el docente, ni el solucionador de problemas; simplemente fui su papá, recibiendo el mismo amor y seguridad que intentaba entregarles.</li>
+                    </ul>
+                    <div class="quote">"Mis hijos no necesitan que les resuelva el futuro hoy; necesitan que los abrace fuerte en el presente."</div>
+                `
+            },
+            {
+                id: 11,
+                title: "DÍA 11: APRENDER GRATITUD",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>La gratitud entrenada reorganiza la atención del cerebro hacia lo que sí funciona.</p>
+                    <p>Si nos enfocamos en lo que falta, en la amenaza, en el error o en la escasez, el cerebro se especializa en encontrar más de eso (sesgo de confirmación)... Al hacer una pausa consciente para agradecer, disminuye la actividad de la amígdala y se estimula la liberación de dopamina y serotonina.</p>
+                    <h3>Ejercicio: 30 Bendiciones</h3>
+                    <ol>
+                        <li>Mi esposa (Deisy Johana), mi compañera de equipo, apoyo en lo difícil y coequipera de vida.</li>
+                        <li>Josué, mi hijo, su presencia, su forma de ser y la oportunidad de guiarlo con amor.</li>
+                        <li>Joel, mi hijo, su expresividad, su facilidad para comunicarse y su confianza hacia mí.</li>
+                        <li>Mi fe, el motor invisible que me sostiene...</li>
+                        <li>Haber sobrevivido al apuñalamiento, un milagro físico que me regaló una segunda oportunidad sobre esta tierra.</li>
+                        <li>Haber fundado el laboratorio 18-LAC-025, testimonio de mi capacidad técnica, mi visión y mi legado profesional.</li>
+                        <li>Mi pensión conseguida con esfuerzo...</li>
+                        <li>La oportunidad de estudiar y enseñar en el SENA...</li>
+                        <li>Mi salud actual...</li>
+                        <li>Un techo y un hogar, un espacio seguro en Madrid...</li>
+                        <li>La disciplina que heredé de mi familia...</li>
+                        <li>La integridad que también heredé...</li>
+                        <li>Las personas que sí han sido leales...</li>
+                        <li>Cada logro alcanzado siendo el primero...</li>
+                        <li>La posibilidad de romper ciclos familiares, la madurez y consciencia para criar a mis hijos desde el amor, la paciencia y el respeto.</li>
+                        <li>Mi capacidad de aprender cosas nuevas, la agilidad mental para dominar tecnología, análisis de datos y redes a mi propio ritmo.</li>
+                        <li>Los años de servicio en la Policía, una etapa de mi vida que me forjó el carácter...</li>
+                        <li>La claridad que le encuentro a mi propósito hoy...</li>
+                        <li>La oportunidad de sanar en vida y no cargarlo hasta el final...</li>
+                        <li>Cada mañana nueva para intentarlo de nuevo...</li>
+                        <li>La paz que se siente en mi hogar cuando elijo el silencio en vez del control...</li>
+                        <li>Mis padres, su historia, su esfuerzo...</li>
+                        <li>Mi hermana, su presencia en mi vida...</li>
+                        <li>Mi mente analítica de ingeniero...</li>
+                        <li>La maravillosa corregulación del abrazo de 20 segundos...</li>
+                        <li>El desapego que estoy entrenando al evitar compras compulsivas...</li>
+                        <li>La provisión inesperada de Dios...</li>
+                        <li>La sabiduría para escuchar a mis hijos para comprenderlos...</li>
+                        <li>Mi capacidad de introspección...</li>
+                        <li>La gracia de Dios que me acepta imperfecto... mi valor real no depende de mi rendimiento o productividad, sino de mi identidad en Él.</li>
+                    </ol>
+                `
+            },
+            {
+                id: 12,
+                title: "DÍA 12: MANEJAR LA ANSIEDAD",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Detente → Respira → Ora → Escribe → Actúa: la secuencia crea espacio entre el estímulo y la respuesta.</p>
+                    <h3>Ejercicio del Día</h3>
+                    <table>
+                        <tr>
+                            <th>Detente</th>
+                            <th>Respira</th>
+                            <th>Ora</th>
+                            <th>Escribe</th>
+                            <th>Actúa</th>
+                        </tr>
+                        <tr>
+                            <td>Al recibir una noticia del proceso legal</td>
+                            <td>4s-4s-6s</td>
+                            <td>'Señor, esto está en tus manos'</td>
+                            <td>Anoté lo que sentí sin filtrar</td>
+                            <td>Esperé un día antes de responder</td>
+                        </tr>
+                    </table>
+                `
+            },
+            {
+                id: 13,
+                title: "DÍA 13: DISCIPLINA EMOCIONAL",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>La disciplina emocional se entrena en las decisiones pequeñas.<br>
+                    "Entre el estímulo y la respuesta hay un espacio. En ese espacio radica nuestra libertad y nuestro poder para elegir nuestra respuesta" (Viktor Frankl).</p>
+                    <h3>Ejercicio del Día</h3>
+                    <p><strong>¿Qué tarea elegí hacer antes de revisar el teléfono?</strong><br>
+                    Elegí avanzar en una entrega pendiente del SENA antes de mirar el celular al despertar. Me costó los primeros minutos — el hábito de revisar notificaciones es fuerte — pero terminar algo importante primero me dio una sensación de control que normalmente busco de otras formas menos sanas.</p>
+                    
+                    <p><strong>Situación de activación:</strong> Recepción de una notificación sobre el proceso legal administrativo.</p>
+                    <ul>
+                        <li><strong>1. DETENTE:</strong> Al abrir el correo electrónico y leer la actualización sobre el trámite legal (la tutela), sentí una descarga instantánea de adrenalina... En lugar de poner los dedos sobre el teclado, cerré la pantalla del computador.</li>
+                        <li><strong>2. RESPIRA:</strong> 4s Inhalé... 4s Retuve... 6s Exhalé. Repetí este ciclo tres veces. Sentí cómo las palpitaciones de mi corazón disminuyeron.</li>
+                        <li><strong>3. ORA:</strong> Con los ojos cerrados, pronuncié en silencio una declaración de confianza: "Señor, esto está en tus manos".</li>
+                        <li><strong>4. ESCRIBE:</strong> Tomé mi libreta física y, con un esfero, escribí de manera cruda todo lo que estaba sintiendo... "Siento rabia por la injusticia".</li>
+                        <li><strong>5. ACTÚA:</strong> Apliqué conscientemente la regla de las 24 horas. Decidí que no enviaría ningún correo, ni redactaría ningún oficio legal ese día.</li>
+                    </ul>
+                    <div class="quote">"El tiempo que pasa entre la mala noticia y mi respuesta es el espacio donde decido ser un hombre libre, guiado por la fe y la razón, y no un esclavo de mis impulsos."</div>
+                `
+            },
+            {
+                id: 14,
+                title: "DÍA 14: IDENTIDAD",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Una identidad sólida se construye sobre quién eres, no sobre lo que produces.</p>
+                    <h3>Ejercicio del Día</h3>
+                    <ol>
+                        <li><strong>Soy un hijo amado por Dios:</strong> Mi valor ante los ojos del Creador es incondicional. No se mide por el número de mis certificaciones...</li>
+                        <li><strong>Soy esposo antes que proveedor:</strong> Mi relación con mi esposa no es un contrato de servicios donde mi único deber es traer estabilidad financiera al hogar. Soy su compañero, su amigo...</li>
+                        <li><strong>Soy padre presente, no solo corrector:</strong> Elijo ser el puerto seguro de mis hijos, el espacio donde pueden refugiarse y ser ellos mismos...</li>
+                        <li><strong>Soy un hombre disciplinado e íntegro, forjado en la dificultad:</strong> Mi carácter no se construyó en la comodidad. He caminado por valles oscuros, he sobrevivido a pruebas físicas y profesionales extremas...</li>
+                        <li><strong>Soy alguien que no necesita demostrar nada para merecer amor:</strong> Renuncio oficialmente a la necesidad de justificar mi existencia a través de la sobreproducción o el control absoluto.</li>
+                        <li><strong>Soy alguien que eligió sanar en vez de solo sobrevivir:</strong> Haber sobrevivido a la tormenta fue solo el inicio. Mi verdadera victoria es que hoy decido conscientemente sanar mis heridas...</li>
+                        <li><strong>Soy el Fénix:</strong> Nací del fuego. El dolor del pasado, las traiciones y las cenizas de las etapas difíciles no me destruyeron; se convirtieron en el combustible de mi transformación. Hoy extiendo mis alas con madurez, con fe y con la frente en alto.</li>
+                    </ol>
+                    <div class="quote">"Mi valor está sellado en mi ser y en mi fe. Soy libre del peso de tener que ser perfecto, porque hoy elijo ser real, estar presente y dejarme amar."</div>
+                `
+            },
+            {
+                id: 15,
+                title: "DÍA 15: PROYECTO DE VIDA",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Las metas sin plazos son solo deseos.</p>
+                    <ul>
+                        <li><strong>El anclaje temporal:</strong> Establecer un plazo de 6 meses para una meta técnica desafiante saca al cerebro del modo de procrastinación pasiva y lo fuerza a planificar en reversa.</li>
+                        <li><strong>Sinergia de propósitos:</strong> Al alinear tu aprendizaje técnico (computación de borde) con tu visión a largo plazo (ser referente en transformación digital aplicada a la seguridad vial), el estudio deja de ser una carga académica pesada y se convierte en el motor que impulsa tu independencia.</li>
+                    </ul>
+                    <div class="quote">"El código que escribo hoy no es solo software; es la infraestructura tecnológica de mi independencia profesional y el respaldo del futuro de mi familia."</div>
+                    
+                    <h3>Ejercicio del Día</h3>
+                    <table>
+                        <tr><th>Plazo</th><th>Meta principal</th><th>Primer paso concreto</th></tr>
+                        <tr><td>6 meses</td><td>Dominar Python aplicado al desarrollo de soluciones de Computación de Borde (Edge Computing), logrando integrar el procesamiento de datos local con dispositivos microcontroladores (como ESP32 o Raspberry Pi) enfocados en soluciones de tránsito o metrología.</td><td>Instalar el entorno de desarrollo y crear mi primer script: Configurar VS Code con Python, instalar librerías de comunicación y realizar una prueba de concepto conectando un sensor físico (de velocidad, presencia o distancia)...</td></tr>
+                        <tr><td>1 año</td><td>Consolidar mi trabajo como consultor independiente en metrología y seguridad vial</td><td>Definir 3 clientes o instituciones objetivo y contactarlas</td></tr>
+                        <tr><td>3 años</td><td>Completar mi transformación física y consolidar hábitos de vida sana</td><td>Sostener el plan de 4-6 meses ya iniciado y revisar avances cada trimestre</td></tr>
+                        <tr><td>5 años</td><td>Ser reconocido como referente en metrología + seguridad vial + transformación digital</td><td>Publicar contenido, dictar formaciones y ampliar mi red profesional</td></tr>
+                    </table>
+                `
+            },
+            {
+                id: 16,
+                title: "DÍA 16: INTELIGENCIA EMOCIONAL",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Antes de responder a un conflicto, preguntarse qué necesita realmente la otra persona.</p>
+                    <p>En la psicología de pareja, se entiende que la mayoría de las discusiones cotidianas son, en realidad, protestas de apego... La pregunta que lo cambia todo: Al detenerte antes de hablar y preguntarte: ¿Qué necesita realmente esta persona en este momento?, estás apagando la alarma de tu cerebro reactivo.</p>
+                    
+                    <h3>Ejercicio del Día</h3>
+                    <p><strong>Describe una situación donde aplicaste esta pausa</strong></p>
+                    <p>Hubo un desacuerdo en casa con mi esposa, Deisy, debido a un tema relacionado con la organización y el orden de los espacios comunes... mi primer impulso fue estructurar una defensa lógica, explicar mis razones y argumentar de manera fría por qué las cosas se habían hecho de esa forma para demostrar mi punto.</p>
+                    <p>Sin embargo, antes de soltar la primera palabra de mi argumento defensivo, me obligué a hacer la pausa del protocolo. Respiré y me hice la pregunta clave: <em>¿Qué necesita Deisy realmente de mí en este preciso instante?</em></p>
+                    <p>Lo que Deisy estaba experimentando era el peso de la rutina, el cansancio acumulado del día y la necesidad de sentir que sus esfuerzos por sostener el hogar son valorados y apoyados.</p>
+                    <p><strong>¿Cómo cambió tu respuesta y cuál fue el resultado?</strong><br>
+                    Validé su malestar diciéndole algo tan sencillo pero poderoso como: "Tienes razón, mi amor, entiendo perfectamente que te sientas cansada y frustrada con esto. Lamento que lo sientas así, vamos a solucionarlo juntos".<br>
+                    Toda la tensión física de su cuerpo pareció desvanecerse en un segundo. Al no encontrar un contrincante que se defendiera o la invalidara, su tono de voz bajó de inmediato y la queja se transformó en un suspiro de desahogo.</p>
+                    <div class="quote">"Cuando mi esposa me habla desde la frustración, elijo no escuchar sus reclamos como un ataque a mi capacidad, sino como una invitación a cuidar de ella con mi paciencia."</div>
+                `
+            },
+            {
+                id: 17,
+                title: "DÍA 17: COMUNICACIÓN MATRIMONIAL",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Reconocer el carácter, no solo el físico, fortalece el vínculo de pareja.</p>
+                    <ul>
+                        <li><strong>De la transacción a la valorización:</strong> Decir "admiro tu paciencia y tu fortaleza" le dice al otro: "Te veo. Veo tu esfuerzo, veo tu alma, y valoro el ser humano que eres".</li>
+                        <li><strong>Activación del circuito de recompensa emocional:</strong> El cerebro de tu pareja, al recibir un elogio sincero sobre su carácter, reduce instantáneamente la guardia defensiva.</li>
+                    </ul>
+                    
+                    <h3>Ejercicio del Día: El eco del reconocimiento en el alma del hogar</h3>
+                    <p><strong>Las 5 Verdades del Carácter que declaré hoy a Deisy:</strong></p>
+                    <ol>
+                        <li>Admiro tu paciencia con los niños, incluso en los días difíciles.</li>
+                        <li>Valoro tu fortaleza para sostener la casa cuando yo estoy desbordado.</li>
+                        <li>Reconozco tu fe — me ha sostenido en momentos donde la mía flaqueaba.</li>
+                        <li>Agradezco tu capacidad de perdonar, incluso cuando no lo merezco.</li>
+                        <li>Admiro cómo enseñas a nuestros hijos con el ejemplo, no solo con palabras.</li>
+                    </ol>
+                    <p><strong>¿Cómo respondió ella?</strong><br>
+                    Se sorprendió — no es algo que hago con frecuencia de forma tan directa. Noté que el ambiente en la casa se sintió distinto el resto del día, más liviano.<br>
+                    El "ambiente más liviano": Este es el indicador más claro de que tu intervención funcionó. La tensión en los hogares muchas veces no se debe a problemas reales, sino a la acumulación de "micro-resentimientos" por no sentirse valorados.</p>
+                `
+            },
+            {
+                id: 18,
+                title: "DÍA 18: FORTALEZA ESPIRITUAL",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>Las promesas bíblicas meditadas activan un sentido de seguridad que contrarresta el miedo aprendido.</p>
+                    <p>Meditar conscientemente en promesas bíblicas actúa como un "regulador térmico" para ese cerebro asustado: Desactivación del estado de alerta, Sustitución de la narrativa de soledad, Anclaje en el presente.</p>
+                    
+                    <h3>Ejercicio del Día</h3>
+                    <ul>
+                        <li><strong>Salmo 23:</strong> "Jehová es mi pastor; nada me faltará... Aunque ande en valle de sombra de muerte, no temeré mal alguno, porque tú estarás conmigo..."<br>
+                        <em>Tu reflexión:</em> Dios es quien guía y provee lo que necesito; incluso en los momentos más oscuros, no tengo que caminarlos solo ni con miedo.</li>
+                        
+                        <li><strong>Filipenses 4:</strong> "Por nada estéis afanosos, sino sean conocidas vuestras peticiones delante de Dios en toda oración y ruego, con acción de gracias. Y la paz de Dios, que sobrepasa todo entendimiento, guardará vuestros corazones y vuestros pensamientos..."<br>
+                        <em>Tu reflexión:</em> Puedo entregar mis preocupaciones en oración y recibir una paz que no depende de que mis circunstancias cambien primero.</li>
+                        
+                        <li><strong>Isaías 41:</strong> "No temas, porque yo estoy contigo; no desmayes, porque yo soy tu Dios que te esfuerzo; siempre te ayudaré, siempre te sustentaré con la diestra de mi justicia."<br>
+                        <em>Tu reflexión:</em> No tengo que temer, porque no estoy solo en esto — hay una fuerza mayor sosteniéndome incluso cuando siento que flaqueo.</li>
+                    </ul>
+                    <div class="quote">"Hoy decido apagar el motor de mi propia exigencia y encender el de mi confianza. No tengo que resolver el mañana hoy, porque el Dios que me ha sostenido en cada fuego del pasado, ya está presente en mi futuro."</div>
+                `
+            },
+            {
+                id: 19,
+                title: "DÍA 19: DESCUBRIR PROPÓSITO",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>El propósito vive en la intersección entre lo que haces bien, lo que disfrutas, lo que el mundo necesita y dónde puedes servir.</p>
+                    <p>El propósito es la alineación armónica de tu sistema interno. En la ingeniería de la vida, el propósito es el punto de resonancia donde convergen tu cableado lógico (lo que haces bien), tu motor de combustión (lo que disfrutas), la necesidad del terreno (lo que el mundo necesita) y tu área de cobertura (dónde puedes servir).</p>
+                    
+                    <h3>Ejercicio del Día: Mi Brújula de Propósito</h3>
+                    <ul>
+                        <li><strong>¿Qué hago bien? (Mis capacidades estructurales)</strong><br>
+                        Ingeniería de soluciones y procesos... Pedagogía y transferencia de conocimiento (demostrado fundando el laboratorio y en más de 500 formaciones dictadas)... Gestión bajo presión y disciplina.</li>
+                        
+                        <li><strong>¿Qué disfruto?</strong><br>
+                        Armar cosas con mis manos, enseñar, aprender temas nuevos como redes y datos, y estar presente con mi familia.</li>
+                        
+                        <li><strong>¿Qué necesita mi entorno?</strong><br>
+                        Más formación real en seguridad vial, más mentoría para quienes inician en la Policía o en metrología, y testimonios honestos de sanación para otros hombres que cargan lo mismo que yo cargué.</li>
+                        
+                        <li><strong>¿Dónde puedo servir con todo esto junto?</strong><br>
+                        En la consultoría independiente, en espacios de formación técnica, en mi iglesia, y sobre todo en casa, siendo el hombre que mis hijos necesitan ver.</li>
+                    </ul>
+                    <div class="quote">"Mi propósito es utilizar la mente analítica, la capacidad técnica y la disciplina que Dios me dio para modernizar y salvar vidas en la seguridad vial, mientras sirvo de puente y mentor para otros. Y por encima de todo, mi propósito es gobernar mi propia vida con paz y fe, siendo el refugio seguro, presente y amoroso para mi esposa y mis hijos."</div>
+                `
+            },
+            {
+                id: 20,
+                title: "DÍA 20: RENOVACIÓN INTEGRAL",
+                content: `
+                    <h3>Concepto Psicológico</h3>
+                    <p>El cierre de un proceso no es un punto final, sino una consolidación de lo aprendido.</p>
+                    
+                    <h3>Ejercicio: Evaluación Final</h3>
+                    <ul>
+                        <li><strong>¿Qué cambió en estos 20 días?</strong><br>
+                        Aprendí a hacer una pausa antes de reaccionar, en vez de callar o explotar. Empecé a nombrar lo que siento en vez de tragármelo. La instalación de la pausa.</li>
+                        <li><strong>¿Qué pensamientos desaparecieron o se debilitaron?</strong><br>
+                        La idea de que debo demostrar mi valor constantemente para merecer amor o aprobación se debilitó — no desapareció del todo, pero ya no manda como antes. El desmontaje de la armadura.</li>
+                        <li><strong>¿Qué emociones disminuyeron?</strong><br>
+                        La urgencia del control y la necesidad de que todo salga exactamente como lo planeo.</li>
+                        <li><strong>¿Qué relaciones mejoraron?</strong><br>
+                        Mi comunicación con mis hijos ANA y Joel y con mi esposa Deisy — al escuchar más y corregir menos.</li>
+                        <li><strong>¿Qué hábitos continuaré?</strong><br>
+                        La oración consciente, la escritura terapéutica y la pausa de 'detente-respira-ora' antes de reaccionar. Empezar y cerrar mis días recordando mis 30 bendiciones.</li>
+                    </ul>
+                    
+                    <h3>Mi Compromiso para los Próximos Seis Meses</h3>
+                    <p>Yo, José Fernando Castro Martínez, de cara a Dios, a mi esposa Deisy Johana, a mis hijos ANA y Joel, y sobre todo a mí mismo, firmo este compromiso de vida:</p>
+                    <p>Me comprometo a sostener este proceso incluso cuando ya no sienta la urgencia del dolor inicial. Me comprometo a buscar acompañamiento profesional especializado para las heridas más profundas de mi historia, a no cargar solo lo que merece ser compartido, y a seguir siendo, cada día un poco más, el hombre que mis hijos necesitan ver.</p>
+                    <p>Avanzar en mi transformación integral, entendiendo que mi salud es el soporte básico para poder liderar mis metas de consultoría, metrología y desarrollo tecnológico (computación de borde y Python).</p>
+                    
+                    <div class="quote">"No soy un producto terminado, soy un proceso continuo bajo el diseño de Dios. Mi valor no se calcula por lo que produzco, sino por la integridad con la que vivo, el amor con el que sostengo a los míos y la valentía con la que elijo sanar día tras día."</div>
+                `
+            }
+        ];
+
+const EXAMPLE_ANSWERS = {};
+EXAMPLE_DAYS_1_4.concat(EXAMPLE_DAYS_5_20).forEach(d => { EXAMPLE_ANSWERS[d.id] = { title: d.title, content: d.content }; });
+/* DAYS.num 8-27 (Guía 2 / Etapa 2) corresponden a EXAMPLE_ANSWERS 1-20 */
+function exampleIdForDayNum(num){ return num - 7; }
+
+
 const WOUNDS = {
   abandono:{color:"#c94a30",colorLight:"rgba(201,74,48,.1)",colorBorder:"rgba(201,74,48,.3)",icon:"🔴",name:"El Abandono",belief:'"No soy suficiente para que alguien se quede. Debo estar solo."',origin:`<p>La herida de abandono se forma cuando las figuras de apego primarias están física o emocionalmente ausentes en momentos críticos del desarrollo. El cerebro del niño no puede procesar la ausencia del cuidador sin hacerse una pregunta devastadora: <strong>¿Por qué no se queda? ¿Qué falla en mí?</strong></p>`,manifestations:[{t:"Apego ansioso",d:"Miedo irracional a ser dejado; hipervigilancia en relaciones"},{t:"Autosuficiencia extrema",d:"'No necesito a nadie' como estrategia de protección"},{t:"People-pleasing",d:"Ganar el amor a través de la complacencia y la utilidad"},{t:"Miedo a la intimidad",d:"Acercarse demasiado aterra porque el que se queda, también puede irse"},{t:"Dificultad para pedir ayuda",d:"Pedir es exponerse a que digan no — que es el abandono repetido"},{t:"Autosabotaje relacional",d:"Destruir las relaciones antes de que el otro las destruya"}],healing:`<p>La sanación del abandono requiere tres caminos simultáneos:</p><ul><li><strong>Duelo real:</strong> Llorar lo que no fue</li><li><strong>Reparentalización:</strong> Aprender a ser el padre/madre que ese niño necesitaba</li><li><strong>Apego ganado:</strong> Construir conscientemente relaciones seguras</li></ul>`,questions:[{id:"w_ab1",label:"¿Cuándo fue la primera vez que recuerdas haberte sentido abandonado? Describe la escena con detalle.",rows:6},{id:"w_ab2",label:"¿Cómo se manifiesta la herida del abandono en tus relaciones actuales?",rows:6},{id:"w_ab3",label:"Carta a la figura que te abandonó — Sin censura. Di lo que nunca pudiste decir:",rows:8},{id:"w_ab4",label:"¿Qué necesitaría decirse a sí mismo ese niño para comenzar a creer que vale?",rows:5}]},
   rechazo:{color:"#9030b0",colorLight:"rgba(144,48,176,.1)",colorBorder:"rgba(144,48,176,.3)",icon:"🟣",name:"El Rechazo",belief:'"Soy inaceptable tal como soy. Para ser amado, debo cambiar o esconderme."',origin:`<p>La herida del rechazo se forma cuando el niño recibe mensajes de que <strong>como es no es suficiente, no es correcto, no encaja</strong>. Puede venir de crítica crónica, comparaciones constantes, humillaciones o exclusión social.</p>`,manifestations:[{t:"Perfeccionismo",d:"Si soy perfecto, nadie podrá rechazarme"},{t:"People-pleasing extremo",d:"Esconder quien soy y mostrar solo lo que el otro quiere ver"},{t:"Hipersensibilidad a la crítica",d:"Cualquier crítica activa el dolor original del rechazo"},{t:"Miedo a mostrarse",d:"Esconder opiniones, talentos, necesidades para no ser juzgado"},{t:"Síndrome del impostor",d:"'Soy un fraude — si me conocieran de verdad, me rechazarían'"},{t:"Comparación crónica",d:"Siempre encontrar a alguien más válido, más capaz, más merecedor"}],healing:`<p>La sanación del rechazo requiere un proceso de <em>des-identificación de la máscara</em>:</p><ul><li><strong>Autocompasión:</strong> Tratarse con la misma gentileza que a un amigo querido</li><li><strong>Vulnerabilidad progresiva:</strong> Mostrarse auténticamente en entornos seguros</li><li><strong>Identidad anclada:</strong> Construir el sentido de valor en algo que no dependa de la aprobación externa</li></ul>`,questions:[{id:"w_re1",label:"¿Cuándo fue la primera vez que sentiste que como eras no era suficiente?",rows:6},{id:"w_re2",label:"¿Qué partes de ti escondes más frecuentemente por miedo al rechazo?",rows:5},{id:"w_re3",label:"¿Cómo se ve tu perfeccionismo o people-pleasing en la práctica?",rows:5},{id:"w_re4",label:"Si pudieras mostrarte completamente auténtico sin miedo al rechazo, ¿qué dirías? ¿Quién serías?",rows:6}]},
@@ -2414,6 +3017,14 @@ function openGuide(guideId){
   const days=DAYS.filter(d=>d.guide===guideId);
   const guide=GUIDES.find(g=>g.id===guideId);
   let html=`<div class="day-hdr"><div class="dh-num">${guide.emoji} Guía ${guide.id} · ${guide.days} días</div><div class="dh-title">${guide.title}</div><div class="dh-desc">${guide.desc}</div></div>`;
+  if(guideId===19){
+    html+=`<div class="guide-card" onclick="openExampleAnswersFull()" style="background:linear-gradient(135deg,rgba(201,148,58,.14),rgba(224,92,26,.10));border-color:rgba(201,148,58,.4);margin-bottom:18px;">
+      <div class="gn" style="color:var(--gold2);">📋 Referencia personal</div>
+      <div class="gt">Respuestas de Ejemplo — Guía 2 completa</div>
+      <div class="gd">Los 20 días de la Etapa 2, ya trabajados como ejemplo e inspiración para escribir los tuyos con más profundidad.</div>
+      <span class="g-badge g-active">Ver las 20 respuestas →</span>
+    </div>`;
+  }
   if(guideId===12){
     html+=`<div class="guide-card" onclick="goScreen('screen-reencuadre')" style="background:linear-gradient(135deg,rgba(20,60,60,.55),rgba(10,30,40,.55));border-color:rgba(52,216,166,.4);margin-bottom:18px;">
       <div class="gn" style="color:#34D8A6;">🧠 Herramienta guiada</div>
@@ -2463,7 +3074,7 @@ function renderDay(){
   if(CURRENT_STEP===day.steps.length-1){
     html+=`<div class="verse"><div class="verse-t">${day.verse.t}</div><div class="verse-r">${day.verse.r}</div></div>`;
   }
-  html+=`<div class="step-actions"><button class="btn btn-ghost btn-sm" onclick="${CURRENT_STEP>0?'gotoStep('+(CURRENT_STEP-1)+')':`openGuide(${day.guide})`}">${CURRENT_STEP>0?'← Anterior':'← Días'}</button><div style="display:flex;gap:10px;align-items:center;"><button class="btn btn-ghost btn-sm" onclick="saveDay()">💾 Guardar</button>${CURRENT_STEP<day.steps.length-1?`<button class="btn btn-primary btn-sm" onclick="nextStep()">Continuar →</button>`:isDone?`<span style="color:var(--success);font-family:'Cinzel',serif;font-size:11px;">✓ Día completado</span>`:`<button class="btn btn-primary btn-sm complete-day-btn" onclick="completeDay()">🦅 Completar día ${day.num}</button>`}</div></div>`;
+  html+=`<div class="step-actions"><button class="btn btn-ghost btn-sm" onclick="${CURRENT_STEP>0?'gotoStep('+(CURRENT_STEP-1)+')':`openGuide(${day.guide})`}">${CURRENT_STEP>0?'← Anterior':'← Días'}</button><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">${day.guide===19?`<button class="btn btn-ghost btn-sm" onclick="openExampleAnswers(${day.num})">📋 Respuestas de Ejemplo</button>`:''}<button class="btn btn-ghost btn-sm" onclick="saveDay()">💾 Guardar</button>${CURRENT_STEP<day.steps.length-1?`<button class="btn btn-primary btn-sm" onclick="nextStep()">Continuar →</button>`:isDone?`<span style="color:var(--success);font-family:'Cinzel',serif;font-size:11px;">✓ Día completado</span>`:`<button class="btn btn-primary btn-sm complete-day-btn" onclick="completeDay()">🦅 Completar día ${day.num}</button>`}</div></div>`;
   document.getElementById('day-content').innerHTML=html;
   window.scrollTo(0,0);
 }
@@ -2724,6 +3335,36 @@ function clearAllRecordings(){
   save();
   renderAffirmations();
   toast('🗑️ Grabaciones eliminadas');
+}
+
+/* ══════════════════════════════════════════════════
+   RESPUESTAS DE EJEMPLO — Guía 2 (Etapa 2)
+══════════════════════════════════════════════════ */
+function openExampleAnswers(dayNum){
+  const exId = exampleIdForDayNum(dayNum);
+  const ex = EXAMPLE_ANSWERS[exId];
+  const box = document.getElementById('example-modal-content');
+  if(!ex){
+    box.innerHTML = `<p style="text-align:center;color:var(--muted);">Respuesta de ejemplo no disponible para este día.</p>`;
+  } else {
+    box.innerHTML = `<div class="example-day-title">${ex.title}</div><div class="example-note">Así respondió José Fernando este día — como referencia e inspiración, no como plantilla a copiar.</div>${ex.content}`;
+  }
+  document.getElementById('modal-example').classList.add('open');
+}
+function openExampleAnswersFull(){
+  const box = document.getElementById('example-modal-content');
+  let html = `<div class="example-note">Los 20 días de la Etapa 2 (Guía 2), con las respuestas ya trabajadas por José Fernando como ejemplo e inspiración.</div>`;
+  for(let i=1;i<=20;i++){
+    const ex = EXAMPLE_ANSWERS[i];
+    if(!ex) continue;
+    html += `<div class="example-day-title" style="margin-top:${i===1?'0':'32'}px;">${ex.title}</div>${ex.content}`;
+  }
+  box.innerHTML = html;
+  document.getElementById('modal-example').classList.add('open');
+}
+function closeExampleModal(e){
+  if(!e||e.target===document.getElementById('modal-example')||e.target.classList.contains('modal-close'))
+    document.getElementById('modal-example').classList.remove('open');
 }
 
 /* ══════════════════════════════════════════════════
